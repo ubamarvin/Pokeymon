@@ -4,8 +4,8 @@ import org.scalatest.matchers.should.Matchers._
 val tackle: Move = Move("Tackle", 10)
 val thunder: Move = Move("Thunder", 20)
 val pikachu_moves: List[Move] = List(tackle, thunder)
-val pikachu: Pokemon = Pokemon("Pikachu", 100, pikachu_moves)
-val duck = Pokemon("Duck", 100, pikachu_moves)
+val pikachu: Pokemon = Pokemon(10, "Pikachu", 100, pikachu_moves, 35)
+val duck = Pokemon(20, "Duck", 100, pikachu_moves, 35)
 class Pokeymon extends AnyWordSpec:
   // ---------TRAINER CLASS TEST---------------//
 
@@ -14,7 +14,7 @@ class Pokeymon extends AnyWordSpec:
 
     "return true if he has one Pokeymon left" in {
       val trainer =
-        Trainer(List(Pokemon("Pikachu,", 100, List(Move("Thunder", 50)))))
+        Trainer(List(pikachu))
       trainer.hasPokemonleft() should be(true)
     }
   }
