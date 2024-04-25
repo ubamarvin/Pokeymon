@@ -68,7 +68,10 @@ val evoli = Pokemon(4, "evoli", 100, rat_moves, 35)
 val available_pokemon = Vector(pikachu, ratmon, cowPokemon, evoli)
 class Pokedex(available_pokemon: Vector[Pokemon] = available_pokemon):
   def showAvailablePokemon(): String = available_pokemon.map(_.name).mkString(", ")
-  // def choosePokemon(name: String): (Pokemon, Pokedex) =
+  def choosePokemon(name: String): (Pokemon, Pokedex) =
+    val (chosenPokemon, remainingPokemon) = available_pokemon.partition(_.name == name)
+    val updatedPokedex = new Pokedex(remainingPokemon)
+    (chosenPokemon.head, updatedPokedex)
 
 //***********Trainers
 val trainer_ash = Trainer(List(pikachu, ratmon))

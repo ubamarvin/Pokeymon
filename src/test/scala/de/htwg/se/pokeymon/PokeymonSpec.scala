@@ -88,3 +88,13 @@ class Pokeymon extends AnyWordSpec:
       pokedex.showAvailablePokemon() should be("Pikachu, Duck")
     }
   }
+
+  "Class Pokedex " should {
+
+    "return the pokemon that was chosen " in {
+      val pokedex = Pokedex(available_pokemon)
+      val (chosenMon, updatedPokedex) = pokedex.choosePokemon("Duck")
+      chosenMon.name should be("Duck")
+      updatedPokedex.showAvailablePokemon() should be("Pikachu")
+    }
+  }
