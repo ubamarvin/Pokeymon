@@ -6,8 +6,9 @@ val thunder: Move = Move("Thunder", 20)
 val pikachu_moves: List[Move] = List(tackle, thunder)
 val pikachu: Pokemon = Pokemon(10, "Pikachu", 100, pikachu_moves, 35)
 val duck = Pokemon(20, "Duck", 100, pikachu_moves, 35)
+val available_pokemon: Vector[Pokemon] = Vector(pikachu, duck)
 class Pokeymon extends AnyWordSpec:
-  // ---------TRAINER CLASS TEST---------------//
+  // ______________TRAINER CLASS TEST______________//
 
   // ---.hasPokemonLeft
   "Trainer " should {
@@ -75,5 +76,15 @@ class Pokeymon extends AnyWordSpec:
     "be alive when it has Hp >= 1 left" in {
       val pikachuFaint = pikachu.decreaseHp(99)
       pikachuFaint.isAlive() should be(true)
+    }
+  }
+
+  // ______________Class Pokedex_______________________
+
+  "Class Pokedex " should {
+
+    "show all available Pokemon with " in {
+      val pokedex = Pokedex(available_pokemon)
+      pokedex.showAvailablePokemon() should be("Pikachu, Duck")
     }
   }

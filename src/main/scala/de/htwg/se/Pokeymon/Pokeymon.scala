@@ -18,14 +18,15 @@ case class Trainer(pokemons: List[Pokemon]): // Extend with Items
   // def putPokemonOnBattle(name): Pokemon
   // def placePokemonInTrainer(name): Boolean, denn wenns mehr als 6 gehts nicht
   // val für current Pokemon?
-
   def hasPokemonleft(): Boolean = !pokemons.isEmpty
 
-case class Pokemon(id: Int, name: String, hp: Int = 100, moves: List[Move], speed: Int): // extendWith ID, Stats, type, and status
+//------------CLASS Pokemon---------------
+case class Pokemon(id: Int, name: String, hp: Int = 100, moves: List[Move], speed: Int, currentMove: Move = empty): // extendWith ID, Stats, type, and status
   def decreaseHp(damage: Int): Pokemon = this.copy(hp = hp - damage)
   def isAlive(): Boolean = hp != 0
   def attack(moveName: String): Option[Int] =
     this.moves.find(_.name == moveName).map(_.power)
+  def setCurrentMove(currentMove: Move): Pokemon = this.copy(currentMove = currentMove) //
 
   // Damit bei der übergabe des Pokemons die gwählte Attacke nicht überkompliziert ermittelt werden muss
   // wird sie hier gespeichert
@@ -37,19 +38,23 @@ case class Pokemon(id: Int, name: String, hp: Int = 100, moves: List[Move], spee
 
   // def changeStatus
 
+//___________Class Moves____________///
+//extend with pp
+//extend with type
+//extend with executeMove()?
 case class Move(
     name: String,
     power: Int
-) //extend with execute move or something like that
+)
 
-//Building a Trainer, Pokemons, and Moves
-
+//***********Building a Trainer, Pokemons, and Moves
+val empty = Move("empty", 0)
 val tackle = Move("tackle", 50)
 val thunder = Move("thunder", 70)
 val bodyslam = Move("bodyslam", 30)
 val kick = Move("kick", 10)
 
-//Pokemons
+//***********Pokemons
 val pikachu_moves: List[Move] = List(tackle, thunder)
 val pikachu = Pokemon(1, "pikachu", 100, pikachu_moves, 30)
 
@@ -58,10 +63,18 @@ val ratmon = Pokemon(2, "ratmon", 100, rat_moves, 40)
 
 val cowPokemon = Pokemon(3, "cowPokemon", 100, List(tackle, thunder), 35)
 val evoli = Pokemon(4, "evoli", 100, rat_moves, 35)
-// Trainers
+
+//***********List of all available Pokemon
+val available_pokemon = Vector(pikachu, ratmon, cowPokemon, evoli)
+class Pokedex(available_pokemon: Vector[Pokemon] = available_pokemon):
+  def showAvailablePokemon(): String = available_pokemon.map(_.name).mkString(", ")
+  // def choosePokemon(name: String): (Pokemon, Pokedex) =
+
+//***********Trainers
 val trainer_ash = Trainer(List(pikachu, ratmon))
 val trainer_gary = Trainer(List(cowPokemon, evoli))
 
+//_______________preapareForBattle()___________________-
 //Hier sollen pre Battle Einstellungen gewählt werden
 //Der Spieler soll dazu aufgefordet werden 1-6 Pokemon zu wählen
 //und 0-4 Items
@@ -78,6 +91,7 @@ def prepareForBattle(trainer1: Trainer, trainer2: Trainer): String =
   val msg = "fuck"
   msg
 
+//_______________battleMode
 //Hier sollen die tatsächlichen Runden ausgehandelt werden
 //diese funktion befasst sich nur mit des Stellen der Pokemon
 // und der Wahl der Aktion (Move,Item,Switch)
@@ -100,6 +114,7 @@ def battleMode(trainer1: Trainer, trainer2: Trainer): String =
   val msg = "fuck"
   msg
 
+//__________________evaluateRound()________________________________
 ///Wenn Trainer Item oder Pokemon switch gewählt hat, dann ist Move Choice Empty? Sollte dan überhaupt das alles gemacht werden?
 // einfach nur def attack im falle einer nur einseitigen attacke
 def evaluateRound(pk1: Pokemon, move_choice_1: String, pk2: Pokemon, move_choice_2: String): List[Pokemon] = {
@@ -141,4 +156,5 @@ def pickYourMove(): String =
 
 @main
 def game(): Unit =
-  println()
+  val pokedex = Pokedex()
+  println(pokedex.showAvailablePokemon())
