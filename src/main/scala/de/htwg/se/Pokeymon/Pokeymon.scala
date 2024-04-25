@@ -10,12 +10,13 @@ import scala.util.Random
     _ == pokemonToRemove: This is a shorthand notation for a function literal that compares each element of the _pokemon list with pokemonToRemove. Here, _ represents each individual element of the list, and pokemonToRemove is the element we want to remove.
     The expression _ == pokemonToRemove returns true if the current element (_) is equal to pokemonToRemove, and false otherwise.
  */
-case class Trainer(pokemons: Vector[Pokemon]): // Extend with Items
+case class Trainer(pokemons: Vector[Pokemon], currentPokemon: Pokemon = evoli): // Extend with Items
   val max_pokemon = 6
   def removePokemon(pokemonName: String): Trainer =
     this.copy(pokemons = pokemons.filterNot(_.name == pokemonName))
   def addPokemon(new_pokemon: Pokemon): Trainer =
     this.copy(pokemons = pokemons :+ new_pokemon)
+  def setCurrentPokemon(pokemon: Pokemon): Trainer = this.copy(currentPokemon = pokemon)
   // These two function will help in putting and taking pokemon easily onto the trainers possesion, good exercise for the lists/vectors etc
   // def putPokemonOnBattle(name): Pokemon
   // def placePokemonInTrainer(name): Boolean, denn wenns mehr als 6 gehts nicht
@@ -23,17 +24,17 @@ case class Trainer(pokemons: Vector[Pokemon]): // Extend with Items
   def hasPokemonleft(): Boolean = !pokemons.isEmpty
 
 //_____________Class Pokemon____________________
-case class Pokemon(id: Int, name: String, hp: Int = 100, moves: List[Move], speed: Int, currentMove: Move = empty): // extendWith ID, Stats, type, and status
+case class Pokemon(id: Int, name: String, hp: Int = 100, moves: List[Move], speed: Int, currentMove: Move = empty_move): // extendWith ID, Stats, type, and status
   def decreaseHp(damage: Int): Pokemon = this.copy(hp = hp - damage)
   def isAlive(): Boolean = hp != 0
   def attack(moveName: String): Option[Int] =
     this.moves.find(_.name == moveName).map(_.power)
-  def setCurrentMove(currentMove: Move): Pokemon = this.copy(currentMove = currentMove) //
-
-  // Damit bei der übergabe des Pokemons die gwählte Attacke nicht überkompliziert ermittelt werden muss
-  // wird sie hier gespeichert
-  // def setCurrentMove()
-  // Move muss natürlich im Move Pool vorhanden sein
+  def setCurrentMove(new_move: String): Pokemon =
+    val move = this.moves.find(_.name == new_move).getOrElse(empty_move)
+    this.copy(currentMove = move)
+  override def toString: String =
+    val moveNames = moves.map(_.name).mkString(", ")
+    s"$name, $hp, [$moveNames], $speed"
 
   // eine Attacke kann entweder ein Hp Move sein oder ein Status veränderndern Move sein, hier soll das geregelt werden
   // def receiveAttack(move)
@@ -50,7 +51,7 @@ case class Move(
 )
 
 //***********Building a Trainer, Pokemons, and Moves
-val empty = Move("empty", 0)
+val empty_move = Move("empty", 0)
 val tackle = Move("tackle", 50)
 val thunder = Move("thunder", 70)
 val bodyslam = Move("bodyslam", 30)
@@ -66,8 +67,19 @@ val ratmon = Pokemon(2, "ratmon", 100, rat_moves, 40)
 val cowPokemon = Pokemon(3, "cowpokemon", 100, List(tackle, thunder), 35)
 val evoli = Pokemon(4, "evoli", 100, rat_moves, 35)
 
-val trainer_ash = Trainer(Vector(pikachu, ratmon))
-val trainer_gary = Trainer(Vector(cowPokemon, evoli))
+val trainer_ash = Trainer(Vector())
+
+//**********Build Dummy opponent
+val std_moves: List[Move] = List(tackle)
+val testmon1 = Pokemon(5, "testmon1", 100, std_moves, 50)
+val testmon2 = Pokemon(6, "testmon2", 100, std_moves, 50)
+val testmon3 = Pokemon(7, "testmon3", 100, std_moves, 50)
+val testmon4 = Pokemon(8, "testmon4", 100, std_moves, 50)
+val testmon5 = Pokemon(9, "testmon5", 100, std_moves, 50)
+val testmon6 = Pokemon(10, "testmon6", 100, std_moves, 50)
+val std_mons = Vector(testmon1, testmon2, testmon3, testmon4, testmon5, testmon6)
+val opponent = Trainer(std_mons)
+
 //***********List of all available Pokemon
 val available_pokemon = Vector(pikachu, ratmon, cowPokemon, evoli)
 //_____________Class Pokedex_______________//
@@ -82,6 +94,22 @@ class Pokedex(available_pokemon: Vector[Pokemon] = available_pokemon):
     val updatedPokedex = new Pokedex(remainingPokemon)
     (chosenPokemon.head, updatedPokedex)
   def exists(name: String): Boolean = available_pokemon.exists(_.name == name)
+
+def generatePokemonField(pokemon1: Pokemon, pokemon2: Pokemon): String = {
+  val horizontalBorder = "+" + ("-" * 30) + "+\n"
+  val verticalBorder = "|"
+
+  val topBorder = horizontalBorder
+  val bottomBorder = horizontalBorder
+
+  val middleRows = List(
+    "                " + pokemon2.toString + "\n",
+    "\n",
+    pokemon1.toString + "\n"
+  ).mkString
+
+  topBorder + middleRows + bottomBorder
+}
 
 //@def pickYourPokemons
 //this function handles the picking of Pokemons for a Trainer
@@ -121,6 +149,8 @@ def pickYourPokemons(player: Trainer, pokedex: Pokedex, picks: Int = 0): (Traine
     //  pickYourPokemons(upd_player, upd_pokedex, picks + 1)
 
   }
+def startGame(): Unit =
+  prepareForBattle()
 
 //***********Trainers
 
@@ -128,14 +158,15 @@ def pickYourPokemons(player: Trainer, pokedex: Pokedex, picks: Int = 0): (Traine
 //This function handles pre-Battle configurations:
 //The player is able to choose one to six Pokemons from the Pokedex
 //Todo: The Player is able to choose zero to four items from the Item Inventory
-def prepareForBattle(player: Trainer, opponent: Trainer, pokedex: Pokedex): String =
+def prepareForBattle(player: Trainer = Trainer(Vector()), opponent: Trainer = opponent, pokedex: Pokedex = Pokedex()): String =
 
   val (upd_player, upd_pokedex, num_of_pokemons) = pickYourPokemons(player, pokedex)
+  // def Build oppnent
 
-  // confirm your fuckin choice or redoo the whole fuckin thing(Später)
+  val upd_player_ready = upd_player.setCurrentPokemon(upd_player.pokemons.head)
+  val opponent_ready = opponent.setCurrentPokemon(opponent.pokemons.head)
 
-  // @battle(): The actual Battle
-  // battle()
+  battleMode(upd_player_ready, opponent_ready)
   val msg = "fuck"
   msg
 
@@ -143,49 +174,52 @@ def prepareForBattle(player: Trainer, opponent: Trainer, pokedex: Pokedex): Stri
 //Hier sollen die tatsächlichen Runden ausgehandelt werden
 //diese funktion befasst sich nur mit des Stellen der Pokemon
 // und der Wahl der Aktion (Move,Item,Switch)
-def battleMode(trainer1: Trainer, trainer2: Trainer): String =
-  // 0 1 2 Round what would i print Pick your move
-  val promptMessage = pickYourMove()
-  // Trainer1CurrentPokemon = List Head oder so ähnlich
-  // Trainer2CurrentPokemon =
-  // Wenn ich Aktion Item oder Pokemon switchen wähle, wird diese zu erst ausgeführt
-  // ItemUsage and switchPokemon will always be executed first if choosen!!
+def battleMode(player: Trainer, opponent: Trainer): String =
 
-  // Maybe Pk1 attack pk2 directly wenn pk 2 item gewählt hat?
+  val playerPokemon = player.currentPokemon
 
-  // updatedPokemons = evaluateRound()
-  // parse Pokemons via id back into trainer def orderPokemonToTrainerbyId
+  val opponentPokemon = opponent.currentPokemon
 
-  // update the field and print it
-  // ending message falls eins dead is, sonst
-  // battleMode()
+  println(generatePokemonField(playerPokemon, opponentPokemon))
+
+  val player_move = scala.io.StdIn.readLine("Choose a move\n") // def chooseMove(pk:Pokemon): Move
+  val playerPokemon_move_is_set = playerPokemon.setCurrentMove(player_move.toLowerCase())
+
+  val opponentPokemon_move_is_set = opponentPokemon.setCurrentMove("tackle")
+
+  val (upd_playerPokemon, upd_opponentPokemon) = evaluateRound(playerPokemon_move_is_set, opponentPokemon_move_is_set)
+
+  val upd_player = player.setCurrentPokemon(upd_playerPokemon)
+  val upd_opponent = opponent.setCurrentPokemon(upd_opponentPokemon)
+
+  battleMode(upd_player, upd_opponent)
   val msg = "fuck"
   msg
 
 //__________________evaluateRound()________________________________
 ///Wenn Trainer Item oder Pokemon switch gewählt hat, dann ist Move Choice Empty? Sollte dan überhaupt das alles gemacht werden?
 // einfach nur def attack im falle einer nur einseitigen attacke
-def evaluateRound(pk1: Pokemon, move_choice_1: String, pk2: Pokemon, move_choice_2: String): List[Pokemon] = {
+def evaluateRound(playerPokemon: Pokemon, oponnentPokemon: Pokemon): (Pokemon, Pokemon) = {
+  def matchPokemonById(pk1: Pokemon, pk2: Pokemon): (Pokemon, Pokemon) =
+    val playerMon = if (pk1.id == playerPokemon.id) pk1 else pk2
+    val oponnentMon = if (pk2.id == oponnentPokemon.id) pk2 else pk1
+    (playerMon, oponnentMon)
 
   // Decide who executes Move first based on speed
-  val first_mover = determineFasterPokemon(pk1, pk2)
-  val scnd_mover = determineSlowerPokemon(pk1, pk2) // geht auch besser, wenns nicht a dann b // vergleich mit first mover
+  val first_mover = determineFasterPokemon(playerPokemon, oponnentPokemon)
+  val secnd_mover = determineSlowerPokemon(playerPokemon, oponnentPokemon) // geht auch besser, wenns nicht a dann b // vergleich mit first mover
 
   // alternative kann man den pokemons auch ne current moveChoice geben
   // move Choice darf/kann/muss auch leer sein dürfen falls trainer itemt oder switched
-  val first_mover_move_choice = if (first_mover.id == pk1.id) move_choice_1 else move_choice_2
-  val scnd_mover_move_choice = if (scnd_mover.id == pk2.id) move_choice_2 else move_choice_1
+
   // Calculate Damage
-  val updated_scnd_mover = scnd_mover.decreaseHp(first_mover.attack(first_mover_move_choice).getOrElse(0))
+  val upd_secnd_mover = secnd_mover.decreaseHp(first_mover.currentMove.power)
   // check if second mover dead and update the field!
-  val updated_first_mover = first_mover.decreaseHp(scnd_mover.attack(scnd_mover_move_choice).getOrElse(0))
+  val upd_first_mover = first_mover.decreaseHp(secnd_mover.currentMove.power)
 
   // Copy updated pokemon back into back to correct Pokemon...this can be done outside too
-  val updated_pk1 = if (updated_first_mover.id == pk1.id) updated_first_mover else updated_scnd_mover
-  val updated_pk2 = if (updated_scnd_mover.id == pk2.id) updated_scnd_mover else updated_first_mover
 
-  val pokemonList: List[Pokemon] = List(updated_pk1, updated_pk1)
-  pokemonList
+  matchPokemonById(upd_first_mover, upd_secnd_mover) // returns (Pokemon,Pokemon)
 }
 
 //Damit man weiß, welches Pokemon zuerst zuschlagen darf, müssen die Geschwindigkeiten miteinander verglichen werden
@@ -205,5 +239,9 @@ def pickYourMove(): String =
 @main
 def game(): Unit =
   val pokedex = Pokedex()
-  println(pokedex.showAvailablePokemon())
-  pickYourPokemons(trainer_ash, pokedex)
+  startGame()
+  // println(pokedex.showAvailablePokemon())
+  // pickYourPokemons(trainer_ash, pokedex)
+  println(pikachu.currentMove.name)
+  val upd = pikachu.setCurrentMove("tackle")
+  println(upd.currentMove.name)
