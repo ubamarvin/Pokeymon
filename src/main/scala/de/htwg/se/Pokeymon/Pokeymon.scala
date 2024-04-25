@@ -1,6 +1,6 @@
 import scala.util.Random
 
-//------------CLASS TRAINER---------------
+//________________Class TRAINER______________________
 
 /*
 ----@def removePokemon
@@ -10,17 +10,19 @@ import scala.util.Random
     _ == pokemonToRemove: This is a shorthand notation for a function literal that compares each element of the _pokemon list with pokemonToRemove. Here, _ represents each individual element of the list, and pokemonToRemove is the element we want to remove.
     The expression _ == pokemonToRemove returns true if the current element (_) is equal to pokemonToRemove, and false otherwise.
  */
-case class Trainer(pokemons: List[Pokemon]): // Extend with Items
+case class Trainer(pokemons: Vector[Pokemon]): // Extend with Items
   val max_pokemon = 6
   def removePokemon(pokemonName: String): Trainer =
     this.copy(pokemons = pokemons.filterNot(_.name == pokemonName))
+  def addPokemon(new_pokemon: Pokemon): Trainer =
+    this.copy(pokemons = pokemons :+ new_pokemon)
   // These two function will help in putting and taking pokemon easily onto the trainers possesion, good exercise for the lists/vectors etc
   // def putPokemonOnBattle(name): Pokemon
   // def placePokemonInTrainer(name): Boolean, denn wenns mehr als 6 gehts nicht
   // val für current Pokemon?
   def hasPokemonleft(): Boolean = !pokemons.isEmpty
 
-//------------CLASS Pokemon---------------
+//_____________Class Pokemon____________________
 case class Pokemon(id: Int, name: String, hp: Int = 100, moves: List[Move], speed: Int, currentMove: Move = empty): // extendWith ID, Stats, type, and status
   def decreaseHp(damage: Int): Pokemon = this.copy(hp = hp - damage)
   def isAlive(): Boolean = hp != 0
@@ -61,35 +63,65 @@ val pikachu = Pokemon(1, "pikachu", 100, pikachu_moves, 30)
 val rat_moves: List[Move] = List(bodyslam, kick)
 val ratmon = Pokemon(2, "ratmon", 100, rat_moves, 40)
 
-val cowPokemon = Pokemon(3, "cowPokemon", 100, List(tackle, thunder), 35)
+val cowPokemon = Pokemon(3, "cowpokemon", 100, List(tackle, thunder), 35)
 val evoli = Pokemon(4, "evoli", 100, rat_moves, 35)
 
+val trainer_ash = Trainer(Vector(pikachu, ratmon))
+val trainer_gary = Trainer(Vector(cowPokemon, evoli))
 //***********List of all available Pokemon
 val available_pokemon = Vector(pikachu, ratmon, cowPokemon, evoli)
+//_____________Class Pokedex_______________//
+//This class handles all the available Pokemon
+//The purpose of this class is to hand out a Pokemon to a Trainer
+//@showAvailablePokemon returns String represantaion of all available Pokemon by name ToDo: Add rep by lvl,movepool,type etc
+//@choosePokemon returns the @param name specified Pokemon and the new Pokedex reduced by that Pokemon
 class Pokedex(available_pokemon: Vector[Pokemon] = available_pokemon):
   def showAvailablePokemon(): String = available_pokemon.map(_.name).mkString(", ")
   def choosePokemon(name: String): (Pokemon, Pokedex) =
     val (chosenPokemon, remainingPokemon) = available_pokemon.partition(_.name == name)
     val updatedPokedex = new Pokedex(remainingPokemon)
     (chosenPokemon.head, updatedPokedex)
+  def exists(name: String): Boolean = available_pokemon.exists(_.name == name)
+
+//@def pickYourPokemons
+//this function handles the picking of Pokemons for a Trainer
+//For testing purposes a prepared List of to be chosen Pokemon is passed in
+def pickYourPokemons(player: Trainer, pokedex: Pokedex, picks: Int = 0): (Trainer, Pokedex, Int) =
+  val player_input = scala.io.StdIn.readLine("Choose Pokemon, press d for done")
+
+  player_input.toLowerCase() match {
+    case "q" if picks > 0 => (player, pokedex, picks)
+
+    case "q" =>
+      println("must choose atleast one Pokeymon")
+      pickYourPokemons(player, pokedex, picks = 0)
+
+    case _ if pokedex.exists(player_input) && picks > 0 =>
+      val (picked_pokemon, upd_pokedex) = pokedex.choosePokemon(player_input)
+      val upd_player = player.addPokemon(picked_pokemon)
+      pickYourPokemons(upd_player, upd_pokedex, picks + 1)
+
+    case _ if !pokedex.exists(player_input) && picks > 0 =>
+      // Choice doesnt exist
+      pickYourPokemons(player, pokedex, picks)
+
+    case _ if picks >= 6 =>
+      (player, pokedex, picks)
+  }
 
 //***********Trainers
-val trainer_ash = Trainer(List(pikachu, ratmon))
-val trainer_gary = Trainer(List(cowPokemon, evoli))
 
-//_______________preapareForBattle()___________________-
-//Hier sollen pre Battle Einstellungen gewählt werden
-//Der Spieler soll dazu aufgefordet werden 1-6 Pokemon zu wählen
-//und 0-4 Items
-//Zu jedem Wählbaren PokeyMun wird es eine kleine Übersicht geben aka to String
-def prepareForBattle(trainer1: Trainer, trainer2: Trainer): String =
-  // Choose Pokeymons, def pickPokemon, pickPokemon from limited set of Pokemon
-  // SetOfPokemon with distinct id,  first Pokemon to choose is leading, max choose == 6
+//@def preapareForBattle()
+//This function handles pre-Battle configurations:
+//The player is able to choose one to six Pokemons from the Pokedex
+//Todo: The Player is able to choose zero to four items from the Item Inventory
+def prepareForBattle(player: Trainer, opponent: Trainer, pokedex: Pokedex): String =
 
-  // Choose Items,     def pickItems, Max item == 4
+  val (upd_player, upd_pokedex, num_of_pokemons) = pickYourPokemons(player, pokedex)
 
-  // confirm your fuckin choice or redoo the whole fuckin thing
+  // confirm your fuckin choice or redoo the whole fuckin thing(Später)
 
+  // @battle(): The actual Battle
   // battle()
   val msg = "fuck"
   msg

@@ -15,7 +15,7 @@ class Pokeymon extends AnyWordSpec:
 
     "return true if he has one Pokeymon left" in {
       val trainer =
-        Trainer(List(pikachu))
+        Trainer(Vector(pikachu))
       trainer.hasPokemonleft() should be(true)
     }
   }
@@ -24,7 +24,7 @@ class Pokeymon extends AnyWordSpec:
 
     "return true if he has at least one Pokeymon left" in {
       val trainer =
-        Trainer(List(pikachu, pikachu))
+        Trainer(Vector(pikachu, pikachu))
       trainer.hasPokemonleft() should be(true)
     }
   }
@@ -33,7 +33,7 @@ class Pokeymon extends AnyWordSpec:
 
     "return false if he has no Pokeymon left" in {
       val trainer =
-        Trainer(List())
+        Trainer(Vector())
       trainer.hasPokemonleft() should be(false)
     }
   }
@@ -42,7 +42,7 @@ class Pokeymon extends AnyWordSpec:
   "Trainer " should {
 
     "have duck removed from the list" in {
-      val trainer = Trainer(List(pikachu, duck))
+      val trainer = Trainer(Vector(pikachu, duck))
       val trainer_one_pokemon_less = trainer.removePokemon("Duck")
       trainer_one_pokemon_less.pokemons.exists(_.name == "Duck") should be(
         false
@@ -53,7 +53,7 @@ class Pokeymon extends AnyWordSpec:
   "Trainer " should {
 
     "have pikachu in the list when duck is removed" in {
-      val trainer = Trainer(List(pikachu, duck))
+      val trainer = Trainer(Vector(pikachu, duck))
       val trainer_one_pokemon_less = trainer.removePokemon("Duck")
       trainer_one_pokemon_less.pokemons.exists(_.name == "Pikachu") should be(
         true
