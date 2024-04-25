@@ -87,26 +87,30 @@ class Pokedex(available_pokemon: Vector[Pokemon] = available_pokemon):
 //this function handles the picking of Pokemons for a Trainer
 //For testing purposes a prepared List of to be chosen Pokemon is passed in
 def pickYourPokemons(player: Trainer, pokedex: Pokedex, picks: Int = 0): (Trainer, Pokedex, Int) =
-  val player_input = scala.io.StdIn.readLine("Choose Pokemon, press d for done")
-
+  val player_input = scala.io.StdIn.readLine("Choose Pokemon, press q for done \n")
+  val is_pokemon = pokedex.exists(player_input.toLowerCase())
   player_input.toLowerCase() match {
+
     case "q" if picks > 0 => (player, pokedex, picks)
 
     case "q" =>
       println("must choose atleast one Pokeymon")
       pickYourPokemons(player, pokedex, picks = 0)
 
-    case _ if pokedex.exists(player_input) && picks > 0 =>
+    case _ if picks >= 6 =>
+      println("Cant choose more than six Pokemons")
+      (player, pokedex, picks)
+
+    case _ if !is_pokemon && picks > 0 =>
+      println("Choice doesnt exist")
+      pickYourPokemons(player, pokedex, picks)
+
+    case _ if is_pokemon && picks > 0 =>
+      println("Your choice will be added")
       val (picked_pokemon, upd_pokedex) = pokedex.choosePokemon(player_input)
       val upd_player = player.addPokemon(picked_pokemon)
       pickYourPokemons(upd_player, upd_pokedex, picks + 1)
 
-    case _ if !pokedex.exists(player_input) && picks > 0 =>
-      // Choice doesnt exist
-      pickYourPokemons(player, pokedex, picks)
-
-    case _ if picks >= 6 =>
-      (player, pokedex, picks)
   }
 
 //***********Trainers
@@ -193,3 +197,4 @@ def pickYourMove(): String =
 def game(): Unit =
   val pokedex = Pokedex()
   println(pokedex.showAvailablePokemon())
+  pickYourPokemons(trainer_ash, pokedex)
