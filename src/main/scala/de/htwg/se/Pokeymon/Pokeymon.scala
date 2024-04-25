@@ -17,16 +17,20 @@ case class Trainer(pokemons: Vector[Pokemon], currentPokemon: Pokemon = evoli): 
   def addPokemon(new_pokemon: Pokemon): Trainer =
     this.copy(pokemons = pokemons :+ new_pokemon)
   def setCurrentPokemon(pokemon: Pokemon): Trainer = this.copy(currentPokemon = pokemon)
+  def getNextPokemon(): Pokemon = pokemons.head
   // These two function will help in putting and taking pokemon easily onto the trainers possesion, good exercise for the lists/vectors etc
   // def putPokemonOnBattle(name): Pokemon
   // def placePokemonInTrainer(name): Boolean, denn wenns mehr als 6 gehts nicht
   // val für current Pokemon?
   def hasPokemonleft(): Boolean = !pokemons.isEmpty
+  override def toString: String =
+    val pokemonStrings = pokemons.map(pokemon => s"${pokemon.name} (${pokemon.hp})")
+    s"Trainer's Pokemons: ${pokemonStrings.mkString(", ")}"
 
 //_____________Class Pokemon____________________
 case class Pokemon(id: Int, name: String, hp: Int = 100, moves: List[Move], speed: Int, currentMove: Move = empty_move): // extendWith ID, Stats, type, and status
   def decreaseHp(damage: Int): Pokemon = this.copy(hp = hp - damage)
-  def isAlive(): Boolean = hp != 0
+  def isAlive(): Boolean = hp > 0
   def attack(moveName: String): Option[Int] =
     this.moves.find(_.name == moveName).map(_.power)
   def setCurrentMove(new_move: String): Pokemon =
@@ -95,7 +99,7 @@ class Pokedex(available_pokemon: Vector[Pokemon] = available_pokemon):
     (chosenPokemon.head, updatedPokedex)
   def exists(name: String): Boolean = available_pokemon.exists(_.name == name)
 
-def generatePokemonField(pokemon1: Pokemon, pokemon2: Pokemon): String = {
+def generatePokemonField(pokemon1: Pokemon, pokemon2: Pokemon, player: Trainer, opponent: Trainer): String = {
   val horizontalBorder = "+" + ("-" * 30) + "+\n"
   val verticalBorder = "|"
 
@@ -103,9 +107,9 @@ def generatePokemonField(pokemon1: Pokemon, pokemon2: Pokemon): String = {
   val bottomBorder = horizontalBorder
 
   val middleRows = List(
-    "                " + pokemon2.toString + "\n",
+    "                " + pokemon2.toString + "\n " + opponent.toString + "\n",
     "\n",
-    pokemon1.toString + "\n"
+    pokemon1.toString + "\n " + player.toString + "\n"
   ).mkString
 
   topBorder + middleRows + bottomBorder
@@ -180,7 +184,7 @@ def battleMode(player: Trainer, opponent: Trainer): String =
 
   val opponentPokemon = opponent.currentPokemon
 
-  println(generatePokemonField(playerPokemon, opponentPokemon))
+  println(generatePokemonField(playerPokemon, opponentPokemon, player, opponent))
 
   val player_move = scala.io.StdIn.readLine("Choose a move\n") // def chooseMove(pk:Pokemon): Move
   val playerPokemon_move_is_set = playerPokemon.setCurrentMove(player_move.toLowerCase())
@@ -192,9 +196,32 @@ def battleMode(player: Trainer, opponent: Trainer): String =
   val upd_player = player.setCurrentPokemon(upd_playerPokemon)
   val upd_opponent = opponent.setCurrentPokemon(upd_opponentPokemon)
 
-  battleMode(upd_player, upd_opponent)
+  val upd_player_alive = switchIfdead(upd_player)
+  val upd_opponent_alive = switchIfdead(upd_opponent)
+  println(s"Player has Pokémon left: ${upd_player_alive.hasPokemonleft()}")
+  println(s"Opponent has Pokémon left: ${upd_opponent_alive.hasPokemonleft()}")
+  if (upd_player_alive.hasPokemonleft() && upd_opponent_alive.hasPokemonleft())
+    battleMode(upd_player_alive, upd_opponent_alive)
+
+  println("somebody dead")
+
   val msg = "fuck"
   msg
+//faulty
+def switchIfdead(trainer: Trainer): Trainer =
+  val currentPokemon = trainer.currentPokemon
+  if (!currentPokemon.isAlive() && trainer.pokemons.size > 1) {
+    val trainer_rem = trainer.removePokemon(currentPokemon.name)
+    val next_pokemon = trainer_rem.getNextPokemon()
+    val upd_trainer = trainer_rem.setCurrentPokemon(next_pokemon)
+    upd_trainer
+  } else if (!currentPokemon.isAlive() && trainer.pokemons.size == 1) {
+    println("dead")
+    val upd_Trainer = trainer.removePokemon(currentPokemon.name)
+    upd_Trainer
+  } else {
+    trainer
+  }
 
 //__________________evaluateRound()________________________________
 ///Wenn Trainer Item oder Pokemon switch gewählt hat, dann ist Move Choice Empty? Sollte dan überhaupt das alles gemacht werden?
