@@ -101,15 +101,24 @@ def pickYourPokemons(player: Trainer, pokedex: Pokedex, picks: Int = 0): (Traine
       println("Cant choose more than six Pokemons")
       (player, pokedex, picks)
 
-    case _ if !is_pokemon && picks > 0 =>
-      println("Choice doesnt exist")
-      pickYourPokemons(player, pokedex, picks)
+    case _ =>
+      if !is_pokemon then
+        println("choice doesnt exist")
+        pickYourPokemons(player, pokedex, picks)
+      else
+        println("Your choice will be added")
+        val (picked_pokemon, upd_pokedex) = pokedex.choosePokemon(player_input)
+        val upd_player = player.addPokemon(picked_pokemon)
+        pickYourPokemons(upd_player, upd_pokedex, picks + 1)
 
-    case _ if is_pokemon && picks > 0 =>
-      println("Your choice will be added")
-      val (picked_pokemon, upd_pokedex) = pokedex.choosePokemon(player_input)
-      val upd_player = player.addPokemon(picked_pokemon)
-      pickYourPokemons(upd_player, upd_pokedex, picks + 1)
+    // case _ if !is_pokemon && picks > 0 =>
+    //  println("Choice doesnt exist")
+    //  pickYourPokemons(player, pokedex, picks)
+    // case _ if is_pokemon && picks > 0 =>
+    //  println("Your choice will be added")
+    //  val (picked_pokemon, upd_pokedex) = pokedex.choosePokemon(player_input)
+    //  val upd_player = player.addPokemon(picked_pokemon)
+    //  pickYourPokemons(upd_player, upd_pokedex, picks + 1)
 
   }
 
