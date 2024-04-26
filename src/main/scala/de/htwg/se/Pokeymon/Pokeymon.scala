@@ -100,32 +100,34 @@ class Pokedex(available_pokemon: Vector[Pokemon] = available_pokemon):
   def exists(name: String): Boolean = available_pokemon.exists(_.name == name)
 
 def generatePokemonField(pokemon1: Pokemon, pokemon2: Pokemon, player: Trainer, opponent: Trainer): String = {
-  val horizontalBorder = "+" + ("-" * 30) + "+\n"
-  val verticalBorder = "|"
+  // val horizontalBorder = "+" + ("-" * 30) + "+\n"
+  // val verticalBorder = "|"
+  val eol: String = "\n"
 
-  val topBorder = horizontalBorder
-  val bottomBorder = horizontalBorder
+  // val topBorder = horizontalBorder
+  // val bottomBorder = horizontalBorder
 
   val middleRows = List(
-    "                " + pokemon2.toString + "\n " + opponent.toString + "\n",
-    "\n",
-    pokemon1.toString + "\n " + player.toString + "\n"
+    "Opponents current Pokemon: " + pokemon2.toString + eol + opponent.toString + eol,
+    eol,
+    "Your currents Pokemon: " + pokemon1.toString + eol + player.toString + eol
   ).mkString
 
-  topBorder + middleRows + bottomBorder
+  middleRows
 }
 
 //@def pickYourPokemons
 //this function handles the picking of Pokemons for a Trainer
 //For testing purposes a prepared List of to be chosen Pokemon is passed in
 def pickYourPokemons(player: Trainer, pokedex: Pokedex, picks: Int = 0): (Trainer, Pokedex, Int) =
-  val player_input = scala.io.StdIn.readLine("Choose Pokemon, press q for done \n")
+  println("\nAvailable Pokemon: " + pokedex.showAvailablePokemon())
+  val player_input = scala.io.StdIn.readLine("Choose Pokemon, press d for done \n")
   val is_pokemon = pokedex.exists(player_input.toLowerCase())
   player_input.toLowerCase() match {
 
-    case "q" if picks > 0 => (player, pokedex, picks)
+    case "d" if picks > 0 => (player, pokedex, picks)
 
-    case "q" =>
+    case "d" =>
       println("must choose atleast one Pokeymon")
       pickYourPokemons(player, pokedex, picks = 0)
 
@@ -138,7 +140,7 @@ def pickYourPokemons(player: Trainer, pokedex: Pokedex, picks: Int = 0): (Traine
         println("choice doesnt exist")
         pickYourPokemons(player, pokedex, picks)
       else
-        println("Your choice will be added")
+        println(player_input + " is added to your team!")
         val (picked_pokemon, upd_pokedex) = pokedex.choosePokemon(player_input)
         val upd_player = player.addPokemon(picked_pokemon)
         pickYourPokemons(upd_player, upd_pokedex, picks + 1)
@@ -171,7 +173,8 @@ def prepareForBattle(player: Trainer = Trainer(Vector()), opponent: Trainer = op
   val opponent_ready = opponent.setCurrentPokemon(opponent.pokemons.head)
 
   battleMode(upd_player_ready, opponent_ready)
-  val msg = "fuck"
+  println("game over")
+  val msg = ""
   msg
 
 //_______________battleMode
@@ -198,14 +201,14 @@ def battleMode(player: Trainer, opponent: Trainer): String =
 
   val upd_player_alive = switchIfdead(upd_player)
   val upd_opponent_alive = switchIfdead(upd_opponent)
-  println(s"Player has Pokémon left: ${upd_player_alive.hasPokemonleft()}")
-  println(s"Opponent has Pokémon left: ${upd_opponent_alive.hasPokemonleft()}")
+  // println(s"Player has Pokemon left: ${upd_player_alive.hasPokemonleft()}")
+  // println(s"Opponent has Pokemon left: ${upd_opponent_alive.hasPokemonleft()}")
   if (upd_player_alive.hasPokemonleft() && upd_opponent_alive.hasPokemonleft())
     battleMode(upd_player_alive, upd_opponent_alive)
 
-  println("somebody dead")
+  println("")
 
-  val msg = "fuck"
+  val msg = ""
   msg
 //faulty
 def switchIfdead(trainer: Trainer): Trainer =
@@ -216,7 +219,7 @@ def switchIfdead(trainer: Trainer): Trainer =
     val upd_trainer = trainer_rem.setCurrentPokemon(next_pokemon)
     upd_trainer
   } else if (!currentPokemon.isAlive() && trainer.pokemons.size == 1) {
-    println("dead")
+    println("you have lost")
     val upd_Trainer = trainer.removePokemon(currentPokemon.name)
     upd_Trainer
   } else {
@@ -259,16 +262,12 @@ def determineFasterPokemon(pk1: Pokemon, pk2: Pokemon): Pokemon =
   val fasterPokemon = if (pk1.speed > pk2.speed) pk1 else pk2
   fasterPokemon
 
-def pickYourMove(): String =
-  val msg = "What will you do?"
-  msg
-
 @main
 def game(): Unit =
   val pokedex = Pokedex()
   startGame()
   // println(pokedex.showAvailablePokemon())
   // pickYourPokemons(trainer_ash, pokedex)
-  println(pikachu.currentMove.name)
-  val upd = pikachu.setCurrentMove("tackle")
-  println(upd.currentMove.name)
+  // println(pikachu.currentMove.name)
+  // val upd = pikachu.setCurrentMove("tackle")
+  // println(upd.currentMove.name)
