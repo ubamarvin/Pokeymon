@@ -1,7 +1,7 @@
-package de.htwg.se.pokeymon.aView
+package de.htwg.se.Pokeymon.aView
 
-import de.htwg.se.pokeymon.util.Observer
-import de.htwg.se.pokeymon.Controller.Controller
+import de.htwg.se.Pokeymon.Util.Observer
+import de.htwg.se.Pokeymon.Controller.Controller
 
 class Tui(controller: Controller) extends Observer {
 

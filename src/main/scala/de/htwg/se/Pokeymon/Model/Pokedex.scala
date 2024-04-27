@@ -1,4 +1,4 @@
-package de.htwg.se.pokeymon.Model
+package de.htwg.se.Pokeymon.Model
 import de.htwg.se.pokeymon.Model.Setup._
 
 //_____________Class Pokedex_______________//

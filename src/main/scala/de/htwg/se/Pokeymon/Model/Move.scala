@@ -1,4 +1,4 @@
-package de.htwg.se.pokeymon.Model
+package de.htwg.se.Pokeymon.Model
 
 //___________Class Moves____________///
 //extend with pp

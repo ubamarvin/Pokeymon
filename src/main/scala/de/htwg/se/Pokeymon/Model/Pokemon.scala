@@ -1,5 +1,6 @@
-package de.htwg.se.pokeymon.Model
-import de.htwg.se.pokeymon.Model.Setup._
+package de.htwg.se.Pokeymon.Model
+import de.htwg.se.Pokeymon.Model.Setup._
+import de.htwg.se.Pokeymon.Model.Move
 
 //_____________Class Pokemon____________________
 case class Pokemon(id: Int, name: String, hp: Int = 100, moves: List[Move], speed: Int, currentMove: Move = empty_move): // extendWith ID, Stats, type, and status

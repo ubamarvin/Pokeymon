@@ -1,4 +1,4 @@
-package de.htwg.se.pokeymon.util
+package de.htwg.se.Pokeymon.Util
 //stole this from markos github
 
 trait Observer {

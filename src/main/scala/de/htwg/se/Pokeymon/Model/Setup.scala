@@ -1,4 +1,6 @@
-package de.htwg.se.pokeymon.Model
+package de.htwg.se.Pokeymon.Model
+import de.htwg.se.Pokeymon.Model.Move
+import de.htwg.se.Pokeymon.Model.Pokemon
 
 object Setup {
   // ***********Building a Trainer, Pokemons, and Moves

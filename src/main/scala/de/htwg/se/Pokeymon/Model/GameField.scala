@@ -1,5 +1,5 @@
-package de.htwg.se.pokeymon.Model
-import de.htwg.se.pokeymon.Model.Setup._
+package de.htwg.se.Pokeymon.Model
+import de.htwg.se.Pokeymon.Model.Setup._
 
 class GameField:
   // ___CONTROLLER?

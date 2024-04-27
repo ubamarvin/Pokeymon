@@ -99,6 +99,7 @@ class Pokedex(available_pokemon: Vector[Pokemon] = available_pokemon):
     (chosenPokemon.head, updatedPokedex)
   def exists(name: String): Boolean = available_pokemon.exists(_.name == name)
 
+//___CONTROLLER?
 def generatePokemonField(pokemon1: Pokemon, pokemon2: Pokemon, player: Trainer, opponent: Trainer): String = {
   // val horizontalBorder = "+" + ("-" * 30) + "+\n"
   // val verticalBorder = "|"
@@ -116,8 +117,7 @@ def generatePokemonField(pokemon1: Pokemon, pokemon2: Pokemon, player: Trainer, 
   middleRows
 }
 
-//keine globale funktionen
-//@def pickYourPokemons
+//____CONTROLLER? It manipulates data?
 //this function handles the picking of Pokemons for a Trainer
 //For testing purposes a prepared List of to be chosen Pokemon is passed in
 def pickYourPokemons(player: Trainer, pokedex: Pokedex, picks: Int = 0): (Trainer, Pokedex, Int) =
