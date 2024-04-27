@@ -116,6 +116,7 @@ def generatePokemonField(pokemon1: Pokemon, pokemon2: Pokemon, player: Trainer, 
   middleRows
 }
 
+//keine globale funktionen
 //@def pickYourPokemons
 //this function handles the picking of Pokemons for a Trainer
 //For testing purposes a prepared List of to be chosen Pokemon is passed in
@@ -140,7 +141,7 @@ def pickYourPokemons(player: Trainer, pokedex: Pokedex, picks: Int = 0): (Traine
         println("choice doesnt exist")
         pickYourPokemons(player, pokedex, picks)
       else
-        println(player_input + " is added to your team!")
+        println(player_input + " was added to your team!")
         val (picked_pokemon, upd_pokedex) = pokedex.choosePokemon(player_input)
         val upd_player = player.addPokemon(picked_pokemon)
         pickYourPokemons(upd_player, upd_pokedex, picks + 1)
