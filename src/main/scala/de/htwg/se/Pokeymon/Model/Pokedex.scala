@@ -1,5 +1,5 @@
 package de.htwg.se.Pokeymon.Model
-import de.htwg.se.pokeymon.Model.Setup._
+import de.htwg.se.Pokeymon.Model.Setup._
 
 //_____________Class Pokedex_______________//
 //This class handles all the available Pokemon
