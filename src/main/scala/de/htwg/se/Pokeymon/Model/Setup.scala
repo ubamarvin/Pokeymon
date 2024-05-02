@@ -1,6 +1,7 @@
 package de.htwg.se.Pokeymon.Model
 import de.htwg.se.Pokeymon.Model.Move
 import de.htwg.se.Pokeymon.Model.Pokemon
+import de.htwg.se.Pokeymon.Model.Pokedex
 
 object Setup {
   // ***********Building a Trainer, Pokemons, and Moves
@@ -35,4 +36,5 @@ object Setup {
 
 //***********List of all available Pokemon
   val available_pokemon = Vector(pikachu, ratmon, cowPokemon, evoli)
+  val pokedex = Pokedex(available_pokemon)
 }

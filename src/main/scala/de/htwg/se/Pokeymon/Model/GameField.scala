@@ -4,13 +4,7 @@ import de.htwg.se.Pokeymon.Model.Setup._
 class GameField:
   // ___CONTROLLER?
   def generatePokemonField(pokemon1: Pokemon, pokemon2: Pokemon, player: Trainer, opponent: Trainer): String = {
-    // val horizontalBorder = "+" + ("-" * 30) + "+\n"
-    // val verticalBorder = "|"
     val eol: String = "\n"
-
-    // val topBorder = horizontalBorder
-    // val bottomBorder = horizontalBorder
-
     val middleRows = List(
       "Opponents current Pokemon: " + pokemon2.toString + eol + opponent.toString + eol,
       eol,
@@ -19,6 +13,19 @@ class GameField:
 
     middleRows
   }
+
+  def prepareForBattle(player: Trainer = Trainer(Vector()), opponent: Trainer = opponent, pokedex: Pokedex = Pokedex()): String =
+
+    val (upd_player, upd_pokedex, num_of_pokemons) = pickYourPokemons(player, pokedex)
+    // def Build oppnent
+
+    val upd_player_ready = upd_player.setCurrentPokemon(upd_player.pokemons.head)
+    val opponent_ready = opponent.setCurrentPokemon(opponent.pokemons.head)
+
+    battleMode(upd_player_ready, opponent_ready)
+    println("game over")
+    val msg = ""
+    msg
   // State 1
   // ____CONTROLLER? It manipulates data?
   // this function handles the picking of Pokemons for a Trainer
@@ -59,28 +66,6 @@ class GameField:
       //  pickYourPokemons(upd_player, upd_pokedex, picks + 1)
 
     }
-  def startGame(): Unit =
-    prepareForBattle()
-
-  // ***********Trainers
-
-  // State 0
-  // @def preapareForBattle() rename to game, this fun has two "states"
-  // This function handles pre-Battle configurations:
-  // The player is able to choose one to six Pokemons from the Pokedex
-  // Todo: The Player is able to choose zero to four items from the Item Inventory
-  def prepareForBattle(player: Trainer = Trainer(Vector()), opponent: Trainer = opponent, pokedex: Pokedex = Pokedex()): String =
-
-    val (upd_player, upd_pokedex, num_of_pokemons) = pickYourPokemons(player, pokedex)
-    // def Build oppnent
-
-    val upd_player_ready = upd_player.setCurrentPokemon(upd_player.pokemons.head)
-    val opponent_ready = opponent.setCurrentPokemon(opponent.pokemons.head)
-
-    battleMode(upd_player_ready, opponent_ready)
-    println("game over")
-    val msg = ""
-    msg
 
     // State 2
   // _______________battleMode
@@ -170,3 +155,6 @@ class GameField:
   def determineFasterPokemon(pk1: Pokemon, pk2: Pokemon): Pokemon =
     val fasterPokemon = if (pk1.speed > pk2.speed) pk1 else pk2
     fasterPokemon
+
+//  StateMatching
+//  Interfa

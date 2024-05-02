@@ -8,17 +8,14 @@ class Tui(controller: Controller) extends Observer {
   controller.add(this)
 
   def processInput(input: String): Unit = {
-    input match {
-      case "q" => println("Fuck")
 
+    input match {
+      case "q" =>
+        println("fuck")
+      case _ => controller.handleInput(input)
     }
   }
-
-  // override def update: Unit =  println(controller.gridToString)
   // update must also communicate game state
   // das die vom observable gerufende update function
-  // sie aktuallisiert das Spiel(Feld)
-  override def update: Unit = println("8==D~~~~")
+  override def update: Unit = println("update " + controller.printDisplay())
 }
-
-//override def update: Unit = println(controller.Display())
