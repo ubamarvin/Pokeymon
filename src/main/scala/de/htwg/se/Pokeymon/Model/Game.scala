@@ -7,7 +7,7 @@ trait GameState {
   def gameToString(): String
 }
 
-// Context classs
+// Context classss
 case class Game(val state: GameState = new PickPokemonState(Trainer(Vector()), Setup.pokedex, picks = 0, Setup.opponent)) {
 
   // val player = Trainer(Vector())
