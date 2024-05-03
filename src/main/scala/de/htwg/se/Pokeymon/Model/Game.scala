@@ -6,20 +6,44 @@ trait GameState {
   def processInput(input: String): GameState
   def gameToString(): String
 }
-case class yourDeadState(game: Game) extends GameState:
+
+//  Context class
+case class Game(val state: GameState = new PickPokemonState(Trainer(Vector()), Setup.pokedex, picks = 0, Setup.opponent)) {
+
+  // val player = Trainer(Vector())
+  // val pokedex = new Pokedex()
+  // val picks = 0
+  // val opponent = Setup.opponent
+
+  // Benutze ich nicht, wie auch
+  // def setState(newState: GameState): Unit =
+  //  state = newState
+
+  // ist auch gleichzeitig state changer
+  def handleInput(input: String): Game =
+    val updstate = state.processInput(input)
+    this.copy(updstate)
+
+  def gameToString(): String =
+    // println("gameToString is called")
+    state.gameToString()
+
+}
+
+case class yourDeadState() extends GameState:
   override def processInput(Input: String): GameState =
     this.copy()
 
   override def gameToString(): String =
     "YourDead, stop clicking buttons, press q to quit"
 
-case class PickPokemonState(game: Game, player: Trainer, pokedex: Pokedex, picks: Int, opponent: Trainer) extends GameState:
+case class PickPokemonState(player: Trainer, pokedex: Pokedex, picks: Int, opponent: Trainer) extends GameState:
   val eol: String = "\n"
   val welcome_msg = eol + eol + "Welcome to Pokemon BattleSimulator! " + eol +
     "Pick on to six Pokemon for you Team from the Pokedex." + eol +
     "When your done with picking, press d." + eol +
     "If you want to quit the game, press q." + eol +
-    "Good luck and fuck you!" + eol +
+    "Good luck" + eol +
     eol + "The available Pokemon are: "
 
   val choose_msg = eol + "type in the name of the pokemon you wish to add to your team:"
@@ -42,30 +66,30 @@ case class PickPokemonState(game: Game, player: Trainer, pokedex: Pokedex, picks
       case "d" if picks > 0 =>
         // Transition to new gameState
         // println("TransitionTOBattle: input = d and picks>0")
-        changeState(game, player, opponent)
+        changeState(player, opponent)
 
       case _ if picks >= 6 =>
         // Transition to new gameState
         // println("TransitionTOBattle: picks>=6")
-        changeState(game, player, opponent)
+        changeState(player, opponent)
 
       case _ =>
         if (!isPokemon) {
           println(input + "isNotAPokemon\n")
-          this.copy(game, player, pokedex, picks, opponent)
+          this.copy(player, pokedex, picks, opponent)
         } else {
           println(input + " was added to your team!\n")
           val (picked_pokemon, upd_pokedex) = pokedex.choosePokemon(input)
           val upd_player = player.addPokemon(picked_pokemon)
-          this.copy(game, upd_player, upd_pokedex, picks + 1, opponent)
+          this.copy(upd_player, upd_pokedex, picks + 1, opponent)
         }
 
     }
 
-  def changeState(game: Game, player: Trainer, opponent: Trainer): GameState =
-    new BattleState(game, player.setCurrentPokemon(player.pokemons.head), opponent.setCurrentPokemon(opponent.pokemons.head))
+  def changeState(player: Trainer, opponent: Trainer): GameState =
+    new BattleState(player.setCurrentPokemon(player.pokemons.head), opponent.setCurrentPokemon(opponent.pokemons.head))
 
-case class BattleState(game: Game, player: Trainer, opponent: Trainer) extends GameState {
+case class BattleState(player: Trainer, opponent: Trainer) extends GameState {
 
   override def gameToString(): String =
     display(player.currentPokemon, opponent.currentPokemon, player, opponent)
@@ -95,9 +119,9 @@ case class BattleState(game: Game, player: Trainer, opponent: Trainer) extends G
     val upd_opponent_alive = switchIfdead(upd_opp)
 
     if (upd_player_alive.hasPokemonleft() && upd_opponent_alive.hasPokemonleft())
-      this.copy(game, upd_player_alive, upd_opponent_alive)
+      this.copy(upd_player_alive, upd_opponent_alive)
     else
-      new yourDeadState(game)
+      new yourDeadState()
 
     //  handle input for battle stuff
 
@@ -147,28 +171,5 @@ case class BattleState(game: Game, player: Trainer, opponent: Trainer) extends G
   def determineFasterPokemon(pk1: Pokemon, pk2: Pokemon): Pokemon =
     val fasterPokemon = if (pk1.speed > pk2.speed) pk1 else pk2
     fasterPokemon
-
-}
-
-//  Context class
-class Game {
-
-  val player = Trainer(Vector())
-  val pokedex = new Pokedex()
-  val picks = 0
-  val opponent = Setup.opponent
-  private var state: GameState = new PickPokemonState(this, player, pokedex, picks, opponent)
-
-  // Benutze ich nicht, wie auch
-  def setState(newState: GameState): Unit =
-    state = newState
-
-  // ist auch gleichzeitig state changer
-  def handleInput(input: String): Unit =
-    state = state.processInput(input)
-
-  def gameToString(): String =
-    // println("gameToString is called")
-    state.gameToString()
 
 }
