@@ -1,5 +1,5 @@
-import org.scalatest.wordspec.AnyWordSpec
-import org.scalatest.matchers.should.Matchers._
+//import org.scalatest.wordspec.AnyWordSpec
+//import org.scalatest.matchers.should.Matchers._
 /*
 class TrainerSpec extends AnyWordSpec {
   val empty_move = Move("empty", 0)
@@ -481,4 +481,4 @@ class TrainerSpec extends AnyWordSpec {
     }
   }
 }
-*/
+ */
