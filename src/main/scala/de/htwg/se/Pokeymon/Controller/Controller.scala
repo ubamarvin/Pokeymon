@@ -6,7 +6,7 @@ class Controller(var game: Game) extends Observable {
 
   def handleInput(input: String): Unit =
     // game = game.handleInput
-    game.handleInput(input)
+    game = game.handleInput(input)
     notifyObservers
 
   def printDisplay(): String =
