@@ -11,11 +11,11 @@ class Tui(controller: Controller) extends Observer {
 
     input match {
       case "q" =>
-        println("fuck")
+        println("Game quitted")
       case _ => controller.handleInput(input)
     }
   }
   // update must also communicate game state
   // das die vom observable gerufende update function
-  override def update: Unit = println("update " + controller.printDisplay())
+  override def update: Unit = println(controller.printDisplay())
 }

@@ -12,7 +12,6 @@ object pokeymon {
 
   @main
   def startGame(): Unit =
-    println("Welcome to Pokeymon")
     var input: String = ""
 
     while (input != "q") {

@@ -6,21 +6,47 @@ trait GameState {
   def processInput(input: String): GameState
   def gameToString(): String
 }
+case class yourDeadState(game: Game) extends GameState:
+  override def processInput(Input: String): GameState =
+    this.copy()
+
+  override def gameToString(): String =
+    "YourDead, stop clicking buttons, press q to quit"
 
 case class PickPokemonState(game: Game, player: Trainer, pokedex: Pokedex, picks: Int, opponent: Trainer) extends GameState:
+  val eol: String = "\n"
+  val welcome_msg = eol + eol + "Welcome to Pokemon BattleSimulator! " + eol +
+    "Pick on to six Pokemon for you Team from the Pokedex." + eol +
+    "When your done with picking, press d." + eol +
+    "If you want to quit the game, press q." + eol +
+    "Good luck and fuck you!" + eol +
+    eol + "The available Pokemon are: "
+
+  val choose_msg = eol + "type in the name of the pokemon you wish to add to your team:"
+
+  override def gameToString(): String = {
+    display(player, pokedex, picks)
+  }
+  private def display(player: Trainer, pokedex: Pokedex, picks: Int): String =
+    picks match {
+      case 0               => welcome_msg + pokedex.showAvailablePokemon() + "\n" + choose_msg
+      case _ if picks >= 6 => "Game Starts!\n"
+      case _               => "Your team consits of " + player.toString + ". \nremaining to choose: " + pokedex.showAvailablePokemon() + "\n" + choose_msg
+    }
+
   override def processInput(input: String): GameState =
-    println("call pick your pokemon\n")
+    // println("call pick your pokemon\n")
 
     val isPokemon = pokedex.exists(input)
     input.toLowerCase() match {
       case "d" if picks > 0 =>
         // Transition to new gameState
-        println("TransitionTOBattle: input = d and picks>0")
+        // println("TransitionTOBattle: input = d and picks>0")
         changeState(game, player, opponent)
 
       case _ if picks >= 6 =>
         // Transition to new gameState
-        println("TransitionTOBattle: picks>=6")
+        // println("TransitionTOBattle: picks>=6")
         changeState(game, player, opponent)
 
       case _ =>
@@ -39,18 +65,24 @@ case class PickPokemonState(game: Game, player: Trainer, pokedex: Pokedex, picks
   def changeState(game: Game, player: Trainer, opponent: Trainer): GameState =
     new BattleState(game, player.setCurrentPokemon(player.pokemons.head), opponent.setCurrentPokemon(opponent.pokemons.head))
 
-  override def gameToString(): String = {
-    println("state.pick.gameToString")
-    val msg = "picked Pokemon Message"
-    return msg
-  }
-
 case class BattleState(game: Game, player: Trainer, opponent: Trainer) extends GameState {
 
   override def gameToString(): String =
-    "BattleStateString"
+    display(player.currentPokemon, opponent.currentPokemon, player, opponent)
+
+  private def display(pokemon1: Pokemon, pokemon2: Pokemon, player: Trainer, opponent: Trainer): String = {
+    val eol: String = "\n"
+    val middleRows = List(
+      eol + eol +
+        "Opponents current Pokemon: " + pokemon2.toString + eol + opponent.toString + eol,
+      eol,
+      "Your currents Pokemon: " + pokemon1.toString + eol + player.toString + eol +
+        "Chose your Move:"
+    ).mkString
+
+    middleRows
+  }
   override def processInput(input: String): GameState =
-    println("battleState, choose move\n")
     // check if input is move
     val pok_with_move = player.currentPokemon.setCurrentMove(input.toLowerCase())
     val opp_with_move = opponent.currentPokemon.setCurrentMove("tackle")
@@ -65,7 +97,7 @@ case class BattleState(game: Game, player: Trainer, opponent: Trainer) extends G
     if (upd_player_alive.hasPokemonleft() && upd_opponent_alive.hasPokemonleft())
       this.copy(game, upd_player_alive, upd_opponent_alive)
     else
-      this.copy()
+      new yourDeadState(game)
 
     //  handle input for battle stuff
 
@@ -78,7 +110,7 @@ case class BattleState(game: Game, player: Trainer, opponent: Trainer) extends G
       val upd_trainer = trainer_rem.setCurrentPokemon(next_pokemon)
       upd_trainer
     } else if (!currentPokemon.isAlive() && trainer.pokemons.size == 1) {
-      println("you have lost")
+
       val upd_Trainer = trainer.removePokemon(currentPokemon.name)
       upd_Trainer
     } else {
@@ -136,7 +168,7 @@ class Game {
     state = state.processInput(input)
 
   def gameToString(): String =
-    println("gameToString is called")
+    // println("gameToString is called")
     state.gameToString()
 
 }
