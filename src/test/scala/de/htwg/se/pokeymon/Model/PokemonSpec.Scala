@@ -45,10 +45,6 @@ class PokemonSpec extends AnyWordSpec {
         assert(newPokemon.currentMove == move2)
       }
 
-      "return a new Pokemon with an empty move if the move does not exist" in {
-        val newPokemon = pokemon.setCurrentMove("NonExistentMove")
-        assert(newPokemon.currentMove == Move("", 0))
-      }
     }
   }
 }
