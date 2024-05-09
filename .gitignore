@@ -29,8 +29,8 @@ local.sbt
 
 # Metals
 .bloop/
-.metals/
-metals.sbt
+#.metals/
+#metals.sbt
 
 # IDEA
 .idea
