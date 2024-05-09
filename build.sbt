@@ -2,6 +2,7 @@ val scala3Version = "3.4.1"
 
 lazy val root = project
   .in(file("."))
+  .enablePlugins(ScoverageSbtPlugin)
   .settings(
     name := "Pokeymon",
     version := "0.1.0-SNAPSHOT",
