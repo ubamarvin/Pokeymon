@@ -8,5 +8,6 @@ lazy val root = project
     version := "0.1.0-SNAPSHOT",
     scalaVersion := scala3Version,
     libraryDependencies += "org.scalactic" %% "scalactic" % "3.2.18",
-    libraryDependencies += "org.scalatest" %% "scalatest" % "3.2.18" % "test"
+    libraryDependencies += "org.scalatest" %% "scalatest" % "3.2.18" % "test",
+    coverageEnabled := true
   )
