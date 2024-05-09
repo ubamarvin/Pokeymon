@@ -34,7 +34,7 @@ jobs:
           COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
         run: |
           export CI_BRANCH="${GITHUB_REF#refs/heads/}"
-          sbt clean;
-          sbt test;
-          sbt coverage;
-          sbt coverageReport;
+          sbt clean
+          sbt test
+          sbt coverage
+          sbt coverageReport
