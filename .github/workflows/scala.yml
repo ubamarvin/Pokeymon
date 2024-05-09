@@ -38,3 +38,4 @@ jobs:
           sbt test 
           sbt coverage --debug
           sbt coverageReport --debug
+          sbt coveralls
