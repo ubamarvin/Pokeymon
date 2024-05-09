@@ -29,7 +29,7 @@ class PokemonSpec extends AnyWordSpec {
 
     "attacking with a move" should {
       "return the power of the move if it exists" in {
-        val power = pokemon.attack("Thunderbolt")
+        val power = pokemon.attack("hunderbolt")
         assert(power.contains(40))
       }
 
