@@ -1,8 +1,8 @@
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.matchers.should.Matchers._
+import de.htwg.se.Pokeymon.Model._
 
 class PokemonSpec extends AnyWordSpec {
-  import de.htwg.se.Pokeymon.Model._
 
   "A Pokemon" when {
     val move1 = Move("Tackle", 20)
@@ -44,7 +44,17 @@ class PokemonSpec extends AnyWordSpec {
         val newPokemon = pokemon.setCurrentMove("Thunderbolt")
         assert(newPokemon.currentMove == move2)
       }
+    }
 
+    "converting to string" should {
+      "provide a string representation including name, HP, moves, and speed" in {
+        val toStringResult = pokemon.toString
+        toStringResult should include("Pikachu")
+        toStringResult should include("100")
+        toStringResult should include("Tackle")
+        toStringResult should include("Thunderbolt")
+        toStringResult should include("50")
+      }
     }
   }
 }
