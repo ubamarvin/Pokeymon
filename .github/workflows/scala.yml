@@ -2,9 +2,9 @@ name: Scala CI with Coveralls
 
 on:
   push:
-    branches: [ "CI-Coveralls" ]
+    branches: [ "CI-Coveralls main" ]
   pull_request:
-    branches: [ "CI-Coveralls" ]
+    branches: [ "CI-Coveralls main" ]
 
 jobs:
   build:
