@@ -36,5 +36,5 @@ jobs:
           export CI_BRANCH="${GITHUB_REF#refs/heads/}"
           sbt clean
           sbt test
-          sbt coverage
-          sbt coverageReport
+          sbt coverage --debug
+          sbt coverageReport --debug
