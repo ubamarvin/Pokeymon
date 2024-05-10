@@ -1,0 +1,8 @@
+Todo Entwurfsmuster:
+    -Fabrik Methode für custom Pokemon builder
+
+    -new State; start   -> pickstate
+                        -> PokemonBuildState -> pickstate
+    -new pattern; pokemonBuildState uses factoryMethod
+    
+    -
