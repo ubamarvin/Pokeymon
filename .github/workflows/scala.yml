@@ -21,6 +21,8 @@ jobs:
           distribution: 'adopt'
       - name: Compile
         run: sbt compile
+      - name: Run tests
+        run: sbt test
 
   run_tests_and_coverage:
     runs-on: ubuntu-latest
