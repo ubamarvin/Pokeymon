@@ -19,6 +19,7 @@ jobs:
         with:
           java-version: '11'
           distribution: 'adopt'
+          cache: 'sbt'
       - name: Compile
         run: sbt compile
       - name: Run tests
@@ -33,6 +34,9 @@ jobs:
         with:
           java-version: '11'
           distribution: 'adopt'
+          cache: 'sbt'
+      - name: Run Tests
+        run: sbt clean coverage test  
       - name: Build Project and Export Coverage
         env:
           COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
