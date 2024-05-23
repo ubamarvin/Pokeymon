@@ -1,6 +1,7 @@
 package de.htwg.se.Pokeymon.Model
 import de.htwg.se.Pokeymon.Model.Setup
 import de.htwg.se.Pokeymon.Model.Setup.opponent
+import de.htwg.se.Pokeymon.Model.Setup.tackle
 
 trait GameState {
   def processInput(input: String): GameState
@@ -86,9 +87,142 @@ case class PickPokemonState(player: Trainer, pokedex: Pokedex, picks: Int, oppon
 
     }
 
-  def changeState(player: Trainer, opponent: Trainer): GameState =
-    new BattleState(player.setCurrentPokemon(player.pokemons.head), opponent.setCurrentPokemon(opponent.pokemons.head))
+  // def changeState(player: Trainer, opponent: Trainer): GameState =
+  //  new BattleState(player.setCurrentPokemon(player.pokemons.head), opponent.setCurrentPokemon(opponent.pokemons.head))
 
+  def changeState(player: Trainer, opponent: Trainer): GameState =
+    new MainState(player.setCurrentPokemon(player.pokemons.head), opponent.setCurrentPokemon(opponent.pokemons.head))
+
+//_________Actuall "game" starts here
+
+// This is the mainState
+// here the player is prompted to either attack, use an item or switch his Pokemon
+case class MainState(player: Trainer, opponent: Trainer) extends GameState {
+  override def gameToString(): String =
+    display(player.currentPokemon, opponent.currentPokemon, player, opponent)
+  override def processInput(input: String): GameState =
+    // if input == attack then new attack state()
+    // ....
+    // ....
+    input.toLowerCase() match {
+      case "attack" => new ChooseAttackState(player, opponent)
+      case "item"   => new ChooseItemState(player, opponent)
+      case "switch" => new SwitchPokemonState(player, opponent)
+      case "back"   => this
+      case _        => this
+    }
+
+  private def display(pokemon1: Pokemon, pokemon2: Pokemon, player: Trainer, opponent: Trainer): String = {
+    val eol: String = "\n"
+    val middleRows = List(
+      eol + eol +
+        "Opponents current Pokemon: " + pokemon2.toString + eol + opponent.toString + eol,
+      eol,
+      "Your currents Pokemon: " + pokemon1.toString + eol + player.toString + eol +
+        "What will you do? : Attack, Item, Switch"
+    ).mkString
+    middleRows
+  }
+
+}
+
+case class BattleEvalState(player: Trainer, opponent: Trainer) extends GameState {
+  // set OpponentsMove Choice
+  val opMove: Option[Move] = Some(tackle)
+  val upd_opponent = opponent.setChoice(new AttackChoice(opMove))
+
+  val playersChoice = new PlayersChoice(player, upd_opponent, "")
+
+  // Setting up the handlers
+  val statusHandler = new StatusHandler()
+  val evalAttackHandler = new EvaluateAttackHandler(statusHandler)
+  val useItemHandler = new UseItemHandler(evalAttackHandler)
+  val switchPokemonHandler = new SwitchPokemonHandler(useItemHandler) // or just call it Handler
+
+  override def gameToString(): String = "BattleEvalState\n KlickEnter"
+  // classic GameScreen
+  override def processInput(input: String): GameState =
+    // call handler
+    val upd_playersChoice = switchPokemonHandler.handleChoice(playersChoice)
+
+    new MainState(upd_playersChoice.player, upd_playersChoice.opponent)
+}
+
+// These 3 states represent the 3 main Options when battling
+// attack, item, switch pokemon
+// each state allows either going back to main state
+// or making a choice which will automatically
+// push the upd player into eval state
+
+case class ChooseAttackState(player: Trainer, opponent: Trainer) extends GameState {
+  val moves = player.currentPokemon.moves
+  def MoveIsInList(moves: List[Move], moveName: String): Boolean =
+    moves.exists(_.name.equalsIgnoreCase(moveName))
+
+  def getMoveByName(moves: List[Move], moveName: String): Option[Move] =
+    moves.find(_.name.equalsIgnoreCase(moveName))
+
+  override def gameToString(): String = "\nattackChoiceState\nChoose Move"
+  override def processInput(input: String): GameState =
+    input.toLowerCase() match {
+      case "back" => new MainState(player, opponent)
+
+      case _ if MoveIsInList(moves, input.toLowerCase()) =>
+        val move = getMoveByName(moves, input)
+        val upd_player = player.setChoice(new AttackChoice(move))
+        println("\nMove " + input + " accepted!")
+        new BattleEvalState(upd_player, opponent)
+
+      case _ => this
+    }
+    // if input == "go back"
+    // then new GameState is battleMainstate
+    // If Input == some Attack in Attack list
+    // then upd Trainer with choice
+    // then new Gamesatte is Battle eval stat
+}
+
+case class ChooseItemState(player: Trainer, opponent: Trainer) extends GameState {
+  override def gameToString(): String = "ItemChoiceState\n Choose Item"
+  override def processInput(input: String): GameState =
+    input.toLowerCase() match {
+      case "back" => new MainState(player, opponent)
+      case "move" => new BattleEvalState(player, opponent)
+      case _      => this
+    }
+    // if input == "go back"
+    // then new GameState is battleMainstate
+    // If Input == some Attack in Attack list
+    // then upd Trainer with choice
+    // then new Gamesatte is Battle eval state
+}
+
+case class SwitchPokemonState(player: Trainer, opponent: Trainer) extends GameState {
+  override def gameToString(): String = "switchPokemonState\nChoose Pokemon"
+  override def processInput(input: String): GameState =
+    input.toLowerCase() match {
+      // going back to the main battle menu
+      case "back" => new MainState(player, opponent)
+
+      // player chooses pokemon to switch in
+      case _ if player.pokemonExists(input.toLowerCase()) =>
+        // get the Pokemon and update the playerChoice
+        val pokemonToSwitchIn = player.getPokemonByName(input.toLowerCase())
+        val upd_player = player.setChoice(new SwitchPokemonChoice(pokemonToSwitchIn))
+        // call  Battle eval
+        new BattleEvalState(upd_player, opponent)
+
+      case _ => this
+
+    }
+    // if input == "go back"
+    // then new GameState is battleMainstate
+    // If Input == some Attack in Attack list
+    // then upd Trainer with choice
+    // then new Gamesatte is Battle eval state
+}
+
+// Break this class down into: Attack, Item, Switch State, MenuState, BattleEval
 case class BattleState(player: Trainer, opponent: Trainer) extends GameState {
 
   override def gameToString(): String =
@@ -106,8 +240,17 @@ case class BattleState(player: Trainer, opponent: Trainer) extends GameState {
 
     middleRows
   }
+  // for def processInput with c o r pattern initialize the choices
+  // this exist for proper choice evaluation
+  // choices can obv only be made before passing them thru
+
   override def processInput(input: String): GameState =
-    // check if input is move
+    //// Start_______new Implementation using Chain o. Resp Pattern
+
+    // 1. what if choice is switchpk or use item? Then i shouldnt be here?
+    // should switchPokemonState and UseItemState also call the handlers?
+
+    //// START______Old Implementation________
     val pok_with_move = player.currentPokemon.setCurrentMove(input.toLowerCase())
     val opp_with_move = opponent.currentPokemon.setCurrentMove("tackle")
 
@@ -122,8 +265,7 @@ case class BattleState(player: Trainer, opponent: Trainer) extends GameState {
       this.copy(upd_player_alive, upd_opponent_alive)
     else
       new yourDeadState()
-
-    //  handle input for battle stuff
+    //// END_______Old Implementation
 
   // HilfsMethoden
   def switchIfdead(trainer: Trainer): Trainer =
