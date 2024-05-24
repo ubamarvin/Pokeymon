@@ -6,5 +6,7 @@ package de.htwg.se.Pokeymon.Model
 //extend with executeMove()?
 case class Move(
     name: String,
-    power: Int
+    power: Int,
+    moveType: String,
+    statusEffect: String = "none"
 )

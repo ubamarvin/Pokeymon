@@ -5,6 +5,7 @@ import de.htwg.se.Pokeymon.Model.Setup.opponent
 // Chain of Responsibility
 
 // pass down the "PlayersChoice" Object containing the trainers with their choices
+// Als eigene Klasse, da so erweiterbar
 case class PlayersChoice(player: Trainer, opponent: Trainer, MSg: String)
 
 /*PlayerChoice will be evaluated in the following order:
@@ -92,19 +93,120 @@ case class UseItemHandler(nextHandler: ChoiceHandler) extends ChoiceHandler:
 
 //__This will be the biggest aids
 case class EvaluateAttackHandler(nextHandler: ChoiceHandler) extends ChoiceHandler:
+
+  // They do what they say, refactor into 1 function
+  private def determineSlowerPokemon(pk1: Pokemon, pk2: Pokemon): Pokemon =
+    val secondMover = if (pk1.speed <= pk2.speed) pk1 else pk2
+    secondMover
+
+  private def determineFasterPokemon(pk1: Pokemon, pk2: Pokemon): Pokemon =
+    val firstMover = if (pk1.speed > pk2.speed) pk1 else pk2
+    firstMover
+
+  // Need this to identify which pokemon is which
+  def matchPokemonById(pk1: Pokemon, pk2: Pokemon, playerPkId: Int, oppPkId: Int): (Pokemon, Pokemon) =
+    val playerMon = if (pk1.id == playerPkId) pk1 else pk2
+    val oponnentMon = if (pk2.id == oppPkId) pk2 else pk1
+    (playerMon, oponnentMon)
+
+  // If one dies mid battle this is used to AutoSwitch
+  def switchIfdead(trainer: Trainer): (Trainer) =
+    val currentPokemon = trainer.currentPokemon
+    if (!currentPokemon.isAlive() && trainer.pokemons.size >= 1) {
+      val trainer_rem = trainer.removePokemon(currentPokemon.name)
+      val next_pokemon = trainer_rem.getNextPokemon()
+      val upd_trainer = trainer_rem.setCurrentPokemon(next_pokemon)
+      println("\nfirst case\n")
+      upd_trainer
+    } else if (!currentPokemon.isAlive() && trainer.pokemons.size == 10) {
+      println("\nsecond case\n")
+      val upd_Trainer = trainer.removePokemon(currentPokemon.name)
+      (upd_Trainer)
+    } else {
+      println("\nthird case\n")
+      trainer
+    }
+
   override def setSuccessor(succesor: ChoiceHandler): ChoiceHandler =
     copy(nextHandler = succesor)
 
   override def handleChoice(playersChoice: PlayersChoice): PlayersChoice =
     println("EvalMoveHandler \n")
-    // identify Choice
-    // Perform Choice
-    // UpdateModel
-    // if at least one has not ThisChoic, next handler shall handle
-    if (true) { //
-      playersChoice
-    } else {
-      nextHandler.handleChoice(playersChoice)
+    val playerChoice = playersChoice.player.choice
+    val opponentChoice = playersChoice.opponent.choice
+    val player = playersChoice.player
+    val opponent = playersChoice.opponent
+    val playerMon = player.currentPokemon
+    val oppMon = opponent.currentPokemon
+
+    // instanciate Mediator
+    val AttackMediator = new AttackMediator
+
+    (playerChoice, opponentChoice) match {
+      // Both players switch their Pokémon
+      case (Some(pc: AttackChoice), Some(oc: AttackChoice)) =>
+        println("both Attack")
+        (pc.move, oc.move) match {
+          case (Some(playerMove), Some(opponentMove)) =>
+            // get Pokemon Id for identification
+            val playerPkId = playerMon.id
+            val oppPkId = oppMon.id
+            // determine faster pokemon
+            val first = determineFasterPokemon(playerMon, oppMon)
+            val second = determineSlowerPokemon(playerMon, oppMon)
+            // Faster Pokemon attacks slower onea
+            val (firstPk, secondPk, msgOne) = AttackMediator.inflictDamage(first, second, playerMove)
+            // Slower Pokemon attacks Faster one only if Slower is alive, else "nothing happens"
+            val (updFirstPk, updSecondPk, msgTwo) =
+              if (secondPk.isAlive()) then AttackMediator.inflictDamage(secondPk, firstPk, opponentMove) else (firstPk, secondPk, "fainted")
+
+            // Match Pokemons by Id and link them back to their trainers
+            val (updPlayerMon, updOppMon) = matchPokemonById(updFirstPk, updSecondPk, playerPkId, oppPkId)
+            // Now check if one has died
+            val updPlayer = switchIfdead(player.updateCurrentPokemon(updPlayerMon))
+            val updOpp = switchIfdead(opponent.updateCurrentPokemon(updOppMon))
+            val updPlayersChoice = new PlayersChoice(updPlayer, updOpp, "")
+            nextHandler.handleChoice(updPlayersChoice)
+
+          case _ =>
+            playersChoice
+        }
+
+      // Only the player attacks
+      case (Some(pc: AttackChoice), _) =>
+        println("player attacks")
+        pc.move match {
+          case Some(move) =>
+            val (updPlayerMon, updOppMon, msg) = AttackMediator.inflictDamage(playerMon, oppMon, move)
+            val updPlayer = player.updateCurrentPokemon(updPlayerMon)
+            val updOpp = opponent.updateCurrentPokemon(updOppMon)
+            val updchoice = new PlayersChoice(updPlayer, updOpp, msg)
+            println(msg)
+            nextHandler.handleChoice(updchoice)
+          case None =>
+            playersChoice
+        }
+
+      // Only the opponent switches their Pokémon
+      case (_, Some(oc: AttackChoice)) =>
+        println("opponent attacks")
+        oc.move match {
+          case Some(move) =>
+            val (updOppMon, updPlayerMon, msg) = AttackMediator.inflictDamage(oppMon, playerMon, move)
+            val updPlayer = player.updateCurrentPokemon(updPlayerMon)
+            val updOpp = opponent.updateCurrentPokemon(updOppMon)
+            val updchoice = new PlayersChoice(updPlayer, updOpp, msg)
+            println(msg)
+
+            nextHandler.handleChoice(updchoice)
+          case None =>
+            playersChoice
+        }
+
+      // No switch, pass to the next handler in the chain
+      case _ =>
+        println("no attacks")
+        nextHandler.handleChoice(playersChoice)
     }
 
 //no class var because this is the last handler, for now

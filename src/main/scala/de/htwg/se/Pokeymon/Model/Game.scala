@@ -234,8 +234,8 @@ case class BattleState(player: Trainer, opponent: Trainer) extends GameState {
       eol + eol +
         "Opponents current Pokemon: " + pokemon2.toString + eol + opponent.toString + eol,
       eol,
-      "Your currents Pokemon: " + pokemon1.toString + eol + player.toString + eol +
-        "Chose your Move:"
+      "Your current Pokemon: " + pokemon1.toString + eol + player.toString + eol +
+        "Choose your Move:"
     ).mkString
 
     middleRows

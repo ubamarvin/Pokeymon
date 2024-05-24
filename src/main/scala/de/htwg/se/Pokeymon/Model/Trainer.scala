@@ -23,9 +23,14 @@ case class Trainer(pokemons: Vector[Pokemon], currentPokemon: Pokemon = evoli, c
   def addPokemon(new_pokemon: Pokemon): Trainer =
     this.copy(pokemons = pokemons :+ new_pokemon)
 
+  // switchPokemon made this one obsolete
   def setCurrentPokemon(pokemon: Pokemon): Trainer =
     val upd_pokemons = pokemons.filterNot(_ == pokemon)
     this.copy(pokemons = upd_pokemons, currentPokemon = pokemon)
+
+  // only used for the battle stuff
+  def updateCurrentPokemon(pokemon: Pokemon): Trainer =
+    this.copy(currentPokemon = pokemon)
 
   def getNextPokemon(): Pokemon = pokemons.head
 
