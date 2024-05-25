@@ -9,4 +9,7 @@ case class Move(
     power: Int,
     moveType: String,
     statusEffect: String = "none"
-)
+) {
+  def moveToString(): String =
+    this.name + " " + " Power: " + power + " Type: " + moveType + " Effect: " + statusEffect
+}
