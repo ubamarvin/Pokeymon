@@ -50,4 +50,4 @@ case class Trainer(pokemons: Vector[Pokemon], currentPokemon: Pokemon = evoli, c
 
   override def toString: String =
     val pokemonStrings = pokemons.map(pokemon => s"${pokemon.name} (${pokemon.hp})")
-    s"Remaining Pokemons: ${pokemonStrings.mkString(", ")}"
+    s" ${pokemonStrings.mkString(", ")}"

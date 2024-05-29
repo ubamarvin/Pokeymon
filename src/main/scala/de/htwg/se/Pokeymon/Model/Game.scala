@@ -9,21 +9,43 @@ trait GameState {
 }
 
 // Context classssss
-case class Game(val state: GameState = new PickPokemonState(Trainer(Vector()), Setup.pokedex, picks = 0, Setup.opponent)) {
+case class Game(
+    val state: GameState = new PickPokemonState(Trainer(Vector()), Setup.pokedex, picks = 0, Setup.opponent),
+    val undoStack: Vector[GameState] = Vector.empty,
+    val redoStack: Vector[GameState] = Vector.empty
+) {
 
-  // val player = Trainer(Vector())
-  // val pokedex = new Pokedex()
-  // val picks = 0
-  // val opponent = Setup.opponent
-
-  // Benutze ich nicht, wie auch
-  // def setState(newState: GameState): Unit =
-  //  state = newState
-
-  // ist auch gleichzeitig state changer
+  // Handles, input, changesState and updates the StateStack
   def handleInput(input: String): Game =
-    val updstate = state.processInput(input)
-    this.copy(updstate)
+    // Get the next State
+    val NextState = state.processInput(input)
+    // save the previous State in Undo Stack
+    val updUndoStack = state +: undoStack
+    this.copy(NextState, updUndoStack)
+    // this.copy(state = NextState)
+
+  // for Memento and Command, specifically for und
+  // Undo operation
+  // Undo operation
+  def gameUndo(): Game = {
+    printf("undo in game\n")
+    if (undoStack.isEmpty) {
+      this
+    } else {
+      val prevState +: rest = undoStack
+      this.copy(state = prevState, undoStack = rest, redoStack = state +: redoStack)
+    }
+  }
+
+  // Redo operation
+  def gameRedo(): Game = {
+    if (redoStack.isEmpty) {
+      this
+    } else {
+      val nextState +: rest = redoStack
+      this.copy(state = nextState, undoStack = state +: undoStack, redoStack = rest)
+    }
+  }
 
   def gameToString(): String =
     // println("gameToString is called")
@@ -32,11 +54,12 @@ case class Game(val state: GameState = new PickPokemonState(Trainer(Vector()), S
 }
 
 case class YourDeadState(player: Trainer, opponent: Trainer) extends GameState:
+
   val winner = if (player.hasNoPokemonleft()) then "You" else "Opponent"
   override def processInput(input: String): GameState =
     input.toLowerCase() match {
       case "y" => new PickPokemonState(Trainer(Vector()), Setup.pokedex, picks = 0, Setup.opponent)
-      case "n" => this // i dont know how to quit the app
+      case "n" => this
       case _   => this
     }
 
@@ -146,14 +169,16 @@ case class BattleEvalState(player: Trainer, opponent: Trainer) extends GameState
   val useItemHandler = new UseItemHandler(evalAttackHandler)
   val switchPokemonHandler = new SwitchPokemonHandler(useItemHandler) // or just call it Handler
 
-  override def gameToString(): String = ""
+  override def gameToString(): String = "are you sure? "
   // classic GameScreen
   override def processInput(input: String): GameState =
     // call handler
+    // add upd_playerchoice to "memento"
     val upd_playersChoice = switchPokemonHandler.handleChoice(playersChoice)
     val roundReport = upd_playersChoice.roundReport
 
     new MainState(upd_playersChoice.player, upd_playersChoice.opponent, roundReport)
+
 }
 
 // These 3 states represent the 3 main Options when battling
@@ -219,6 +244,7 @@ case class ChooseItemState(player: Trainer, opponent: Trainer) extends GameState
     ).mkString
     middleRows
   }
+
 }
 
 case class SwitchPokemonState(player: Trainer, opponent: Trainer) extends GameState {
@@ -250,100 +276,8 @@ case class SwitchPokemonState(player: Trainer, opponent: Trainer) extends GameSt
     ).mkString
     middleRows
   }
+  def getPreviousState(): GameState =
+    this
+  def getNextState(): GameState =
+    this
 }
-
-/*
-// Break this class down into: Attack, Item, Switch State, MenuState, BattleEval
-case class BattleState(player: Trainer, opponent: Trainer) extends GameState {
-
-  override def gameToString(): String =
-    display(player.currentPokemon, opponent.currentPokemon, player, opponent)
-
-  private def display(pokemon1: Pokemon, pokemon2: Pokemon, player: Trainer, opponent: Trainer): String = {
-    val eol: String = "\n"
-    val middleRows = List(
-      eol + eol +
-        "Opponents current Pokemon: " + pokemon2.toString + eol + opponent.toString + eol,
-      eol,
-      "Your current Pokemon: " + pokemon1.toString + eol + player.toString + eol +
-        "Choose your Move:"
-    ).mkString
-
-    middleRows
-  }
-  // for def processInput with c o r pattern initialize the choices
-  // this exist for proper choice evaluation
-  // choices can obv only be made before passing them thru
-
-  override def processInput(input: String): GameState =
-    //// Start_______new Implementation using Chain o. Resp Pattern
-
-    // 1. what if choice is switchpk or use item? Then i shouldnt be here?
-    // should switchPokemonState and UseItemState also call the handlers?
-
-    //// START______Old Implementation________
-    val pok_with_move = player.currentPokemon.setCurrentMove(input.toLowerCase())
-    val opp_with_move = opponent.currentPokemon.setCurrentMove("tackle")
-
-    val (upd_player_pok, upd_opp_pok) = evaluateRound(pok_with_move, opp_with_move)
-    val upd_player = player.setCurrentPokemon(upd_player_pok)
-    val upd_opp = opponent.setCurrentPokemon(upd_opp_pok)
-
-    val upd_player_alive = switchIfdead(upd_player)
-    val upd_opponent_alive = switchIfdead(upd_opp)
-
-    if (upd_player_alive.hasPokemonleft() && upd_opponent_alive.hasPokemonleft())
-      this.copy(upd_player_alive, upd_opponent_alive)
-    else
-      new yourDeadState()
-    //// END_______Old Implementation
-
-  // HilfsMethoden
-  def switchIfdead(trainer: Trainer): Trainer =
-    val currentPokemon = trainer.currentPokemon
-    if (!currentPokemon.isAlive() && trainer.pokemons.size > 1) {
-      val trainer_rem = trainer.removePokemon(currentPokemon.name)
-      val next_pokemon = trainer_rem.getNextPokemon()
-      val upd_trainer = trainer_rem.setCurrentPokemon(next_pokemon)
-      upd_trainer
-    } else if (!currentPokemon.isAlive() && trainer.pokemons.size == 1) {
-
-      val upd_Trainer = trainer.removePokemon(currentPokemon.name)
-      upd_Trainer
-    } else {
-      trainer
-    }
-
-  def evaluateRound(playerPokemon: Pokemon, oponnentPokemon: Pokemon): (Pokemon, Pokemon) = {
-    def matchPokemonById(pk1: Pokemon, pk2: Pokemon): (Pokemon, Pokemon) =
-      val playerMon = if (pk1.id == playerPokemon.id) pk1 else pk2
-      val oponnentMon = if (pk2.id == oponnentPokemon.id) pk2 else pk1
-      (playerMon, oponnentMon)
-
-    // Decide who executes Move first based on speed
-    val first_mover = determineFasterPokemon(playerPokemon, oponnentPokemon)
-    val secnd_mover = determineSlowerPokemon(playerPokemon, oponnentPokemon) // geht auch besser, wenns nicht a dann b // vergleich mit first mover
-
-    // alternative kann man den pokemons auch ne current moveChoice geben
-    // move Choice darf/kann/muss auch leer sein dürfen falls trainer itemt oder switched
-
-    // Calculate Damage
-    val upd_secnd_mover = secnd_mover.decreaseHp(first_mover.currentMove.power)
-    // check if second mover dead and update the field!
-    val upd_first_mover = first_mover.decreaseHp(secnd_mover.currentMove.power)
-
-    // Copy updated pokemon back into back to correct Pokemon...this can be done outside too
-
-    matchPokemonById(upd_first_mover, upd_secnd_mover) // returns (Pokemon,Pokemon)
-  }
-
-  def determineSlowerPokemon(pk1: Pokemon, pk2: Pokemon): Pokemon =
-    val slowerPokemon = if (pk1.speed <= pk2.speed) pk1 else pk2
-    slowerPokemon
-
-  def determineFasterPokemon(pk1: Pokemon, pk2: Pokemon): Pokemon =
-    val fasterPokemon = if (pk1.speed > pk2.speed) pk1 else pk2
-    fasterPokemon
-
-}
- */
