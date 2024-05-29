@@ -45,7 +45,8 @@ case class Trainer(pokemons: Vector[Pokemon], currentPokemon: Pokemon = evoli, c
   def getPokemonByName(name: String): Option[Pokemon] =
     pokemons.find(_.name.equalsIgnoreCase(name))
 
-  def hasPokemonleft(): Boolean = !pokemons.isEmpty
+  def hasNoPokemonleft(): Boolean =
+    (currentPokemon.hp <= 0 && pokemons.length == 0)
 
   override def toString: String =
     val pokemonStrings = pokemons.map(pokemon => s"${pokemon.name} (${pokemon.hp})")

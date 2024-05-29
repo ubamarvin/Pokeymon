@@ -31,17 +31,22 @@ case class Game(val state: GameState = new PickPokemonState(Trainer(Vector()), S
 
 }
 
-case class yourDeadState() extends GameState:
-  override def processInput(Input: String): GameState =
-    this.copy()
+case class YourDeadState(player: Trainer, opponent: Trainer) extends GameState:
+  val winner = if (player.hasNoPokemonleft()) then "You" else "Opponent"
+  override def processInput(input: String): GameState =
+    input.toLowerCase() match {
+      case "y" => new PickPokemonState(Trainer(Vector()), Setup.pokedex, picks = 0, Setup.opponent)
+      case "n" => this // i dont know how to quit the app
+      case _   => this
+    }
 
   override def gameToString(): String =
-    "YourDead, stop clicking buttons, press q to quit"
+    winner + " has won this Round!!! \n Play Again? Y/N"
 
 case class PickPokemonState(player: Trainer, pokedex: Pokedex, picks: Int, opponent: Trainer) extends GameState:
   val eol: String = "\n"
   val welcome_msg = eol + eol + "Welcome to Pokemon BattleSimulator! " + eol +
-    "Pick on to six Pokemon for you Team from the Pokedex." + eol +
+    "Pick 1-6 Pokemon." + eol +
     "When your done with picking, press d." + eol +
     "If you want to quit the game, press q." + eol +
     "Good luck" + eol +
@@ -98,12 +103,11 @@ case class PickPokemonState(player: Trainer, pokedex: Pokedex, picks: Int, oppon
 // This is the mainState
 // here the player is prompted to either attack, use an item or switch his Pokemon
 case class MainState(player: Trainer, opponent: Trainer, roundReport: String = "") extends GameState {
+
   override def gameToString(): String =
     display(player, opponent)
-  override def processInput(input: String): GameState =
-    // if input == attack then new attack state()
-    // ....
-    // ....
+  override def processInput(input: String): GameState = {
+
     input.toLowerCase() match {
       case "attack" => new ChooseAttackState(player, opponent)
       case "item"   => new ChooseItemState(player, opponent)
@@ -111,6 +115,7 @@ case class MainState(player: Trainer, opponent: Trainer, roundReport: String = "
       case "back"   => this
       case _        => this
     }
+  }
 
   private def display(player: Trainer, opponent: Trainer, msg: String = roundReport): String = {
     val eol: String = "\n"

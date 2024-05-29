@@ -9,7 +9,7 @@ object Setup {
   val tackle = Move("tackle", 50, "normal")
   val thunder = Move("thunder", 70, "elektro")
   val bodyslam = Move("bodyslam", 30, "normal")
-  val kick = Move("kick", 10, "normal")
+  val kick = Move("kick", 75, "normal")
   val waterJet = Move("waterjet", 50, "water")
   val fireBreath = Move("firebreath", 50, "fire")
   val vegankick = Move("vegankick", 50, "plant")
@@ -41,7 +41,8 @@ object Setup {
   val testmon4 = Pokemon(8, "plantPk", 100, std_moves, 50, "plant")
   val testmon5 = Pokemon(9, "nomralPk", 100, std_moves, 50, "normal")
   val testmon6 = Pokemon(10, "fightPk", 100, std_moves, 50, "fight")
-  val std_mons = Vector(testmon1, testmon2, testmon3, testmon4, testmon5, testmon6)
+  // val std_mons = Vector(testmon1, testmon2, testmon3, testmon4, testmon5, testmon6)
+  val std_mons = Vector(testmon1)
   val opponent = Trainer(std_mons)
 
 //***********List of all available Pokemon

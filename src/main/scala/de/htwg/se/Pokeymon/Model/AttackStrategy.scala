@@ -44,12 +44,12 @@ class applyDamageStrategy extends AttackStrategy:
       case ("plant", "elektro") => (1.5, e)
       case ("elektro", "water") => (1.5, e)
       case _ =>
-        (1.0, " executed normally")
+        (1.0, "executed normally")
     }
 
     val damage = move.power * effectiveness
     val upd_defender = defender.decreaseHp(damage.toInt)
-    val msg = attacker.name + "s attack " + move.name + " was " + eff + "\n"
+    val msg = "-" + attacker.name + "s attack " + move.name + " was " + eff + "\n"
     (attacker, upd_defender, msg)
 
 class applyStatusChangeStrategy extends AttackStrategy:
@@ -59,7 +59,7 @@ class applyStatusChangeStrategy extends AttackStrategy:
     val (updDefender, msg: String) = statusChange match {
       case "burn" =>
         val updDefender = defender.setStatus(new BurnedState(3))
-        val msg = defender.name + " got burned \n"
+        val msg = "-" + defender.name + " got burned \n"
         (updDefender, msg)
 
       case "poison" =>
@@ -69,17 +69,17 @@ class applyStatusChangeStrategy extends AttackStrategy:
 
       case "freez" =>
         val updDefender = defender.setStatus(new BurnedState(3))
-        val msg = defender.name + " got frozen \n"
+        val msg = "-" + defender.name + " got frozen \n"
         (updDefender, msg)
 
       case "paralyze" =>
         val updDefender = defender.setStatus(new BurnedState(3))
-        val msg = defender.name + " got paralyzed \n"
+        val msg = "-" + defender.name + " got paralyzed \n"
         (updDefender, msg)
 
       case _ =>
         val updDefender = defender
-        (updDefender, attacker.name + "s attack hadno Effect \n")
+        (updDefender, "-" + attacker.name + "s attack hadno Effect \n")
     }
 
     (attacker, updDefender, msg)

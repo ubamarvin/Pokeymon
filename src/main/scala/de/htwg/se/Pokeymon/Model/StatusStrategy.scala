@@ -57,7 +57,7 @@ case class BurnedState(duration: Int, intensity: Int = 5) extends StatusStrategy
   override def applyEffect(pokemon: Pokemon): (Pokemon, String) =
     // apply effect
     val damagedPokemon = pokemon.decreaseHp(intensity)
-    val msg = pokemon.name + " is hurt by burn, lost " + intensity + " HP\n"
+    val msg = "-" + pokemon.name + "is hurt by burn, lost " + intensity + " HP\n"
     // reduceDuration
     val updStatusStrategy = reduceDuration(this)
     // Re-initialize based on duration
@@ -79,7 +79,7 @@ case class PoisonedState(duration: Int, intensity: Int = 5) extends StatusStrate
   override def applyEffect(pokemon: Pokemon): (Pokemon, String) =
     // apply effect
     val damagedPokemon = pokemon.decreaseHp(intensity)
-    val msg = pokemon.name + " is hurt by poison, lost " + intensity + " HP\n"
+    val msg = "-" + pokemon.name + "is hurt by poison, lost " + intensity + " HP\n"
 
     // reduceDuration
     val updStatusStrategy = reduceDuration(this)
@@ -101,7 +101,7 @@ case class SleepState(duration: Int) extends StatusStrategy {
   override def statusName: String = "sleep"
   override def applyEffect(pokemon: Pokemon): (Pokemon, String) =
     // reduceDuration
-    val msg = pokemon.name + " is sleeping\n"
+    val msg = "-" + pokemon.name + " is sleeping\n"
     val updStatusStrategy = reduceDuration(this)
     val updPokemon = if (updStatusStrategy.duration > 0) { pokemon.setStatus(updStatusStrategy) }
     else { pokemon.setStatus(new NormalState) }
@@ -119,7 +119,7 @@ case class ParalyzedState(duration: Int) extends StatusStrategy {
   override def applyEffect(pokemon: Pokemon): (Pokemon, String) =
     // reduceDuration
     val updStatusStrategy = reduceDuration(this)
-    val msg = pokemon.name + " is paralyzed\n"
+    val msg = "-" + pokemon.name + " is paralyzed\n"
     val updPokemon = if (updStatusStrategy.duration > 0) { pokemon.setStatus(updStatusStrategy) }
     else { pokemon.setStatus(new NormalState) }
     (updPokemon, msg)

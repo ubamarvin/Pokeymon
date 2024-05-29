@@ -41,8 +41,8 @@ case class SwitchPokemonHandler(nextHandler: ChoiceHandler) extends ChoiceHandle
           case (Some(playerPokemon), Some(opponentPokemon)) =>
             val upd_player = playersChoice.player.switchPokemon(playerPokemon)
             val upd_opponent = playersChoice.opponent.switchPokemon(opponentPokemon)
-            val msgPlayer = "Player chooses " + playerPokemon.name + " to fight!\n"
-            val msgOpp = "Opponent chooses " + opponentPokemon.name + " to fight!\n"
+            val msgPlayer = "-Player chooses " + playerPokemon.name + " to fight!\n"
+            val msgOpp = "-Opponent chooses " + opponentPokemon.name + " to fight!\n"
             val updchoice = new PlayersChoice(upd_player, upd_opponent, msgPlayer + msgOpp)
             nextHandler.handleChoice(updchoice)
           case _ =>
@@ -55,7 +55,7 @@ case class SwitchPokemonHandler(nextHandler: ChoiceHandler) extends ChoiceHandle
         pc.pokemon match {
           case Some(playerPokemon) =>
             val upd_player = playersChoice.player.switchPokemon(playerPokemon)
-            val msgPlayer = "Player chooses " + playerPokemon.name + " to fight!\n"
+            val msgPlayer = "-Player chooses " + playerPokemon.name + " to fight!\n"
             val updchoice = new PlayersChoice(upd_player, playersChoice.opponent, msgPlayer)
             nextHandler.handleChoice(updchoice)
           case None =>
@@ -68,7 +68,7 @@ case class SwitchPokemonHandler(nextHandler: ChoiceHandler) extends ChoiceHandle
         oc.pokemon match {
           case Some(opponentPokemon) =>
             val upd_opponent = playersChoice.opponent.switchPokemon(opponentPokemon)
-            val msgOpp = "Opponent chooses " + opponentPokemon.name + " to fight!\n"
+            val msgOpp = "-Opponent chooses " + opponentPokemon.name + " to fight!\n"
 
             val updchoice = new PlayersChoice(playersChoice.player, upd_opponent, msgOpp)
             nextHandler.handleChoice(updchoice)
@@ -162,23 +162,33 @@ case class EvaluateAttackHandler(nextHandler: ChoiceHandler) extends ChoiceHandl
             // determine faster pokemon
             val first = determineFasterPokemon(playerMon, oppMon)
             val second = determineSlowerPokemon(playerMon, oppMon)
+
             // Faster Pokemon attacks slower onea
             // Set the Context / which attack Strategy to use
             val updAttackContext = attackContext.setContext(first.currentMove) // not PlayerMove
-            val (firstPk, secondPk, msgOne) = updAttackContext.applyAttackStrategy(first, second, playerMove)
+            val (firstPk, secondPk, msgOne) = updAttackContext.applyAttackStrategy(first, second, first.currentMove)
             // Set the attack Context for the slower Mover
             val SecondMoverAttackContext = updAttackContext.setContext(second.currentMove) /// Not player Move
-            // Slower Pokemon attacks Faster one only if Slower is alive, else "nothing happens"
+            // Slower Pokemon attacks only if its alive
+            /// _____________________________
+            /*
             val (updFirstPk, updSecondPk, msgTwo) =
-              if (secondPk.isAlive()) then SecondMoverAttackContext.applyAttackStrategy(secondPk, firstPk, opponentMove)
-              else (firstPk, secondPk, secondPk.name + " fainted!")
+              if (secondPk.isAlive()) then SecondMoverAttackContext.applyAttackStrategy(secondPk, firstPk, second.currentMove)
+              else (firstPk, secondPk, "-" + secondPk.name + " fainted!")
+            ///________________________________*/
+            val (updSecondPk, updFirstPk, msgTwo) =
+              if (secondPk.isAlive()) then SecondMoverAttackContext.applyAttackStrategy(secondPk, firstPk, second.currentMove)
+              else (secondPk, firstPk, "-" + secondPk.name + " fainted!\n")
+
+            // Generate fainted message for the first Pokémon if it fainted after the second attack // Thank you ChatGpt....
+            val finalMsgTwo = if (updFirstPk.isAlive()) msgTwo else msgTwo + "-" + updFirstPk.name + " fainted!\n"
 
             // Match Pokemons by Id and link them back to their trainers
             val (updPlayerMon, updOppMon) = matchPokemonById(updFirstPk, updSecondPk, playerPkId, oppPkId)
             // Now check if one has died
             val updPlayer = switchIfdead(player.updateCurrentPokemon(updPlayerMon))
             val updOpp = switchIfdead(opponent.updateCurrentPokemon(updOppMon))
-            val updPlayersChoice = new PlayersChoice(updPlayer, updOpp, report + msgOne + msgTwo)
+            val updPlayersChoice = new PlayersChoice(updPlayer, updOpp, report + msgOne + finalMsgTwo)
             nextHandler.handleChoice(updPlayersChoice)
 
           case _ =>
