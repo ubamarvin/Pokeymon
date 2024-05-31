@@ -32,7 +32,7 @@ case class Game(
     if (undoStack.isEmpty) {
       this
     } else {
-      val prevState +: rest = undoStack
+      val prevState +: rest = undoStack: @unchecked
       this.copy(state = prevState, undoStack = rest, redoStack = state +: redoStack)
     }
   }
@@ -42,7 +42,7 @@ case class Game(
     if (redoStack.isEmpty) {
       this
     } else {
-      val nextState +: rest = redoStack
+      val nextState +: rest = redoStack: @unchecked
       this.copy(state = nextState, undoStack = state +: undoStack, redoStack = rest)
     }
   }
@@ -53,18 +53,30 @@ case class Game(
 
 }
 
-case class YourDeadState(player: Trainer, opponent: Trainer) extends GameState:
+case class YourDeadState(player: Trainer, opponent: Trainer, roundReport: String) extends GameState:
 
-  val winner = if (player.hasNoPokemonleft()) then "You" else "Opponent"
+  val winner = if (player.hasNoPokemonleft()) then "Opponent has" else "You have"
   override def processInput(input: String): GameState =
     input.toLowerCase() match {
-      case "y" => new PickPokemonState(Trainer(Vector()), Setup.pokedex, picks = 0, Setup.opponent)
-      case "n" => this
-      case _   => this
+      case "ja" => new PickPokemonState(Trainer(Vector()), Setup.pokedex, picks = 0, Setup.opponent)
+      case "n"  => this
+      case _    => this
     }
 
   override def gameToString(): String =
-    winner + " has won this Round!!! \n Play Again? Y/N"
+    display(player, opponent, roundReport)
+
+  private def display(player: Trainer, opponent: Trainer, msg: String): String = {
+    val eol: String = "\n"
+    val middleRows = List(
+      eol + eol +
+        "Opponents Pokemon: " + opponent.currentPokemon.toString + eol + opponent.toString + eol,
+      eol,
+      "Players Pokemon: " + player.currentPokemon.toString + eol + player.toString + eol + msg + eol +
+        winner + " won this Round!!!! \n Play again? ja/n"
+    ).mkString
+    middleRows
+  }
 
 case class PickPokemonState(player: Trainer, pokedex: Pokedex, picks: Int, opponent: Trainer) extends GameState:
   val eol: String = "\n"
@@ -176,9 +188,16 @@ case class BattleEvalState(player: Trainer, opponent: Trainer) extends GameState
     // add upd_playerchoice to "memento"
     val upd_playersChoice = switchPokemonHandler.handleChoice(playersChoice)
     val roundReport = upd_playersChoice.roundReport
+    val upd_player = upd_playersChoice.player
+    val upd_opp = upd_playersChoice.opponent
+    val newState =
+      if (upd_player.hasNoPokemonleft() || upd_opp.hasNoPokemonleft()) then new YourDeadState(upd_player, upd_opp, roundReport)
+      else new MainState(upd_playersChoice.player, upd_playersChoice.opponent, roundReport)
 
-    new MainState(upd_playersChoice.player, upd_playersChoice.opponent, roundReport)
+    if (upd_playersChoice.player.hasNoPokemonleft()) then println("playerLost")
 
+    // new MainState(upd_playersChoice.player, upd_playersChoice.opponent, roundReport)
+    newState
 }
 
 // These 3 states represent the 3 main Options when battling

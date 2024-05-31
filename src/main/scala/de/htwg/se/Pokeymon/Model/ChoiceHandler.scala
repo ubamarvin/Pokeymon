@@ -219,9 +219,13 @@ case class EvaluateAttackHandler(nextHandler: ChoiceHandler) extends ChoiceHandl
           case Some(move) =>
             val updAttackContext = attackContext.setContext(move)
             val (updOppMon, updPlayerMon, msg) = updAttackContext.applyAttackStrategy(oppMon, playerMon, move)
-            val updPlayer = player.updateCurrentPokemon(updPlayerMon)
+            val newPlayer = player.updateCurrentPokemon(updPlayerMon)
+            // switch if dead
+            val updPlayer = switchIfdead(newPlayer)
+            val finalMsg = if (updPlayerMon.isAlive()) then msg else "-" + updPlayerMon.name + " fainted\n"
+            ///
             val updOpp = opponent.updateCurrentPokemon(updOppMon)
-            val updchoice = new PlayersChoice(updPlayer, updOpp, report + msg)
+            val updchoice = new PlayersChoice(updPlayer, updOpp, report + finalMsg)
             println(msg)
 
             nextHandler.handleChoice(updchoice)
