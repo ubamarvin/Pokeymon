@@ -3,6 +3,8 @@ import de.htwg.se.Pokeymon.Model.Setup
 import de.htwg.se.Pokeymon.Model.Setup.opponent
 import de.htwg.se.Pokeymon.Model.Setup.tackle
 
+import scala.util.{Try, Success, Failure}
+
 trait GameState {
   def processInput(input: String): GameState
   def gameToString(): String
@@ -55,16 +57,37 @@ case class Game(
 
 case class YourDeadState(player: Trainer, opponent: Trainer, roundReport: String) extends GameState:
 
-  val winner = if (player.hasNoPokemonleft()) then "Opponent has" else "You have"
-  override def processInput(input: String): GameState =
-    input.toLowerCase() match {
-      case "ja" => new PickPokemonState(Trainer(Vector()), Setup.pokedex, picks = 0, Setup.opponent)
-      case "n"  => this
-      case _    => this
+  val winner = if player.hasNoPokemonleft() then "Opponent has" else "You have"
+
+  override def processInput(input: String): GameState = {
+    val result = Try {
+      input.toLowerCase() match {
+        case "ja" => new PickPokemonState(Trainer(Vector()), Setup.pokedex, picks = 0, Setup.opponent)
+        case "n"  => this
+        case _    => this
+      }
     }
 
-  override def gameToString(): String =
-    display(player, opponent, roundReport)
+    result match {
+      case Success(tomate) => tomate
+      case Failure(exception) =>
+        println(s"Ein Fehler ist passiert: ${exception.getMessage}")
+        this
+    }
+  }
+
+  override def gameToString(): String = {
+    val result = Try {
+      display(player, opponent, roundReport)
+    }
+
+    result match {
+      case Success(gameString) => gameString
+      case Failure(exception) =>
+        println(s"An error occurred while generating game string: ${exception.getMessage}")
+        "An error occurred while displaying the game state."
+    }
+  }
 
   private def display(player: Trainer, opponent: Trainer, msg: String): String = {
     val eol: String = "\n"
