@@ -1,6 +1,7 @@
 package de.htwg.se.Pokeymon.Controller
 import de.htwg.se.Pokeymon.Util.Observable
 import de.htwg.se.Pokeymon.Model.Game
+import de.htwg.se.Pokeymon.Model.Content
 import de.htwg.se.Pokeymon.Model.CommandManager
 
 class Controller(var game: Game) extends Observable {
@@ -29,4 +30,7 @@ class Controller(var game: Game) extends Observable {
 
   def printDisplay(): String =
     game.gameToString()
+
+  def getSceneContent(): Content =
+    game.getContent()
 }

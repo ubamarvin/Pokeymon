@@ -1,0 +1,42 @@
+package de.htwg.se.Pokeymon.aView.Gui
+
+import de.htwg.se.Pokeymon.Util.Observer
+import de.htwg.se.Pokeymon.Controller.Controller
+
+import scalafx.application.JFXApp3
+import scalafx.Includes._
+import scalafx.scene.Scene
+import scalafx.scene.image.ImageView
+import scalafx.scene.layout.{HBox, StackPane, VBox, Priority}
+import scalafx.scene.paint.Color
+import scalafx.scene.control.{Button, TextField}
+import scalafx.geometry.Pos
+import scalafx.scene.shape.Rectangle
+import scalafx.scene.text.Text
+import scala.compiletime.uninitialized
+
+case class PickPokeScene(controller: Controller) extends Scene {
+  val backgroundImage = new ImageView("file:src/main/scala/de/htwg/se/Pokeymon/aView/Gui/background.png")
+  backgroundImage.fitWidth = 800 // Match the scene width
+  backgroundImage.fitHeight = 600 // Match the scene height
+  val text = new Text("PickPoke")
+
+  // State of game and info
+  // Controller.game.gamestae.getInfo // returns Trainer, Opp, RoundReport / prompt
+  // Controller.game.gamestate.getInfo // if pick Poke State returns PokedexList, Trainer Pokemon List
+
+  // Create the bottom bar
+  // val bottomBar = createBottomBar()
+
+  // Create a StackPane to layer nodes
+  var rootPane = new StackPane {
+    children = List(backgroundImage, text)
+  }
+  bottomBar.alignmentInParent_=(scalafx.geometry.Pos.BottomCenter)
+
+  // Set the StackPane as the root of the scene
+  root = rootPane
+  println(s"Scene size: ${width.value} x ${height.value}")
+}
+
+// Function to create the main menu bottom Bar...

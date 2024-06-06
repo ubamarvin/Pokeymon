@@ -1,0 +1,201 @@
+/*
+import scalafx.application.JFXApp3
+import scalafx.scene.Scene
+import scalafx.scene.image.ImageView
+import scalafx.scene.layout.{HBox, StackPane, VBox, Priority}
+import scalafx.scene.paint.Color
+import scalafx.scene.control.{Button, TextField}
+import scalafx.geometry.Pos
+import scalafx.scene.shape.Rectangle
+import scalafx.scene.text.Text
+/*
+object PokeGui extends JFXApp3 {
+  sealed trait BottomBar
+  case object MainBottomBar extends BottomBar
+  case object AttackBottomBar extends BottomBar
+
+  override def start(): Unit = {
+    stage = new JFXApp3.PrimaryStage {
+      title = "PokeGui"
+      scene = new Scene(800, 600) {
+
+        // Load the background image
+        val backgroundImage = new ImageView("file:src/main/scala/de/htwg/se/Pokeymon/aView/Gui/background.png")
+        backgroundImage.fitWidth = 800 // Match the scene width
+        backgroundImage.fitHeight = 600 // Match the scene height
+
+        // Create the bottom bar
+        // val bottomBar = createBottomBar()
+        val bottomBar = createAttackBar()
+
+        // Create a StackPane to layer nodes
+        var rootPane = new StackPane {
+          children = List(backgroundImage, bottomBar)
+        }
+        bottomBar.alignmentInParent_=(scalafx.geometry.Pos.BottomCenter)
+
+        // Set the StackPane as the root of the scene
+        root = rootPane
+        println(s"Scene size: ${width.value} x ${height.value}")
+      }
+    }
+  }
+
+  // Function to create the main menu bottom Bar...
+  def createBottomBar(): HBox = {
+    // FourBasicButtoms
+    val Attack = new Button("Attack") {
+      onAction = () => { scene.rootPane.children = List(backgroundImage, createAttackBar()) }
+    }
+    val Switch = new Button("Switch") {
+      // onAction = () => println("attackbtn")
+    }
+    val Item = new Button("Item") {
+      // onAction = () => println("attackbtn")
+    }
+    val Back = new Button("Back") {
+      // onAction = () => println("attackbtn")
+    }
+
+    // TextField for output
+    val textBox = new TextField {
+      prefWidth = 200
+      promptText = "Game messages..."
+    }
+
+    // Create a rectangle to visually divide the segments
+    val divider = new Rectangle {
+      width = 2 // Width of the divider
+      height = Double.MaxValue
+      fill = Color.Gray // Color of the divider
+    }
+
+    val textDisplay = new Text {
+      text = "FakeText: What will you do?"
+      // You can set font size and other properties as needed
+    }
+
+    // Create the segments
+    val leftSegment = new VBox {
+      children = Seq(textDisplay)
+      alignment = Pos.Center // Align text to the center
+      style = "-fx-border-color: blue;" // Add blue border around the box
+      padding = scalafx.geometry.Insets(10) // Add padding for the border
+    }
+
+    // Create the buttons layout
+    val rightSegment = new VBox {
+      children = Seq(
+        new HBox {
+          children = Seq(Attack, Switch);
+          alignment = Pos.Center
+          hgrow = Priority.Always
+          fillHeight = true
+        },
+        new HBox {
+          children = Seq(Item, Back);
+          alignment = Pos.Center
+          hgrow = Priority.Always
+        }
+      )
+      spacing = 10 // Spacing between rows
+      alignment = Pos.Center // Align buttons to the center
+      style = "-fx-border-color: blue;" // Add blue border around the box
+      padding = scalafx.geometry.Insets(10) // Add padding for the border
+    }
+
+    val bar = new HBox {
+      prefHeight = 100 // Set preferred height for the bottom bar
+      maxHeight = 150 // Set Max height to 100, this ensures it doesnt fill up the scene
+      style = "-fx-background-color: rgba(0, 0, 0, 0.5);" // Set background color with opacity
+      // style = "-fx-background-color: white;" // Set background color to white
+      spacing = 20 // Set spacing between components
+      children = Seq(leftSegment, rightSegment)
+      alignment = Pos.Center
+      style = "-fx-border-color: blue;" // Add blue border around the box
+      padding = scalafx.geometry.Insets(10) // Add padding for the border
+
+    }
+    bar
+  }
+
+  def createAttackBar(): HBox = {
+    // FourBasicButtoms
+    val Attack1 = new Button("Attack") {
+      onAction = () => { rootPane.children = List(backgroundImage, createBottomBar()) }
+    }
+    val Attack2 = new Button("Attack2") {
+      // onAction = () => println("attackbtn")
+    }
+    val Attack3 = new Button("Attack3") {
+      // onAction = () => println("attackbtn")
+    }
+    val Attack4 = new Button("Attack4") {
+      // onAction = () => println("attackbtn")
+    }
+
+    // TextField for output
+    val textBox = new TextField {
+      prefWidth = 200
+      promptText = "Game messages..."
+    }
+
+    // Create a rectangle to visually divide the segments
+    val divider = new Rectangle {
+      width = 2 // Width of the divider
+      height = Double.MaxValue
+      fill = Color.Gray // Color of the divider
+    }
+
+    val leftSegment = new VBox {
+      children = Seq(
+        new HBox {
+          children = Seq(Attack1, Attack2);
+          alignment = Pos.Center
+          hgrow = Priority.Always
+          fillHeight = true
+        },
+        new HBox {
+          children = Seq(Attack3, Attack4);
+          alignment = Pos.Center
+          hgrow = Priority.Always
+        }
+      )
+      spacing = 10 // Spacing between rows
+      alignment = Pos.Center // Align buttons to the center
+      style = "-fx-border-color: blue;" // Add blue border around the box
+      padding = scalafx.geometry.Insets(10) // Add padding for the border
+    }
+
+    val textDisplay = new Text {
+      text = "Text about attacks"
+      // You can set font size and other properties as needed
+    }
+
+    // Create the segments
+    val rightSegment = new VBox {
+      children = Seq(textDisplay)
+      alignment = Pos.Center // Align text to the center
+      style = "-fx-border-color: blue;" // Add blue border around the box
+      padding = scalafx.geometry.Insets(10) // Add padding for the border
+    }
+
+    // Create the buttons layout
+
+    val bar = new HBox {
+      prefHeight = 100 // Set preferred height for the bottom bar
+      maxHeight = 150 // Set Max height to 100, this ensures it doesnt fill up the scene
+      style = "-fx-background-color: rgba(0, 0, 0, 0.5);" // Set background color with opacity
+      // style = "-fx-background-color: white;" // Set background color to white
+      spacing = 20 // Set spacing between components
+      children = Seq(leftSegment, rightSegment)
+      alignment = Pos.Center
+      style = "-fx-border-color: blue;" // Add blue border around the box
+      padding = scalafx.geometry.Insets(10) // Add padding for the border
+
+    }
+    bar
+  }
+
+}
+*/

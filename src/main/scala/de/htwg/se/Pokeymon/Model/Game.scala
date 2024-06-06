@@ -5,9 +5,12 @@ import de.htwg.se.Pokeymon.Model.Setup.tackle
 
 import scala.util.{Try, Success, Failure}
 
+//case class Content(state: String = " ", player: Trainer, opponent: Trainer, msg: String = "", pokedex: Pokedex)
+case class Content(state: String = "")
 trait GameState {
   def processInput(input: String): GameState
   def gameToString(): String
+  def getContent(): Content
 }
 
 // Context classssss
@@ -53,8 +56,12 @@ case class Game(
     // println("gameToString is called")
     state.gameToString()
 
+  def getContent(): Content =
+    state.getContent()
+
 }
 
+//_____________________________Dead
 case class YourDeadState(player: Trainer, opponent: Trainer, roundReport: String) extends GameState:
 
   val winner = if player.hasNoPokemonleft() then "Opponent has" else "You have"
@@ -62,9 +69,10 @@ case class YourDeadState(player: Trainer, opponent: Trainer, roundReport: String
   override def processInput(input: String): GameState = {
     val result = Try {
       input.toLowerCase() match {
-        case "ja" => new PickPokemonState(Trainer(Vector()), Setup.pokedex, picks = 0, Setup.opponent)
-        case "n"  => this
-        case _    => this
+        case "ja"   => new PickPokemonState(Trainer(Vector()), Setup.pokedex, picks = 0, Setup.opponent)
+        case "n"    => this
+        case "fail" => throw new RuntimeException("Simulated failure") // Simulated failure case
+        case _      => this
       }
     }
 
@@ -75,6 +83,8 @@ case class YourDeadState(player: Trainer, opponent: Trainer, roundReport: String
         this
     }
   }
+  override def getContent(): Content =
+    new Content("Dead")
 
   override def gameToString(): String = {
     val result = Try {
@@ -101,6 +111,7 @@ case class YourDeadState(player: Trainer, opponent: Trainer, roundReport: String
     middleRows
   }
 
+//_____________________Pick
 case class PickPokemonState(player: Trainer, pokedex: Pokedex, picks: Int, opponent: Trainer) extends GameState:
   val eol: String = "\n"
   val welcome_msg = eol + eol + "Welcome to Pokemon BattleSimulator! " + eol +
@@ -112,6 +123,8 @@ case class PickPokemonState(player: Trainer, pokedex: Pokedex, picks: Int, oppon
 
   val choose_msg = eol + "type in the name of the pokemon you wish to add to your team:"
 
+  override def getContent(): Content =
+    new Content("pick")
   override def gameToString(): String = {
     display(player, pokedex, picks)
   }
@@ -162,6 +175,8 @@ case class PickPokemonState(player: Trainer, pokedex: Pokedex, picks: Int, oppon
 // here the player is prompted to either attack, use an item or switch his Pokemon
 case class MainState(player: Trainer, opponent: Trainer, roundReport: String = "") extends GameState {
 
+  override def getContent(): Content =
+    new Content("main")
   override def gameToString(): String =
     display(player, opponent)
   override def processInput(input: String): GameState = {
@@ -204,6 +219,8 @@ case class BattleEvalState(player: Trainer, opponent: Trainer) extends GameState
   val useItemHandler = new UseItemHandler(evalAttackHandler)
   val switchPokemonHandler = new SwitchPokemonHandler(useItemHandler) // or just call it Handler
 
+  override def getContent(): Content =
+    new Content("battle")
   override def gameToString(): String = "are you sure? "
   // classic GameScreen
   override def processInput(input: String): GameState =
@@ -237,6 +254,9 @@ case class ChooseAttackState(player: Trainer, opponent: Trainer) extends GameSta
   def getMoveByName(moves: List[Move], moveName: String): Option[Move] =
     moves.find(_.name.equalsIgnoreCase(moveName))
 
+  def getContent(): Content =
+    new Content("attack")
+
   override def gameToString(): String = display(player, opponent)
   override def processInput(input: String): GameState =
     input.toLowerCase() match {
@@ -268,6 +288,8 @@ case class ChooseAttackState(player: Trainer, opponent: Trainer) extends GameSta
 }
 
 case class ChooseItemState(player: Trainer, opponent: Trainer) extends GameState {
+  def getContent(): Content =
+    new Content("item")
   override def gameToString(): String = display(player, opponent)
   override def processInput(input: String): GameState =
     input.toLowerCase() match {
@@ -290,6 +312,8 @@ case class ChooseItemState(player: Trainer, opponent: Trainer) extends GameState
 }
 
 case class SwitchPokemonState(player: Trainer, opponent: Trainer) extends GameState {
+  def getContent(): Content =
+    new Content("switch")
   override def gameToString(): String = display(player, opponent)
   override def processInput(input: String): GameState =
     input.toLowerCase() match {

@@ -1,8 +1,16 @@
 Todo Entwurfsmuster:
-    -Fabrik Methode für custom Pokemon builder
+finish choiceHandler
+expand BattleMediator with class statusMediator and AttackStatusMediator
+Use StrategyPattern to decide with attackStyle Should be used?
+clean def GameTostring
 
-    -new State; start   -> pickstate
-                        -> PokemonBuildState -> pickstate
-    -new pattern; pokemonBuildState uses factoryMethod
+Patterns:
+    -state
+    -chainOfResponsibility
+    -Strategy
+
+
+add switchifdead in choicehandler when only player attacks
+add switchdead in choicehandler after status affect
+
     
-    -
