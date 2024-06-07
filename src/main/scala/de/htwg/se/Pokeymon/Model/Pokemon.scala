@@ -36,6 +36,12 @@ case class Pokemon(
   def getMoves(): List[Move] =
     moves
 
+  def getHp(): Int =
+    this.hp
+
+  def getStatus(): String =
+    status.getStatusName()
+
   override def toString: String =
     this.name + " Hp: " + this.hp + " Status: " + this.status.getStatusName()
 

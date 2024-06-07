@@ -7,7 +7,7 @@ import scalafx.application.JFXApp3
 import scalafx.Includes._
 import scalafx.scene.Scene
 import scalafx.scene.image.ImageView
-import scalafx.scene.layout.{HBox, StackPane, VBox, Priority, GridPane}
+import scalafx.scene.layout.{HBox, StackPane, VBox, Priority, GridPane, Region}
 import scalafx.scene.paint.Color
 import scalafx.scene.control.{Button, TextField}
 import scalafx.geometry.Pos
@@ -64,7 +64,7 @@ case class PokeGui(controller: Controller) extends JFXApp3 with Observer {
     // set stage
     stage = new JFXApp3.PrimaryStage {
       title = "Pokemon"
-      scene = new Scene(new StackPane(), 800, 600)
+      scene = new Scene(new StackPane(), 800, 600) //
     }
 
   }
@@ -123,6 +123,15 @@ case class PickPokeScene(controller: Controller) extends BaseScene {
     pokemonGrid.add(vbox, index % 3, index / 3) // Adjust column count as needed
   }
 
+  // Wrap buttonDone in an HBox with empty Region to fill space
+  val bottomBox = new HBox {
+    children = List(new Region(), buttonDone) // Empty Region to fill space
+    HBox.setHgrow(this.children.head, Priority.Always)
+    spacing = 10
+    alignment = Pos.Center
+  }
+  StackPane.setAlignment(buttonDone, Pos.BottomCenter) // Align button to the bottom center of the StackPane
+
   // Create the root StackPane and add background image and the Pokémon grid
   root = new StackPane {
     children = List(backgroundImage, pokemonGrid, buttonDone)
@@ -136,39 +145,161 @@ case class MainScene(controller: Controller) extends BaseScene {
   // gameData = controller.game.getData
   val MainText = new Text("MainScene")
   val backgroundImage = new ImageView("file:src/main/scala/de/htwg/se/Pokeymon/aView/Gui/Pics/background.png")
+  val contents = controller.getSceneContent()
+  val player = contents.player
+  val playerMon = player.getCurrentPokemon()
+  val opponent = contents.opponent
+  val oppMon = opponent.getCurrentPokemon()
+  val roundReport = contents.roundReport
+  val playerMonImage = new ImageView(s"file:src/main/scala/de/htwg/se/Pokeymon/aView/Gui/Pics/${playerMon.name}.png") {
+    fitWidth = 150 // Set the width of the image
+    fitHeight = 150 // Set the height of the image
+  }
+  val oppMonImage = new ImageView(s"file:src/main/scala/de/htwg/se/Pokeymon/aView/Gui/Pics/${oppMon.name}.png") {
+    fitWidth = 150 // Set the width of the image
+    fitHeight = 150 // Set the height of the image
+  }
 
   /// ___________Main_Butttons_____________
   val attackButton = new Button("Attack") {
+    minWidth = 150 // Increased by 50%
+    prefWidth = 225 // Increased by 50%
+    maxWidth = 300 // Increased by 50%
+    style = "-fx-font-size: 18px;" // Increased font size by 50%
     onAction = () => {
       controller.handleInput("attack")
     }
   }
 
   val switchButton = new Button("Switch") {
+    minWidth = 150 // Increased by 50%
+    prefWidth = 225 // Increased by 50%
+    maxWidth = 300 // Increased by 50%
+    style = "-fx-font-size: 18px;" // Increased font size by 50%
     onAction = () => {
       controller.handleInput("switch")
     }
   }
 
   val itemButton = new Button("Item") {
+    minWidth = 150 // Increased by 50%
+    prefWidth = 225 // Increased by 50%
+    maxWidth = 300 // Increased by 50%
+    style = "-fx-font-size: 18px;" // Increased font size by 50%
     onAction = () => {
       controller.handleInput("item")
     }
   }
 
   val backButton = new Button("back") {
+    minWidth = 150 // Increased by 50%
+    prefWidth = 225 // Increased by 50%
+    maxWidth = 300 // Increased by 50%
+    style = "-fx-font-size: 18px;" // Increased font size by 50%
     onAction = () => {
       controller.handleInput("back")
     }
   }
 
+  // ______creating upperscreen_________//
+
+//____Upper Segment___________
+  // oppMon Health and status
+  val oppStatusText = new Text {
+    text = "Health:" + oppMon.getHp() + "/100\nStatus: " + oppMon.getStatus()
+    style = "-fx-font-size: 20px;"
+    // You can customize the font size, color, etc. as needed
+  }
+  val upperLeftSegment = new VBox {
+    children = Seq(oppStatusText)
+    style = "-fx-background-color: rgba(211, 211, 211, 0.5);"
+    alignment = Pos.CenterRight // Align text to the center
+    style = "-fx-border-color: blue;" // Add blue border around the box
+    padding = scalafx.geometry.Insets(10) // Add padding for the border
+  }
+
+  // Create the buttons l
+  // op mon picture
+  val upperRightSegment = new VBox {
+    children = Seq(
+      new HBox {
+        children = Seq(oppMonImage);
+        alignment = Pos.CenterRight
+        hgrow = Priority.Always
+        fillHeight = true
+      }
+    )
+    spacing = 10 // Spacing between rows
+    alignment = Pos.CenterRight // Align buttons to the center
+    style = "-fx-border-color: blue;" // Add blue border around the box
+    padding = scalafx.geometry.Insets(10) // Add padding for the border
+  }
+
+  val upperBar = new HBox {
+    prefHeight = 100 // Set preferred height for the bottom bar
+    maxHeight = 150 // Set Max height to 100, this ensures it doesnt fill up the scene
+    style = "-fx-background-color: rgba(0, 0, 0, 0.5);" // Set background color with opacity
+    // style = "-fx-background-color: white;" // Set background color to white
+    spacing = 20 // Set spacing between components
+    children = Seq(upperLeftSegment, upperRightSegment)
+    alignment = Pos.CenterRight
+    style = "-fx-border-color: blue;" // Add blue border around the box
+    padding = scalafx.geometry.Insets(10) // Add padding for the border
+
+  }
+
+  // ____Middle Segment___________
+  // ___player mon picture
+  val playerStatusText = new Text {
+    text = "Health:" + playerMon.getHp() + "/100\nStatus: " + playerMon.getStatus()
+    style = "-fx-font-size: 20px;"
+  }
+  val middleLeftSegment = new VBox {
+    children = Seq(playerStatusText)
+    alignment = Pos.CenterLeft // Align text to the center
+    style = "-fx-border-color: blue;" // Add blue border around the box
+    padding = scalafx.geometry.Insets(10) // Add padding for the border
+  }
+
+  // Create the buttons layout
+  // __ player mon health and status
+  val middleRightSegment = new VBox {
+    children = Seq(
+      new HBox {
+        children = Seq(playerMonImage);
+        alignment = Pos.CenterLeft
+        hgrow = Priority.Always
+        fillHeight = true
+      }
+    )
+    spacing = 10 // Spacing between rows
+    alignment = Pos.CenterLeft // Align buttons to the center
+    style = "-fx-border-color: blue;" // Add blue border around the box
+    padding = scalafx.geometry.Insets(10) // Add padding for the border
+  }
+
+  val middleBar = new HBox {
+    prefHeight = 100 // Set preferred height for the bottom bar
+    maxHeight = 150 // Set Max height to 100, this ensures it doesnt fill up the scene
+    style = "-fx-background-color: rgba(0, 0, 0, 0.5);" // Set background color with opacity
+    // style = "-fx-background-color: white;" // Set background color to white
+    spacing = 20 // Set spacing between components
+    children = Seq(middleRightSegment, middleLeftSegment)
+    alignment = Pos.CenterLeft
+    style = "-fx-border-color: blue;" // Add blue border around the box
+    padding = scalafx.geometry.Insets(10) // Add padding for the border
+
+  }
+
   // _____Creating the Bottom Bar
   // Create the segments
   val textDisplay = new Text {
-    text = "FakeText: What will you do?"
+    text = roundReport + "What will you do?"
+    style = "-fx-font-size: 20px;"
     // You can set font size and other properties as needed
   }
 
+  // display round report here
   val leftSegment = new VBox {
     children = Seq(textDisplay)
     alignment = Pos.Center // Align text to the center
@@ -210,7 +341,9 @@ case class MainScene(controller: Controller) extends BaseScene {
 
   }
 
-  root = new StackPane { children = List(backgroundImage, bar) }
+  root = new StackPane { children = List(backgroundImage, bar, middleBar, upperBar) }
+  upperBar.alignmentInParent_=(scalafx.geometry.Pos.TopCenter)
+  middleBar.alignmentInParent_=(scalafx.geometry.Pos.CenterLeft)
   bar.alignmentInParent_=(scalafx.geometry.Pos.BottomCenter)
 
 }
@@ -225,10 +358,128 @@ case class AttackScene(controller: Controller) extends BaseScene {
   val screenContent = controller.getSceneContent()
   val playerMon = screenContent.player.getCurrentPokemon()
   val backgroundImage = new ImageView("file:src/main/scala/de/htwg/se/Pokeymon/aView/Gui/Pics/background.png")
+  val contents = controller.getSceneContent()
+  val player = contents.player
+  val opponent = contents.opponent
+  val oppMon = opponent.getCurrentPokemon()
+  val roundReport = contents.roundReport
+  val playerMonImage = new ImageView(s"file:src/main/scala/de/htwg/se/Pokeymon/aView/Gui/Pics/${playerMon.name}.png") {
+    fitWidth = 150 // Set the width of the image
+    fitHeight = 150 // Set the height of the image
+  }
+  val oppMonImage = new ImageView(s"file:src/main/scala/de/htwg/se/Pokeymon/aView/Gui/Pics/${oppMon.name}.png") {
+    fitWidth = 150 // Set the width of the image
+    fitHeight = 150 // Set the height of the image
+  }
 
   /// ___________Attack_____________
+
+  val backButton = new Button("back") {
+    minWidth = 150 // Increased by 50%
+    prefWidth = 225 // Increased by 50%
+    maxWidth = 300 // Increased by 50%
+    style = "-fx-font-size: 18px;" // Increased font size by 50%
+    onAction = () => {
+      controller.handleInput("back")
+    }
+  }
+  StackPane.setAlignment(backButton, Pos.BottomCenter) // Align button to the bottom center of the StackPane
+
+  // ______creating upperscreen_________//
+
+//____Upper Segment___________
+  // oppMon Health and status
+  val oppStatusText = new Text {
+    text = "Health:" + oppMon.getHp() + "/100\nStatus: " + oppMon.getStatus()
+    style = "-fx-font-size: 20px;"
+    // You can customize the font size, color, etc. as needed
+  }
+  val upperLeftSegment = new VBox {
+    children = Seq(oppStatusText)
+    style = "-fx-background-color: rgba(211, 211, 211, 0.5);"
+    alignment = Pos.CenterRight // Align text to the center
+    style = "-fx-border-color: blue;" // Add blue border around the box
+    padding = scalafx.geometry.Insets(10) // Add padding for the border
+  }
+
+  // Create the buttons l
+  // op mon picture
+  val upperRightSegment = new VBox {
+    children = Seq(
+      new HBox {
+        children = Seq(oppMonImage);
+        alignment = Pos.CenterRight
+        hgrow = Priority.Always
+        fillHeight = true
+      }
+    )
+    spacing = 10 // Spacing between rows
+    alignment = Pos.CenterRight // Align buttons to the center
+    style = "-fx-border-color: blue;" // Add blue border around the box
+    padding = scalafx.geometry.Insets(10) // Add padding for the border
+  }
+
+  val upperBar = new HBox {
+    prefHeight = 100 // Set preferred height for the bottom bar
+    maxHeight = 150 // Set Max height to 100, this ensures it doesnt fill up the scene
+    style = "-fx-background-color: rgba(0, 0, 0, 0.5);" // Set background color with opacity
+    // style = "-fx-background-color: white;" // Set background color to white
+    spacing = 20 // Set spacing between components
+    children = Seq(upperLeftSegment, upperRightSegment)
+    alignment = Pos.CenterRight
+    style = "-fx-border-color: blue;" // Add blue border around the box
+    padding = scalafx.geometry.Insets(10) // Add padding for the border
+
+  }
+
+  // ____Middle Segment___________
+  // ___player mon picture
+  val playerStatusText = new Text {
+    text = "Health:" + playerMon.getHp() + "/100\nStatus: " + playerMon.getStatus()
+    style = "-fx-font-size: 20px;"
+  }
+  val middleLeftSegment = new VBox {
+    children = Seq(playerStatusText)
+    alignment = Pos.CenterLeft // Align text to the center
+    style = "-fx-border-color: blue;" // Add blue border around the box
+    padding = scalafx.geometry.Insets(10) // Add padding for the border
+  }
+
+  // Create the buttons layout
+  // __ player mon health and status
+  val middleRightSegment = new VBox {
+    children = Seq(
+      new HBox {
+        children = Seq(playerMonImage);
+        alignment = Pos.CenterLeft
+        hgrow = Priority.Always
+        fillHeight = true
+      }
+    )
+    spacing = 10 // Spacing between rows
+    alignment = Pos.CenterLeft // Align buttons to the center
+    style = "-fx-border-color: blue;" // Add blue border around the box
+    padding = scalafx.geometry.Insets(10) // Add padding for the border
+  }
+
+  val middleBar = new HBox {
+    prefHeight = 100 // Set preferred height for the bottom bar
+    maxHeight = 150 // Set Max height to 100, this ensures it doesnt fill up the scene
+    style = "-fx-background-color: rgba(0, 0, 0, 0.5);" // Set background color with opacity
+    // style = "-fx-background-color: white;" // Set background color to white
+    spacing = 20 // Set spacing between components
+    children = Seq(middleRightSegment, middleLeftSegment)
+    alignment = Pos.CenterLeft
+    style = "-fx-border-color: blue;" // Add blue border around the box
+    padding = scalafx.geometry.Insets(10) // Add padding for the border
+
+  }
+
   val attackButtons: Seq[Button] = playerMon.moves.map { move =>
     new Button(move.name) {
+      minWidth = 150 // Increased by 50%
+      prefWidth = 225 // Increased by 50%
+      maxWidth = 300 // Increased by 50%
       onAction = () => {
         controller.handleInput(move.name)
       }
@@ -253,8 +504,10 @@ case class AttackScene(controller: Controller) extends BaseScene {
     style = "-fx-border-color: blue;" // Add blue border around the box
     padding = scalafx.geometry.Insets(10) // Add padding for the border
   }
-  root = new StackPane { children = List(backgroundImage, bottomBar) }
+  root = new StackPane { children = List(backgroundImage, bottomBar, middleBar, upperBar, backButton) }
   bottomBar.alignmentInParent_=(Pos.BottomCenter)
+  upperBar.alignmentInParent_=(scalafx.geometry.Pos.TopCenter)
+  middleBar.alignmentInParent_=(scalafx.geometry.Pos.CenterLeft)
 
 }
 
@@ -268,6 +521,16 @@ case class SwitchScene(controller: Controller) extends BaseScene {
   val screenContent = controller.getSceneContent()
   val player = screenContent.player
 
+  val backButton = new Button("back") {
+    minWidth = 150 // Increased by 50%
+    prefWidth = 225 // Increased by 50%
+    maxWidth = 300 // Increased by 50%
+    style = "-fx-font-size: 18px;" // Increased font size by 50%
+    onAction = () => {
+      controller.handleInput("back")
+    }
+  }
+  StackPane.setAlignment(backButton, Pos.BottomCenter) // Align button to the bottom center of the StackPa
   // Create a GridPane to contain Pokémon buttons and images
   val pokemonGrid = new GridPane {
     hgap = 10 // Horizontal gap between cells
@@ -305,7 +568,7 @@ case class SwitchScene(controller: Controller) extends BaseScene {
 
   // Create the root StackPane and add background image and the Pokémon grid
   root = new StackPane {
-    children = List(backgroundImage, pokemonGrid)
+    children = List(backgroundImage, pokemonGrid, backButton)
   }
 
 }
@@ -324,12 +587,32 @@ case class BattleScene(controller: Controller) extends BaseScene {
 
   val backButton = new Button("Back") {
     onAction = () => {
-      controller.handleInput("z")
+      controller.undo
     }
   }
 
+  // Create an HBox to contain the buttons
+  val buttonBox = new HBox {
+    spacing = 20 // Spacing between buttons
+    alignment = Pos.Center // Align buttons to the center horizontally
+    children = List(confirmButton, backButton)
+  }
+
+  // Set the preferred size for the buttons
+  confirmButton.prefWidth = 200
+  confirmButton.prefHeight = 50
+  backButton.prefWidth = 200
+  backButton.prefHeight = 50
+
+  // Create a VBox to contain all elements
+  val vbox = new VBox {
+    alignment = Pos.Center // Align content to the center vertically
+    children = List(text, buttonBox) // Add text and buttonBox to VBox
+  }
+
+  // Create the root StackPane and add background image and the VBox
   root = new StackPane {
-    children = List(backgroundImage, confirmButton)
+    children = List(backgroundImage, vbox)
   }
 
 }
@@ -340,9 +623,19 @@ case class ItemScene(controller: Controller) extends BaseScene {
   // gameData = controller.game.getData
   val backgroundImage = new ImageView("file:src/main/scala/de/htwg/se/Pokeymon/aView/Gui/Pics/background.png")
   val text = new Text("ItemScene")
+  val backButton = new Button("back") {
+    minWidth = 150 // Increased by 50%
+    prefWidth = 225 // Increased by 50%
+    maxWidth = 300 // Increased by 50%
+    style = "-fx-font-size: 18px;" // Increased font size by 50%
+    onAction = () => {
+      controller.handleInput("back")
+    }
+  }
+  StackPane.setAlignment(backButton, Pos.BottomCenter) // Align button to the bottom center of the StackPane
 
   root = new StackPane {
-    children = List(backgroundImage)
+    children = List(backgroundImage, backButton)
   }
 
 }
@@ -354,8 +647,40 @@ case class DeadScene(controller: Controller) extends BaseScene {
   val backgroundImage = new ImageView("file:src/main/scala/de/htwg/se/Pokeymon/aView/Gui/Pics/background.png")
   val text = new Text("Dead")
 
+  val confirmButton = new Button("Yes") {
+    onAction = () => {
+      controller.handleInput("ja")
+    }
+  }
+
+  val backButton = new Button("Back") {
+    onAction = () => {
+      controller.undo
+    }
+  }
+
+  // Create an HBox to contain the buttons
+  val buttonBox = new HBox {
+    spacing = 20 // Spacing between buttons
+    alignment = Pos.Center // Align buttons to the center horizontally
+    children = List(confirmButton, backButton)
+  }
+
+  // Set the preferred size for the buttons
+  confirmButton.prefWidth = 200
+  confirmButton.prefHeight = 50
+  backButton.prefWidth = 200
+  backButton.prefHeight = 50
+
+  // Create a VBox to contain all elements
+  val vbox = new VBox {
+    alignment = Pos.Center // Align content to the center vertically
+    children = List(text, buttonBox) // Add text and buttonBox to VBox
+  }
+
+  // Create the root StackPane and add background image and the VBox
   root = new StackPane {
-    children = List(backgroundImage)
+    children = List(backgroundImage, vbox)
   }
 
 }
