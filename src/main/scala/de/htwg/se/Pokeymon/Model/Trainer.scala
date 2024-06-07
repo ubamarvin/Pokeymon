@@ -15,6 +15,12 @@ import de.htwg.se.Pokeymon.Model.Pokemon
 case class Trainer(pokemons: Vector[Pokemon], currentPokemon: Pokemon = evoli, choice: Option[Choice] = None): // Extend with Items
   val max_pokemon = 6
 
+  def getPokemons(): Vector[Pokemon] =
+    pokemons
+
+  def getCurrentPokemon(): Pokemon =
+    currentPokemon
+
   def removePokemon(pokemonName: String): Trainer =
     this.copy(pokemons = pokemons.filterNot(_.name == pokemonName))
 

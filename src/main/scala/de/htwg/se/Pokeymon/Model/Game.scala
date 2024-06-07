@@ -6,7 +6,11 @@ import de.htwg.se.Pokeymon.Model.Setup.tackle
 import scala.util.{Try, Success, Failure}
 
 //case class Content(state: String = " ", player: Trainer, opponent: Trainer, msg: String = "", pokedex: Pokedex)
-case class Content(state: String = "")
+//_______________Content for Gui___________________________//
+//trait Content
+//
+
+case class Content(state: String, player: Trainer, opponent: Trainer, roundReport: String = "", pokedex: Pokedex = Setup.pokedex)
 trait GameState {
   def processInput(input: String): GameState
   def gameToString(): String
@@ -84,7 +88,7 @@ case class YourDeadState(player: Trainer, opponent: Trainer, roundReport: String
     }
   }
   override def getContent(): Content =
-    new Content("Dead")
+    new Content("dead", player, opponent, roundReport)
 
   override def gameToString(): String = {
     val result = Try {
@@ -124,7 +128,7 @@ case class PickPokemonState(player: Trainer, pokedex: Pokedex, picks: Int, oppon
   val choose_msg = eol + "type in the name of the pokemon you wish to add to your team:"
 
   override def getContent(): Content =
-    new Content("pick")
+    new Content("pick", player, opponent, "", pokedex)
   override def gameToString(): String = {
     display(player, pokedex, picks)
   }
@@ -176,7 +180,7 @@ case class PickPokemonState(player: Trainer, pokedex: Pokedex, picks: Int, oppon
 case class MainState(player: Trainer, opponent: Trainer, roundReport: String = "") extends GameState {
 
   override def getContent(): Content =
-    new Content("main")
+    new Content("main", player, opponent, roundReport)
   override def gameToString(): String =
     display(player, opponent)
   override def processInput(input: String): GameState = {
@@ -220,7 +224,7 @@ case class BattleEvalState(player: Trainer, opponent: Trainer) extends GameState
   val switchPokemonHandler = new SwitchPokemonHandler(useItemHandler) // or just call it Handler
 
   override def getContent(): Content =
-    new Content("battle")
+    new Content("battle", player, opponent)
   override def gameToString(): String = "are you sure? "
   // classic GameScreen
   override def processInput(input: String): GameState =
@@ -255,7 +259,7 @@ case class ChooseAttackState(player: Trainer, opponent: Trainer) extends GameSta
     moves.find(_.name.equalsIgnoreCase(moveName))
 
   def getContent(): Content =
-    new Content("attack")
+    new Content("attack", player, opponent)
 
   override def gameToString(): String = display(player, opponent)
   override def processInput(input: String): GameState =
@@ -289,7 +293,7 @@ case class ChooseAttackState(player: Trainer, opponent: Trainer) extends GameSta
 
 case class ChooseItemState(player: Trainer, opponent: Trainer) extends GameState {
   def getContent(): Content =
-    new Content("item")
+    new Content("item", player, opponent)
   override def gameToString(): String = display(player, opponent)
   override def processInput(input: String): GameState =
     input.toLowerCase() match {
@@ -313,7 +317,7 @@ case class ChooseItemState(player: Trainer, opponent: Trainer) extends GameState
 
 case class SwitchPokemonState(player: Trainer, opponent: Trainer) extends GameState {
   def getContent(): Content =
-    new Content("switch")
+    new Content("switch", player, opponent)
   override def gameToString(): String = display(player, opponent)
   override def processInput(input: String): GameState =
     input.toLowerCase() match {

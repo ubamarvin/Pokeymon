@@ -33,6 +33,9 @@ case class Pokemon(
   def movesToString(): String =
     moves.map(_.moveToString()).mkString("\n")
 
+  def getMoves(): List[Move] =
+    moves
+
   override def toString: String =
     this.name + " Hp: " + this.hp + " Status: " + this.status.getStatusName()
 

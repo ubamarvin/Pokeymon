@@ -33,4 +33,5 @@ class Controller(var game: Game) extends Observable {
 
   def getSceneContent(): Content =
     game.getContent()
+
 }

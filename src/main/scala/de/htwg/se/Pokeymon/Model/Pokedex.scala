@@ -6,7 +6,7 @@ import de.htwg.se.Pokeymon.Model.Setup._
 //The purpose of this class is to hand out a Pokemon to a Trainer
 //@showAvailablePokemon returns String represantaion of all available Pokemon by name ToDo: Add rep by lvl,movepool,type etc
 //@choosePokemon returns the @param name specified Pokemon and the new Pokedex reduced by that Pokemon
-class Pokedex(available_pokemon: Vector[Pokemon] = available_pokemon):
+class Pokedex(val available_pokemon: Vector[Pokemon] = available_pokemon):
 
   def showAvailablePokemon(): String = available_pokemon.map(_.name).mkString(", ")
 
