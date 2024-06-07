@@ -125,6 +125,10 @@ case class PickPokeScene(controller: Controller) extends BaseScene {
   // Create the VBox for Pokémon buttons
 
   val buttonDone = new Button("Done") {
+    minWidth = 150 // Increased by 50%
+    prefWidth = 225 // Increased by 50%
+    maxWidth = 300 // Increased by 50%
+    style = "-fx-font-size: 18px;" // Increased font size by 50%
     onAction = () => {
       controller.handleInput("d")
     }
