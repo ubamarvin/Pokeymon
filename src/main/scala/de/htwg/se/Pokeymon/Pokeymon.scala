@@ -1,14 +1,16 @@
 package de.htwg.se.Pokeymon
 
 import scala.concurrent.{Future, ExecutionContext}
-import de.htwg.se.Pokeymon.Controller.Controller
+import de.htwg.se.Pokeymon.Controller._
+import de.htwg.se.Pokeymon.Controller.ControllerComponent.ControllerBaseImplemtation.Controller
 import de.htwg.se.Pokeymon.aView.Tui
-import de.htwg.se.Pokeymon.Model.Game
+import de.htwg.se.Pokeymon.Model.GameComponent.Game
 import de.htwg.se.Pokeymon.aView.Gui.PokeGui
 
 object pokeymon {
-  val game = new Game
-  val controller = new Controller(game) // why new? //
+  // val game = new Game
+  val controller = new Controller(new Game) // why new? //
+
   val tui = new Tui(controller)
 
   val PokeGui = new PokeGui(controller) // Init Gui and give it power!

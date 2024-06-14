@@ -1,5 +1,7 @@
-package de.htwg.se.Pokeymon.Model
+package de.htwg.se.Pokeymon.Model.GameComponent
 import de.htwg.se.Pokeymon.Model
+import de.htwg.se.Pokeymon.Model.GameData._
+import de.htwg.se.Pokeymon.Model.GameComponent._
 // Status Strategy
 // Pokemon can be with no status, burned, poisoned, asleep or paralyzed
 // Based on the status the POkemon will behave differently befor or after it executes its move

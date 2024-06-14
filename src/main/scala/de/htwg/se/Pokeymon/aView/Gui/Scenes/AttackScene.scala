@@ -3,7 +3,7 @@ package de.htwg.se.Pokeymon.aView.Gui.Scenes
 import de.htwg.se.Pokeymon.aView.Gui.Scenes.BaseScene
 
 import de.htwg.se.Pokeymon.Util.Observer
-import de.htwg.se.Pokeymon.Controller.Controller
+import de.htwg.se.Pokeymon.Controller.ControllerComponent.ControllerInterface
 
 import scalafx.application.JFXApp3
 import scalafx.Includes._
@@ -21,15 +21,15 @@ import com.sun.javafx.application.PlatformImpl
 
 import de.htwg.se.Pokeymon.Model._
 
-case class AttackScene(controller: Controller) extends BaseScene {
+case class AttackScene(controller: ControllerInterface) extends BaseScene {
   // backgroundImage.fitWidth = 800 // Match the scene width
   // backgroundImage.fitHeight = 600 // Match the scene height
   // gameData = controller.game.getData
   val AttackText = new Text("AttackScene")
-  val screenContent = controller.getSceneContent()
+  val screenContent = controller.getSceneContent
   val playerMon = screenContent.player.getCurrentPokemon()
   val backgroundImage = new ImageView("file:src/main/scala/de/htwg/se/Pokeymon/aView/Gui/Pics/background.png")
-  val contents = controller.getSceneContent()
+  val contents = controller.getSceneContent
   val player = contents.player
   val opponent = contents.opponent
   val oppMon = opponent.getCurrentPokemon()

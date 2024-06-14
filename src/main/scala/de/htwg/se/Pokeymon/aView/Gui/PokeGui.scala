@@ -2,7 +2,7 @@ package de.htwg.se.Pokeymon.aView.Gui
 
 import de.htwg.se.Pokeymon.aView.Gui.Scenes.{BattleScene, PickPokeScene, BaseScene, MainScene, AttackScene, ItemScene, SwitchScene, DeadScene, OpeningScene}
 import de.htwg.se.Pokeymon.Util.Observer
-import de.htwg.se.Pokeymon.Controller.Controller
+import de.htwg.se.Pokeymon.Controller.ControllerComponent.ControllerInterface
 
 import scalafx.application.JFXApp3
 import scalafx.Includes._
@@ -21,7 +21,7 @@ import com.sun.javafx.application.PlatformImpl
 import de.htwg.se.Pokeymon.Model._
 
 //Mirrors ContextClass
-case class PokeGui(controller: Controller) extends JFXApp3 with Observer {
+case class PokeGui(controller: ControllerInterface) extends JFXApp3 with Observer {
   controller.add(this)
   PlatformImpl.startup(() => {})
 
@@ -30,7 +30,7 @@ case class PokeGui(controller: Controller) extends JFXApp3 with Observer {
       if (stage != null) {
 
         println("Gui.update")
-        val content = controller.getSceneContent()
+        val content = controller.getSceneContent
 
         content.state match {
           case "pick" =>

@@ -3,7 +3,7 @@ package de.htwg.se.Pokeymon.aView.Gui.Scenes
 import de.htwg.se.Pokeymon.aView.Gui.Scenes.BaseScene
 
 import de.htwg.se.Pokeymon.Util.Observer
-import de.htwg.se.Pokeymon.Controller.Controller
+import de.htwg.se.Pokeymon.Controller.ControllerComponent.ControllerInterface
 
 import scalafx.application.JFXApp3
 import scalafx.Includes._
@@ -21,13 +21,13 @@ import com.sun.javafx.application.PlatformImpl
 
 import de.htwg.se.Pokeymon.Model._
 
-case class PickPokeScene(controller: Controller) extends BaseScene {
+case class PickPokeScene(controller: ControllerInterface) extends BaseScene {
   val backgroundImage = new ImageView("file:src/main/scala/de/htwg/se/Pokeymon/aView/Gui/Pics/background.png")
 
   // backgroundImage.fitWidth = 800 // Match the scene width
   // backgroundImage.fitHeight = 600 // Match the scene height
   // gameData = controller.game.getData
-  val contents = controller.getSceneContent()
+  val contents = controller.getSceneContent
   val pokedex = contents.pokedex
   val text = new Text("PickPoke")
 

@@ -1,6 +1,8 @@
-package de.htwg.se.Pokeymon.Model
-import de.htwg.se.Pokeymon.Model.Setup._
-import de.htwg.se.Pokeymon.Model.Pokemon
+package de.htwg.se.Pokeymon.Model.GameData
+import de.htwg.se.Pokeymon.Model.GameData.Setup._
+import de.htwg.se.Pokeymon.Model.GameData.Pokemon
+import de.htwg.se.Pokeymon.Model.GameData._
+import de.htwg.se.Pokeymon.Model.GameComponent._
 
 //________________Class TRAINER______________________
 

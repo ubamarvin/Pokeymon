@@ -3,7 +3,7 @@ package de.htwg.se.Pokeymon.aView.Gui.Scenes
 import de.htwg.se.Pokeymon.aView.Gui.Scenes.BaseScene
 
 import de.htwg.se.Pokeymon.Util.Observer
-import de.htwg.se.Pokeymon.Controller.Controller
+import de.htwg.se.Pokeymon.Controller.ControllerComponent.ControllerInterface
 
 import scalafx.application.JFXApp3
 import scalafx.Includes._
@@ -21,13 +21,13 @@ import com.sun.javafx.application.PlatformImpl
 
 import de.htwg.se.Pokeymon.Model._
 
-case class SwitchScene(controller: Controller) extends BaseScene {
+case class SwitchScene(controller: ControllerInterface) extends BaseScene {
   // backgroundImage.fitWidth = 800 // Match the scene width
   // backgroundImage.fitHeight = 600 // Match the scene height
   // gameData = controller.game.getData
   val backgroundImage = new ImageView("file:src/main/scala/de/htwg/se/Pokeymon/aView/Gui/Pics/background.png")
   val text = new Text("SwitchScene")
-  val screenContent = controller.getSceneContent()
+  val screenContent = controller.getSceneContent
   val player = screenContent.player
 
   val backButton = new Button("back") {
