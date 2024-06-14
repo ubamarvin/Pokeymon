@@ -1,8 +1,10 @@
 package de.htwg.se.Pokeymon.Controller.ControllerComponent.ControllerBaseImplementation
+import de.htwg.se.Pokeymon.Controller.ControllerComponent.ControllerInterface
+import de.htwg.se.Pokeymon.Model.GameComponent.Game
 
 import de.htwg.se.Pokeymon.Util.Command
 
-class HandleInputCommand(input: String, controller: ControllerInterface) extends Command {
+class HandleInputCommand(input: String, controller: Controller) extends Command {
   override def executeStep: Unit =
     controller.game = controller.game.handleInput(input)
 

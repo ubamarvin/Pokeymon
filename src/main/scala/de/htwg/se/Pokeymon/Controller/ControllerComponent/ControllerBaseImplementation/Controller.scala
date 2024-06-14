@@ -1,13 +1,11 @@
 package de.htwg.se.Pokeymon.Controller.ControllerComponent.ControllerBaseImplementation
-package de.htwg.se.Pokeymon.Controller.ControllerComponent.ControllerInterface
+import de.htwg.se.Pokeymon.Controller.ControllerComponent.ControllerInterface
 import de.htwg.se.Pokeymon.Util.Observable
 import de.htwg.se.Pokeymon.Model.GameComponent.GameInterface
-//import de.htwg.se.Pokeymon.Model.Content
-//import de.htwg.se.Pokeymon.Model.CommandManager
-import de.htwg.se.Pokeymon.Model.GameData._
-import de.htwg.se.Pokeymon.Model.GameComponent._
+import de.htwg.se.Pokeymon.Model.CommandManager
+import de.htwg.se.Pokeymon.Model.GameComponent.Content
 
-class Controller(var game: GameInterface) extends ControllerInterface with Observable {
+class Controller(var game: GameInterface) extends Observable with ControllerInterface {
   private val commandManager = new CommandManager
 
   // UserInputHandler for all states

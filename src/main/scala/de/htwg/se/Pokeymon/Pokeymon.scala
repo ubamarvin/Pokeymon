@@ -2,7 +2,7 @@ package de.htwg.se.Pokeymon
 
 import scala.concurrent.{Future, ExecutionContext}
 import de.htwg.se.Pokeymon.Controller._
-import de.htwg.se.Pokeymon.Controller.ControllerComponent.ControllerBaseImplemtation.Controller
+import de.htwg.se.Pokeymon.Controller.ControllerComponent.ControllerBaseImplementation.Controller
 import de.htwg.se.Pokeymon.aView.Tui
 import de.htwg.se.Pokeymon.Model.GameComponent.Game
 import de.htwg.se.Pokeymon.aView.Gui.PokeGui

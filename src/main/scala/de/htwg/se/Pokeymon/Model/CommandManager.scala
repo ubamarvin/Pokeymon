@@ -1,5 +1,7 @@
 package de.htwg.se.Pokeymon.Model
 import de.htwg.se.Pokeymon.Util.Command
+import de.htwg.se.Pokeymon.Model.GameData._
+import de.htwg.se.Pokeymon.Model.GameComponent._
 
 //command needs to be playersChoice
 class CommandManager {
