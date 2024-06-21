@@ -5,7 +5,7 @@ import de.htwg.se.Pokeymon.Model.GameComponent.GameInterface
 import de.htwg.se.Pokeymon.Model.CommandManager
 import de.htwg.se.Pokeymon.Model.GameComponent.Content
 
-class Controller(var game: GameInterface) extends Observable with ControllerInterface {
+class Controller @Inject() (var game: GameInterface) extends Observable with ControllerInterface {
   private val commandManager = new CommandManager
 
   // UserInputHandler for all states
