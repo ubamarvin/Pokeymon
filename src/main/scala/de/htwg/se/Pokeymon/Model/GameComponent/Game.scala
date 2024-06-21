@@ -4,13 +4,15 @@ import de.htwg.se.Pokeymon.Model.GameData.Setup.opponent
 import de.htwg.se.Pokeymon.Model.GameData.Setup.tackle
 import de.htwg.se.Pokeymon.Model.GameData._
 import de.htwg.se.Pokeymon.Model.GameComponent._
+import com.google.inject.Inject
+import com.google.inject.name.Named
+import scala.collection.immutable.Vector
 
 import scala.util.{Try, Success, Failure}
 
 //case class Content(state: String = " ", player: Trainer, opponent: Trainer, msg: String = "", pokedex: Pokedex)
 //_______________Content for Gui___________________________//
 //trait Content
-//
 
 case class Content(state: String, player: Trainer, opponent: Trainer, roundReport: String = "", pokedex: Pokedex = Setup.pokedex)
 trait GameState {
@@ -20,17 +22,16 @@ trait GameState {
 }
 
 // Context classssss
-case class Game(
-    val state: GameState = new PickPokemonState(Trainer(Vector()), Setup.pokedex, picks = 0, Setup.opponent),
+case class Game @Inject() (
+    val state: GameState,
+    // val state: GameState = new PickPokemonState(Trainer(Vector()), Setup.pokedex, picks = 0, Setup.opponent),
     val undoStack: Vector[GameState] = Vector.empty,
     val redoStack: Vector[GameState] = Vector.empty
 ) extends GameInterface {
 
   // Handles, input, changesState and updates the StateStack
   def handleInput(input: String): Game =
-    // Get the next State
     val NextState = state.processInput(input)
-    // save the previous State in Undo Stack
     val updUndoStack = state +: undoStack
     this.copy(NextState, updUndoStack)
     // this.copy(state = NextState)
