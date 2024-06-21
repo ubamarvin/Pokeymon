@@ -4,6 +4,8 @@ import de.htwg.se.Pokeymon.Util.Observable
 import de.htwg.se.Pokeymon.Model.GameComponent.GameInterface
 import de.htwg.se.Pokeymon.Model.CommandManager
 import de.htwg.se.Pokeymon.Model.GameComponent.Content
+import com.google.inject.Inject
+import com.google.inject.name.Named
 
 class Controller @Inject() (var game: GameInterface) extends Observable with ControllerInterface {
   private val commandManager = new CommandManager
