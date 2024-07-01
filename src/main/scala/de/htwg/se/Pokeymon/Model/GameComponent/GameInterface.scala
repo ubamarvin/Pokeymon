@@ -8,4 +8,7 @@ trait GameInterface {
   def getContent(): Content
   def gameUndo(): Game
   def gameRedo(): Game
+  def state: GameState
+  def undoStack: Vector[GameState]
+  def redoStack: Vector[GameState]
 }

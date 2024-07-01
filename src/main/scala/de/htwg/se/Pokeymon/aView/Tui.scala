@@ -12,9 +12,11 @@ class Tui(controller: ControllerInterface) extends Observer {
     input match {
       case "q" =>
         println("Game quitted")
-      case "z" => controller.undo
-      case "y" => controller.redo
-      case _   => controller.handleInput(input)
+      case "z"    => controller.undo
+      case "y"    => controller.redo
+      case "save" => controller.save
+      case "load" => controller.load
+      case _      => controller.handleInput(input)
     }
   }
   // update must also communicate game state

@@ -13,4 +13,13 @@ Patterns:
 add switchifdead in choicehandler when only player attacks
 add switchdead in choicehandler after status affect
 
+<>aggregation
+<<>>composition
+pokedex-----<>pokemon----<>trainer<>--------item
+             choice------<>trainer
+status------<<>>pokemon<<>>-------Move
+
+
+attackStrategy-------<<>>choiceHandler------<<>>>game<>-----setup
+                              choice-------<>game
     
