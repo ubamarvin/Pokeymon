@@ -12,4 +12,5 @@ case class Move(
 ) {
   def moveToString(): String =
     this.name + " " + " Power: " + power + " Type: " + moveType + " Effect: " + statusEffect
+
 }
