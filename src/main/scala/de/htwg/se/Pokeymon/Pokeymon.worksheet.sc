@@ -30,7 +30,3 @@ def battle(pk1: Pokemon, pk2: Pokemon) =
 val battleField =
   List("             ", "             ", "             ", "             ")
 
-//Soll die Menge hp in Prozent in Form von Balken ausdrucken
-//def PrintHP(pk: Pokemon): String =
-//  val healthBar = "||||||||||"
-//

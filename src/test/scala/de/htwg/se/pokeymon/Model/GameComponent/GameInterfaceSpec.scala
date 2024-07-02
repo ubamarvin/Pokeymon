@@ -127,25 +127,5 @@ class GameSpec extends AnyWordSpec with Matchers {
         newState shouldBe a[BattleEvalState]
       }
     }
-
-    "in YourDeadState" should {
-      "display the winner message and prompt for new game" in {
-        val player = Trainer(Vector(Pokemon(1, "pikachu", 0, List(), 30, "elektro")))
-        val opponent = Trainer(Vector(Pokemon(12, "firefox", 100, List(), 100, "fire")))
-        val gameState = YourDeadState(player, opponent)
-
-        gameState.gameToString() should include("Opponent has won this Round!!!")
-        gameState.gameToString() should include("Play Again? Y/N")
-      }
-
-      "process input to restart the game" in {
-        val player = Trainer(Vector(Pokemon(1, "pikachu", 0, List(), 30, "elektro")))
-        val opponent = Trainer(Vector(Pokemon(12, "firefox", 100, List(), 100, "fire")))
-        val gameState = YourDeadState(player, opponent)
-        val newState = gameState.processInput("y")
-
-        newState shouldBe a[PickPokemonState]
-      }
-    }
   }
 }

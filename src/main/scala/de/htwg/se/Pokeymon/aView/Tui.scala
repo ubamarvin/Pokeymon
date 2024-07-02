@@ -11,11 +11,11 @@ class Tui(controller: ControllerInterface) extends Observer {
     input match {
       case "q" =>
         println("Game quitted")
-      case "z"    => controller.undo
-      case "y"    => controller.redo
+      case "z" => controller.undo
+      case "y" => controller.redo
       case "save" => controller.save
       case "load" => controller.load
-      case _      => controller.handleInput(input)
+      case _   => controller.handleInput(input)
     }
   }
   override def update: Unit = println(controller.printDisplay)
