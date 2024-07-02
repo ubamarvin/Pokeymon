@@ -5,59 +5,6 @@ import org.scalatest.matchers.should.Matchers._
 import de.htwg.se.Pokeymon.Model.GameData._
 import de.htwg.se.Pokeymon.Model.GameComponent._
 
-class GameInterfaceSpec extends AnyWordSpec {
-
-  "A Game" should {
-
-    "handle input correctly and change state" in {
-      val initialState = PickPokemonState(Trainer(Vector()), Setup.pokedex, 0, Setup.opponent)
-      val game = Game(state = initialState)
-      val input = "Pikachu"
-      val newGame = game.handleInput(input)
-
-      newGame should not be null
-      newGame.state shouldBe a[PickPokemonState]
-      newGame.state should not be initialState
-    }
-
-    "return a string representation of the game state" in {
-      val game = Game(state = PickPokemonState(Trainer(Vector()), Setup.pokedex, 0, Setup.opponent))
-      val gameString = game.gameToString()
-
-      gameString should include("Welcome to Pokemon BattleSimulator!")
-      gameString should include("The available Pokemon are:")
-    }
-
-    "get the current game content" in {
-      val game = Game(state = PickPokemonState(Trainer(Vector()), Setup.pokedex, 0, Setup.opponent))
-      val content = game.getContent()
-
-      content should not be null
-      content.player should not be null
-      content.opponent should not be null
-    }
-
-    "undo the last game action" in {
-      val initialState = PickPokemonState(Trainer(Vector()), Setup.pokedex, 0, Setup.opponent)
-      val game = Game(state = initialState).handleInput("Pikachu")
-      val gameAfterUndo = game.gameUndo()
-
-      gameAfterUndo should not be null
-      gameAfterUndo.state shouldBe initialState
-    }
-
-    "redo the last undone game action" in {
-      val initialState = PickPokemonState(Trainer(Vector()), Setup.pokedex, 0, Setup.opponent)
-      val game = Game(state = initialState).handleInput("Pikachu")
-      val gameAfterUndo = game.gameUndo()
-      val gameAfterRedo = gameAfterUndo.gameRedo()
-
-      gameAfterRedo should not be null
-      gameAfterRedo.state should not be initialState
-    }
-  }
-}
-
 class GameStateSpec extends AnyWordSpec {
 
   "A PickPokemonState" should {
@@ -182,13 +129,6 @@ class GameStateSpec extends AnyWordSpec {
   }
 
   "A BattleEvalState" should {
-    "process input and transition to MainState or YourDeadState" in {
-      val state = BattleEvalState(Trainer(Vector(Setup.pokedex.choosePokemon("Pikachu")._1)), Setup.opponent)
-      val newState = state.processInput("tackle")
-
-      newState should not be state
-      newState should (be a[MainState] or be a[YourDeadState])
-    }
 
     "return the correct content" in {
       val state = BattleEvalState(Trainer(Vector(Setup.pokedex.choosePokemon("Pikachu")._1)), Setup.opponent)

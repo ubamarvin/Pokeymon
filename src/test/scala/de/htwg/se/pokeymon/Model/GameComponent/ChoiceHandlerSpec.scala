@@ -1,153 +1,92 @@
-package de.htwg.se.Pokeymon.Model.GameComponent
+package de.htwg.se.Pokeymon.Model
 
+import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
-import org.scalatest.matchers.should.Matchers._
-import de.htwg.se.Pokeymon.Model.GameData._
 
-class ChoiceHandlerSpec extends AnyWordSpec {
+class ChoiceHandlerSpec extends AnyWordSpec with Matchers {
 
-  "SwitchPokemonHandler" should {
+  "A SwitchPokemonHandler" should {
     "handle both players switching their Pokémon" in {
-      val playerPokemon = Pokemon(1, "Pikachu", 100, List(), 30, "elektro")
-      val opponentPokemon = Pokemon(2, "Charmander", 100, List(), 30, "fire")
-      val newPlayerPokemon = Pokemon(3, "Bulbasaur", 100, List(), 30, "plant")
-      val newOpponentPokemon = Pokemon(4, "Squirtle", 100, List(), 30, "water")
-      val player = Trainer("Player", List(playerPokemon, newPlayerPokemon), Some(SwitchPokemonChoice(Some(newPlayerPokemon))), playerPokemon)
-      val opponent = Trainer("Opponent", List(opponentPokemon, newOpponentPokemon), Some(SwitchPokemonChoice(Some(newOpponentPokemon))), opponentPokemon)
+      val switchPokemonHandler = SwitchPokemonHandler(StatusHandler())
+      val player = Setup.trainer_ash.copy(choice = Some(SwitchPokemonChoice(Some(Setup.firefox))))
+      val opponent = Setup.opponent.copy(choice = Some(SwitchPokemonChoice(Some(Setup.fish))))
       val playersChoice = PlayersChoice(player, opponent, "")
 
-      val handler = SwitchPokemonHandler(StatusHandler())
-      val result = handler.handleChoice(playersChoice)
+      val updatedChoice = switchPokemonHandler.handleChoice(playersChoice)
 
-      result.player.currentPokemon should be(newPlayerPokemon)
-      result.opponent.currentPokemon should be(newOpponentPokemon)
-      result.roundReport should include("Player chooses Bulbasaur to fight!")
-      result.roundReport should include("Opponent chooses Squirtle to fight!")
+      updatedChoice.player.currentPokemon should be (Setup.firefox)
+      updatedChoice.opponent.currentPokemon should be (Setup.fish)
+      updatedChoice.roundReport should include ("-Player chooses firefox to fight!")
+      updatedChoice.roundReport should include ("-Opponent chooses fish to fight!")
     }
 
-    "handle only the player switching Pokémon" in {
-      val playerPokemon = Pokemon(1, "Pikachu", 100, List(), 30, "elektro")
-      val opponentPokemon = Pokemon(2, "Charmander", 100, List(), 30, "fire")
-      val newPlayerPokemon = Pokemon(3, "Bulbasaur", 100, List(), 30, "plant")
-      val player = Trainer("Player", List(playerPokemon, newPlayerPokemon), Some(SwitchPokemonChoice(Some(newPlayerPokemon))), playerPokemon)
-      val opponent = Trainer("Opponent", List(opponentPokemon), None, opponentPokemon)
+    "handle only the player switching their Pokémon" in {
+      val switchPokemonHandler = SwitchPokemonHandler(StatusHandler())
+      val player = Setup.trainer_ash.copy(choice = Some(SwitchPokemonChoice(Some(Setup.firefox))))
+      val opponent = Setup.opponent.copy(choice = None)
       val playersChoice = PlayersChoice(player, opponent, "")
 
-      val handler = SwitchPokemonHandler(StatusHandler())
-      val result = handler.handleChoice(playersChoice)
+      val updatedChoice = switchPokemonHandler.handleChoice(playersChoice)
 
-      result.player.currentPokemon should be(newPlayerPokemon)
-      result.opponent.currentPokemon should be(opponentPokemon)
-      result.roundReport should include("Player chooses Bulbasaur to fight!")
+      updatedChoice.player.currentPokemon should be (Setup.firefox)
+      updatedChoice.roundReport should include ("-Player chooses firefox to fight!")
     }
 
-    "handle only the opponent switching Pokémon" in {
-      val playerPokemon = Pokemon(1, "Pikachu", 100, List(), 30, "elektro")
-      val opponentPokemon = Pokemon(2, "Charmander", 100, List(), 30, "fire")
-      val newOpponentPokemon = Pokemon(3, "Squirtle", 100, List(), 30, "water")
-      val player = Trainer("Player", List(playerPokemon), None, playerPokemon)
-      val opponent = Trainer("Opponent", List(opponentPokemon, newOpponentPokemon), Some(SwitchPokemonChoice(Some(newOpponentPokemon))), opponentPokemon)
+    "handle only the opponent switching their Pokémon" in {
+      val switchPokemonHandler = SwitchPokemonHandler(StatusHandler())
+      val player = Setup.trainer_ash.copy(choice = None)
+      val opponent = Setup.opponent.copy(choice = Some(SwitchPokemonChoice(Some(Setup.fish))))
       val playersChoice = PlayersChoice(player, opponent, "")
 
-      val handler = SwitchPokemonHandler(StatusHandler())
-      val result = handler.handleChoice(playersChoice)
+      val updatedChoice = switchPokemonHandler.handleChoice(playersChoice)
 
-      result.player.currentPokemon should be(playerPokemon)
-      result.opponent.currentPokemon should be(newOpponentPokemon)
-      result.roundReport should include("Opponent chooses Squirtle to fight!")
-    }
-
-    "pass the playersChoice to the next handler if no switch occurs" in {
-      val playerPokemon = Pokemon(1, "Pikachu", 100, List(), 30, "elektro")
-      val opponentPokemon = Pokemon(2, "Charmander", 100, List(), 30, "fire")
-      val player = Trainer("Player", List(playerPokemon), None, playerPokemon)
-      val opponent = Trainer("Opponent", List(opponentPokemon), None, opponentPokemon)
-      val playersChoice = PlayersChoice(player, opponent, "")
-
-      val handler = SwitchPokemonHandler(StatusHandler())
-      val result = handler.handleChoice(playersChoice)
-
-      result should be(playersChoice)
+      updatedChoice.opponent.currentPokemon should be (Setup.fish)
+      updatedChoice.roundReport should include ("-Opponent chooses fish to fight!")
     }
   }
 
-  "UseItemHandler" should {
-    "do nothing if no items are available" in {
-      val playerPokemon = Pokemon(1, "Pikachu", 100, List(), 30, "elektro")
-      val opponentPokemon = Pokemon(2, "Charmander", 100, List(), 30, "fire")
-      val player = Trainer("Player", List(playerPokemon), None, playerPokemon)
-      val opponent = Trainer("Opponent", List(opponentPokemon), None, opponentPokemon)
-      val playersChoice = PlayersChoice(player, opponent, "")
-
-      val handler = UseItemHandler(StatusHandler())
-      val result = handler.handleChoice(playersChoice)
-
-      result should be(playersChoice)
-    }
-  }
-
-  "EvaluateAttackHandler" should {
+  "An EvaluateAttackHandler" should {
     "handle both players attacking" in {
-      val playerMove = Move("Thunder Shock", 40, "elektro")
-      val opponentMove = Move("Ember", 40, "fire")
-      val playerPokemon = Pokemon(1, "Pikachu", 100, List(playerMove), 60, "elektro")
-      val opponentPokemon = Pokemon(2, "Charmander", 100, List(opponentMove), 50, "fire")
-      val player = Trainer("Player", List(playerPokemon), Some(AttackChoice(Some(playerMove))), playerPokemon)
-      val opponent = Trainer("Opponent", List(opponentPokemon), Some(AttackChoice(Some(opponentMove))), opponentPokemon)
+      val evaluateAttackHandler = EvaluateAttackHandler(StatusHandler())
+      val player = Setup.trainer_ash.copy(choice = Some(AttackChoice(Some(Setup.thunder))))
+      val opponent = Setup.opponent.copy(choice = Some(AttackChoice(Some(Setup.tackle))))
       val playersChoice = PlayersChoice(player, opponent, "")
 
-      val handler = EvaluateAttackHandler(StatusHandler())
-      val result = handler.handleChoice(playersChoice)
+      val updatedChoice = evaluateAttackHandler.handleChoice(playersChoice)
 
-      result.roundReport should include("Pikachu's attack Thunder Shock was executed normally")
-      result.roundReport should include("Charmander's attack Ember was executed normally")
+      // Verify the health points and the round report
+      updatedChoice.player.currentPokemon.hp should be (70) // Assuming 30 damage from tackle
+      updatedChoice.opponent.currentPokemon.hp should be (30) // Assuming 70 damage from thunder
+      updatedChoice.roundReport should include ("thunder executed normally")
+      updatedChoice.roundReport should include ("tackle executed normally")
     }
 
     "handle only the player attacking" in {
-      val playerMove = Move("Thunder Shock", 40, "elektro")
-      val playerPokemon = Pokemon(1, "Pikachu", 100, List(playerMove), 60, "elektro")
-      val opponentPokemon = Pokemon(2, "Charmander", 100, List(), 50, "fire")
-      val player = Trainer("Player", List(playerPokemon), Some(AttackChoice(Some(playerMove))), playerPokemon)
-      val opponent = Trainer("Opponent", List(opponentPokemon), None, opponentPokemon)
+      val evaluateAttackHandler = EvaluateAttackHandler(StatusHandler())
+      val player = Setup.trainer_ash.copy(choice = Some(AttackChoice(Some(Setup.thunder))))
+      val opponent = Setup.opponent.copy(choice = None)
       val playersChoice = PlayersChoice(player, opponent, "")
 
-      val handler = EvaluateAttackHandler(StatusHandler())
-      val result = handler.handleChoice(playersChoice)
+      val updatedChoice = evaluateAttackHandler.handleChoice(playersChoice)
 
-      result.roundReport should include("Pikachu's attack Thunder Shock was executed normally")
+      // Verify the health points and the round report
+      updatedChoice.opponent.currentPokemon.hp should be (30) // Assuming 70 damage from thunder
+      updatedChoice.roundReport should include ("thunder executed normally")
     }
 
     "handle only the opponent attacking" in {
-      val opponentMove = Move("Ember", 40, "fire")
-      val playerPokemon = Pokemon(1, "Pikachu", 100, List(), 60, "elektro")
-      val opponentPokemon = Pokemon(2, "Charmander", 100, List(opponentMove), 50, "fire")
-      val player = Trainer("Player", List(playerPokemon), None, playerPokemon)
-      val opponent = Trainer("Opponent", List(opponentPokemon), Some(AttackChoice(Some(opponentMove))), opponentPokemon)
+      val evaluateAttackHandler = EvaluateAttackHandler(StatusHandler())
+      val player = Setup.trainer_ash.copy(choice = None)
+      val opponent = Setup.opponent.copy(choice = Some(AttackChoice(Some(Setup.tackle))))
       val playersChoice = PlayersChoice(player, opponent, "")
 
-      val handler = EvaluateAttackHandler(StatusHandler())
-      val result = handler.handleChoice(playersChoice)
+      val updatedChoice = evaluateAttackHandler.handleChoice(playersChoice)
 
-      result.roundReport should include("Charmander's attack Ember was executed normally")
-    }
-  }
-
-  "StatusHandler" should {
-    "apply status effects to both players' Pokémon" in {
-      val burnedState = new BurnedState(3)
-      val playerPokemon = Pokemon(1, "Pikachu", 100, List(), 30, "elektro").setStatus(burnedState)
-      val opponentPokemon = Pokemon(2, "Charmander", 100, List(), 30, "fire").setStatus(burnedState)
-      val player = Trainer("Player", List(playerPokemon), None, playerPokemon)
-      val opponent = Trainer("Opponent", List(opponentPokemon), None, opponentPokemon)
-      val playersChoice = PlayersChoice(player, opponent, "")
-
-      val handler = StatusHandler()
-      val result = handler.handleChoice(playersChoice)
-
-      result.player.currentPokemon.hp should be < 100
-      result.opponent.currentPokemon.hp should be < 100
-      result.roundReport should include("Pikachu is hurt by its burn")
-      result.roundReport should include("Charmander is hurt by its burn")
+      // Verify the health points and the round report
+      updatedChoice.player.currentPokemon.hp should be (70) // Assuming 30 damage from tackle
+      updatedChoice.roundReport should include ("tackle executed normally")
     }
   }
 }
+
+

@@ -1,105 +1,86 @@
-package de.htwg.se.Pokeymon.Model.GameData
+package de.htwg.se.Pokeymon.Model
 
-import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 
 class PokemonSpec extends AnyWordSpec with Matchers {
 
-  // Test data
-  val move1 = Move("Thunderbolt", 90, "Electric")
-  val move2 = Move("Fire Blast", 110, "Fire")
-  val moves = List(move1, move2)
-  val emptyMove = Move("Struggle", 50, "Normal") // Placeholder for non-existent move
-
   "A Pokemon" when {
+    val tackle = Move("Tackle", 40, "normal")
+    val thunderShock = Move("Thunder Shock", 50, "electric")
+    val scratch = Move("Scratch", 35, "normal")
+    val ember = Move("Ember", 40, "fire")
 
-    "created" should {
+    val pikachu = Pokemon(1, "Pikachu", 100, List(tackle, thunderShock), 90, "electric")
 
-      "have correct initial properties" in {
-        val pokemon = Pokemon(1, "Pikachu", 100, moves, 90, "Electric")
-
-        pokemon.id should be(1)
-        pokemon.name should be("Pikachu")
-        pokemon.hp should be(100)
-        pokemon.moves should be(moves)
-        pokemon.speed should be(90)
-        pokemon.pokeType should be("Electric")
-        pokemon.currentMove should be(emptyMove) // By default, currentMove should be emptyMove
-        pokemon.canMove should be(true) // By default, canMove should be true
-        pokemon.status.getStatusName() should be("")
+    "initialized" should {
+      "have correct initial values" in {
+        pikachu.id should be(1)
+        pikachu.name should be("Pikachu")
+        pikachu.hp should be(100)
+        pikachu.moves should contain theSameElementsAs List(tackle, thunderShock)
+        pikachu.speed should be(90)
+        pikachu.pokeType should be("electric")
+        pikachu.currentMove should be(empty_move)
+        pikachu.status.getStatusName() should be("None")
       }
 
-      "be alive when HP is greater than 0" in {
-        val pokemon = Pokemon(1, "Pikachu", 50, moves, 90, "Electric")
-        pokemon.isAlive() should be(true)
+      "be alive" in {
+        pikachu.isAlive() should be(true)
       }
 
-      "be dead when HP is 0" in {
-        val pokemon = Pokemon(1, "Pikachu", 0, moves, 90, "Electric")
-        pokemon.isAlive() should be(false)
+      "have a string representation" in {
+        pikachu.toString() should be("Pikachu Hp: 100 Status: None")
       }
 
+      "have string representation of moves" in {
+        pikachu.movesToString() should be(
+          s"""Tackle  Power: 40 Type: normal Effect: none
+             |Thunder Shock  Power: 50 Type: electric Effect: none""".stripMargin
+        )
+      }
     }
 
-    "managing status" should {
-
-      "correctly set and get status" in {
-        val pokemon = Pokemon(1, "Pikachu", 100, moves, 90, "Electric")
-        val burnedStatus = BurnedState(3)
-        val updatedPokemon = pokemon.setStatus(burnedStatus)
-
-        updatedPokemon.getStatus() should be("burned")
+    "attacked with a move" should {
+      "return the power of the move if it exists" in {
+        pikachu.attack("Tackle") should be(Some(40))
+        pikachu.attack("Thunder Shock") should be(Some(50))
+        pikachu.attack("Scratch") should be(None)
       }
-
     }
 
-    "managing moves" should {
-
-      "retrieve correct move power by name" in {
-        val pokemon = Pokemon(1, "Pikachu", 100, moves, 90, "Electric")
-        val power = pokemon.attack("Thunderbolt")
-        power should be(Some(90))
+    "decreasing HP" should {
+      "reduce HP correctly" in {
+        val newPikachu = pikachu.decreaseHp(20)
+        newPikachu.hp should be(80)
       }
 
-      "return None for non-existent move" in {
-        val pokemon = Pokemon(1, "Pikachu", 100, moves, 90, "Electric")
-        val power = pokemon.attack("Earthquake")
-        power should be(None)
+      "remain alive if HP is greater than 0" in {
+        val newPikachu = pikachu.decreaseHp(20)
+        newPikachu.isAlive() should be(true)
       }
 
-      "set current move correctly" in {
-        val pokemon = Pokemon(1, "Pikachu", 100, moves, 90, "Electric")
-        val updatedPokemon = pokemon.setCurrentMove("Fire Blast")
-        updatedPokemon.currentMove should be(move2)
+      "be dead if HP is 0 or less" in {
+        val newPikachu = pikachu.decreaseHp(150)
+        newPikachu.isAlive() should be(false)
       }
-
-      "return moves as formatted string" in {
-        val pokemon = Pokemon(1, "Pikachu", 100, moves, 90, "Electric")
-        val movesString = pokemon.movesToString()
-        movesString should include("Thunderbolt Power: 90 Type: Electric Effect: none")
-        movesString should include("Fire Blast Power: 110 Type: Fire Effect: none")
-      }
-
-      "return list of moves" in {
-        val pokemon = Pokemon(1, "Pikachu", 100, moves, 90, "Electric")
-        val retrievedMoves = pokemon.getMoves()
-        retrievedMoves should be(moves)
-      }
-
     }
 
-    "convert to string representation" should {
-
-      "produce correct string representation" in {
-        val pokemon = Pokemon(1, "Pikachu", 100, moves, 90, "Electric")
-        val pokemonString = pokemon.toString
-        pokemonString should include("Pikachu Hp: 100 Status: ")
+    "changing status" should {
+      "apply the new status correctly" in {
+        val burnedPikachu = pikachu.setStatus(BurnedState(3))
+        burnedPikachu.status.getStatusName() should be("Burned")
       }
-
     }
 
-    // Additional tests can be added for other methods and behaviors of Pokemon class
+    "setting current move" should {
+      "set the current move correctly" in {
+        val pikachuWithMove = pikachu.setCurrentMove("Tackle")
+        pikachuWithMove.currentMove should be(tackle)
 
+        val pikachuWithUnknownMove = pikachu.setCurrentMove("Unknown Move")
+        pikachuWithUnknownMove.currentMove should be(empty_move)
+      }
+    }
   }
-
 }

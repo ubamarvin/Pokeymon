@@ -1,9 +1,9 @@
 package de.htwg.se.Pokeymon.aView
 
 import de.htwg.se.Pokeymon.Util.Observer
-import de.htwg.se.Pokeymon.Controller.Controller
+import de.htwg.se.Pokeymon.Controller.ControllerComponent.ControllerInterface
 
-class Tui(controller: Controller) extends Observer {
+class Tui(controller: ControllerInterface) extends Observer {
 
   controller.add(this)
 
@@ -19,5 +19,5 @@ class Tui(controller: Controller) extends Observer {
       case _   => controller.handleInput(input)
     }
   }
-  override def update: Unit = println(controller.printDisplay())
+  override def update: Unit = println(controller.printDisplay)
 }

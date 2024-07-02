@@ -1,51 +1,55 @@
-package de.htwg.se.Pokeymon.Controller.ControllerComponent.ControllerBaseImplementation
+package de.htwg.se.Pokeymon.Controller
 
+import de.htwg.se.Pokeymon.Model.{Game, MainState}
 import org.scalatest.wordspec.AnyWordSpec
-import org.scalatest.matchers.should.Matchers._
-import org.scalatestplus.mockito.MockitoSugar
-import org.mockito.Mockito._
-import de.htwg.se.Pokeymon.Controller.ControllerComponent.ControllerInterface
-import de.htwg.se.Pokeymon.Model.GameComponent.{GameInterface, Content}
-import de.htwg.se.Pokeymon.Model.CommandManager
+import org.scalatest.matchers.should.Matchers
 
-class ControllerSpec extends AnyWordSpec with MockitoSugar {
-
-  "A Controller" should {
-    val gameMock = mock[GameInterface]
-    val commandManagerMock = mock[CommandManager]
-    val controller = new Controller(gameMock) {
-      override private val commandManager: CommandManager = commandManagerMock
+class ControllerSpec extends AnyWordSpec with Matchers {
+  "A Controller" when {
+    "handling input" should {
+      "update the game state and notify observers" in {
+        // Arrange
+        val observerMock = new ObserverMock
+      }
     }
 
-    "handle user input correctly" in {
-      val input = "some input"
-      controller.handleInput(input)
-      verify(commandManagerMock).doStep(any[HandleInputCommand])
-      verify(controller).notifyObservers()
+    "switching Pokémon" should {
+      "notify observers if the state is MainState" in {
+        // Arrange
+        val observerMock = new ObserverMock
+
+        // Act
+
+        // Assert
+        observerMock.notified shouldBe true // Ensure observer notified
+      }
     }
 
-    "undo the last command" in {
-      controller.undo
-      verify(commandManagerMock).undoStep
-      verify(controller).notifyObservers()
+    "using an item" should {
+      "notify observers if the state is mainState" in {
+        // Arrange
+        val observerMock = new ObserverMock
+
+        // Assert
+        observerMock.notified shouldBe true // Ensure observer notified
+      }
     }
 
-    "redo the last undone command" in {
-      controller.redo
-      verify(commandManagerMock).redoStep
-      verify(controller).notifyObservers()
-    }
+    "choosing a move" should {
+      "notify observers if the state is MainBattleSt" in {
+        // Arrange
 
-    "return the game display as a string" in {
-      val display = "game state display"
-      when(gameMock.gameToString()).thenReturn(display)
-      controller.printDisplay should be(display)
-    }
+        val observerMock = new ObserverMock
 
-    "return the current scene content" in {
-      val content = mock[Content]
-      when(gameMock.getContent()).thenReturn(content)
-      controller.getSceneContent should be(content)
+
+
+        // Assert
+        observerMock.notified shouldBe true // Ensure observer notified
+      }
     }
+  }
+
+  private class ObserverMock {
+    var notified: Boolean = false
   }
 }

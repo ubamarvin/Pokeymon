@@ -1,118 +1,128 @@
-package de.htwg.se.Pokeymon.Model.GameComponent
+package de.htwg.se.Pokeymon.Model
 
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.matchers.should.Matchers
-import de.htwg.se.Pokeymon.Model.GameData._
 
 class StatusStrategySpec extends AnyWordSpec with Matchers {
-  "A NormalState" should {
-    "have no status name" in {
-      val normal = NormalState()
-      normal.statusName should be ("")
-    }
-    
-    "not affect the Pokémon" in {
-      val normal = NormalState()
-      val pokemon = Pokemon("Pikachu", 100, List.empty, new StatusEffectStrategyContext(normal))
-      val (affectedPokemon, msg) = normal.applyEffect(pokemon)
-      affectedPokemon should be (pokemon)
-      msg should be ("")
+  "A BurnedState" when {
+    "applied to a Pokemon" should {
+      "correctly decrease HP and reduce duration" in {
+        // Arrange
+        val burnedState = BurnedState(3)
+        val pokemon = Setup.pikachu
+
+        // Act
+        val (updatedPokemon, message) = burnedState.applyEffect(pokemon)
+
+        // Assert
+        updatedPokemon.hp should be < pokemon.hp
+        message should startWith("-pikachu is hurt by burn")
+        burnedState.duration shouldBe 2
+      }
+
+      "correctly clear the effect when duration is 0" in {
+        // Arrange
+        val burnedState = BurnedState(1)
+        val pokemon = Setup.pikachu
+
+        // Act
+        val (updatedPokemon, _) = burnedState.applyEffect(pokemon)
+        val clearedPokemon = burnedState.clearEffect(updatedPokemon)
+
+        // Assert
+        clearedPokemon.status.strategy shouldBe a[NormalState]
+      }
     }
   }
 
-  "A BurnedState" should {
-    "reduce the Pokémon's HP by the intensity" in {
-      val burned = BurnedState(3, 10)
-      val pokemon = Pokemon("Charmander", 50, List.empty, new StatusEffectStrategyContext(burned))
-      val (affectedPokemon, msg) = burned.applyEffect(pokemon)
-      affectedPokemon.hp should be (40)
-      msg should be ("-Charmanderis hurt by burn, lost 10 HP\n")
-    }
-    
-    "reduce its duration after application" in {
-      val burned = BurnedState(3, 10)
-      val pokemon = Pokemon("Charmander", 50, List.empty, new StatusEffectStrategyContext(burned))
-      val (affectedPokemon, _) = burned.applyEffect(pokemon)
-      affectedPokemon.status.strategy.duration should be (2)
-    }
-    
-    "clear the effect when duration is 0" in {
-      val burned = BurnedState(1, 10)
-      val pokemon = Pokemon("Charmander", 50, List.empty, new StatusEffectStrategyContext(burned))
-      val (affectedPokemon, _) = burned.applyEffect(pokemon)
-      affectedPokemon.status.strategy shouldBe a [NormalState]
+  "A PoisonedState" when {
+    "applied to a Pokemon" should {
+      "correctly decrease HP and reduce duration" in {
+        // Arrange
+        val poisonedState = PoisonedState(3)
+        val pokemon = Setup.pikachu
+
+        // Act
+        val (updatedPokemon, message) = poisonedState.applyEffect(pokemon)
+
+        // Assert
+        updatedPokemon.hp should be < pokemon.hp
+        message should startWith("-pikachu is hurt by poison")
+        poisonedState.duration shouldBe 2
+      }
+
+      "correctly clear the effect when duration is 0" in {
+        // Arrange
+        val poisonedState = PoisonedState(1)
+        val pokemon = Setup.pikachu
+
+        // Act
+        val (updatedPokemon, _) = poisonedState.applyEffect(pokemon)
+        val clearedPokemon = poisonedState.clearEffect(updatedPokemon)
+
+        // Assert
+        clearedPokemon.status.strategy shouldBe a[NormalState]
+      }
     }
   }
 
-  "A PoisonedState" should {
-    "reduce the Pokémon's HP by the intensity" in {
-      val poisoned = PoisonedState(3, 10)
-      val pokemon = Pokemon("Bulbasaur", 50, List.empty, new StatusEffectStrategyContext(poisoned))
-      val (affectedPokemon, msg) = poisoned.applyEffect(pokemon)
-      affectedPokemon.hp should be (40)
-      msg should be ("-Bulbasauris hurt by poison, lost 10 HP\n")
-    }
-    
-    "reduce its duration after application" in {
-      val poisoned = PoisonedState(3, 10)
-      val pokemon = Pokemon("Bulbasaur", 50, List.empty, new StatusEffectStrategyContext(poisoned))
-      val (affectedPokemon, _) = poisoned.applyEffect(pokemon)
-      affectedPokemon.status.strategy.duration should be (2)
-    }
-    
-    "clear the effect when duration is 0" in {
-      val poisoned = PoisonedState(1, 10)
-      val pokemon = Pokemon("Bulbasaur", 50, List.empty, new StatusEffectStrategyContext(poisoned))
-      val (affectedPokemon, _) = poisoned.applyEffect(pokemon)
-      affectedPokemon.status.strategy shouldBe a [NormalState]
+  "A SleepState" when {
+    "applied to a Pokemon" should {
+      "correctly reduce duration" in {
+        // Arrange
+        val sleepState = SleepState(3)
+        val pokemon = Setup.pikachu
+
+        // Act
+        val (updatedPokemon, message) = sleepState.applyEffect(pokemon)
+
+        // Assert
+        message should startWith("-pikachu is sleeping")
+        sleepState.duration shouldBe 2
+      }
+
+      "correctly clear the effect when duration is 0" in {
+        // Arrange
+        val sleepState = SleepState(1)
+        val pokemon = Setup.pikachu
+
+        // Act
+        val (updatedPokemon, _) = sleepState.applyEffect(pokemon)
+        val clearedPokemon = sleepState.clearEffect(updatedPokemon)
+
+        // Assert
+        clearedPokemon.status.strategy shouldBe a[NormalState]
+      }
     }
   }
 
-  "A SleepState" should {
-    "not reduce the Pokémon's HP" in {
-      val sleep = SleepState(3)
-      val pokemon = Pokemon("Snorlax", 100, List.empty, new StatusEffectStrategyContext(sleep))
-      val (affectedPokemon, msg) = sleep.applyEffect(pokemon)
-      affectedPokemon.hp should be (100)
-      msg should be ("-Snorlax is sleeping\n")
-    }
-    
-    "reduce its duration after application" in {
-      val sleep = SleepState(3)
-      val pokemon = Pokemon("Snorlax", 100, List.empty, new StatusEffectStrategyContext(sleep))
-      val (affectedPokemon, _) = sleep.applyEffect(pokemon)
-      affectedPokemon.status.strategy.duration should be (2)
-    }
-    
-    "clear the effect when duration is 0" in {
-      val sleep = SleepState(1)
-      val pokemon = Pokemon("Snorlax", 100, List.empty, new StatusEffectStrategyContext(sleep))
-      val (affectedPokemon, _) = sleep.applyEffect(pokemon)
-      affectedPokemon.status.strategy shouldBe a [NormalState]
-    }
-  }
+  "A ParalyzedState" when {
+    "applied to a Pokemon" should {
+      "correctly reduce duration" in {
+        // Arrange
+        val paralyzedState = ParalyzedState(3)
+        val pokemon = Setup.pikachu
 
-  "A ParalyzedState" should {
-    "not reduce the Pokémon's HP" in {
-      val paralyzed = ParalyzedState(3)
-      val pokemon = Pokemon("Raichu", 100, List.empty, new StatusEffectStrategyContext(paralyzed))
-      val (affectedPokemon, msg) = paralyzed.applyEffect(pokemon)
-      affectedPokemon.hp should be (100)
-      msg should be ("-Raichu is paralyzed\n")
-    }
-    
-    "reduce its duration after application" in {
-      val paralyzed = ParalyzedState(3)
-      val pokemon = Pokemon("Raichu", 100, List.empty, new StatusEffectStrategyContext(paralyzed))
-      val (affectedPokemon, _) = paralyzed.applyEffect(pokemon)
-      affectedPokemon.status.strategy.duration should be (2)
-    }
-    
-    "clear the effect when duration is 0" in {
-      val paralyzed = ParalyzedState(1)
-      val pokemon = Pokemon("Raichu", 100, List.empty, new StatusEffectStrategyContext(paralyzed))
-      val (affectedPokemon, _) = paralyzed.applyEffect(pokemon)
-      affectedPokemon.status.strategy shouldBe a [NormalState]
+        // Act
+        val (updatedPokemon, message) = paralyzedState.applyEffect(pokemon)
+
+        // Assert
+        message should startWith("-pikachu is paralyzed")
+        paralyzedState.duration shouldBe 2
+      }
+
+      "correctly clear the effect when duration is 0" in {
+        // Arrange
+        val paralyzedState = ParalyzedState(1)
+        val pokemon = Setup.pikachu
+
+        // Act
+        val (updatedPokemon, _) = paralyzedState.applyEffect(pokemon)
+        val clearedPokemon = paralyzedState.clearEffect(updatedPokemon)
+
+        // Assert
+        clearedPokemon.status.strategy shouldBe a[NormalState]
+      }
     }
   }
 }

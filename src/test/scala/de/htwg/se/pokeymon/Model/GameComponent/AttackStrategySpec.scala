@@ -1,79 +1,95 @@
-package de.htwg.se.Pokeymon.Model.GameComponent
+package de.htwg.se.Pokeymon.Model
 
 import org.scalatest.wordspec.AnyWordSpec
-import org.scalatest.matchers.should.Matchers._
-import de.htwg.se.Pokeymon.Model.GameData._
-import de.htwg.se.Pokeymon.Model.GameComponent._
+import org.scalatest.matchers.should.Matchers
 
-class AttackStrategySpec extends AnyWordSpec {
+class AttackStrategySpec extends AnyWordSpec with Matchers {
+  "An applyDamageStrategy" when {
+    "applied to a move" should {
+      "correctly calculate damage based on move and defender type" in {
+        // Arrange
+        val strategy = new applyDamageStrategy()
+        val attacker = Setup.pikachu
+        val defender = Setup.testmon4 // Assuming it's a plant type
+        val move = Setup.tackle
 
-  "An applyDamageStrategy" should {
-    val attacker = Pokemon(1, "Attacker", 100, List(Move("Tackle", 50, "normal")), 30, "normal")
-    val defender = Pokemon(2, "Defender", 100, List(Move("Tackle", 50, "normal")), 30, "fight")
-    val move = Move("Tackle", 50, "normal")
-    val damageStrategy = new applyDamageStrategy
+        // Act
+        val (updatedAttacker, updatedDefender, message) = strategy.applyMove(attacker, defender, move)
+        // Assert
+        updatedAttacker shouldBe attacker
+        updatedDefender.hp should be < defender.hp
+        message should startWith("-pikachus attack tackle was ")
+      }
 
-    "apply normal damage" in {
-      val (_, updatedDefender, message) = damageStrategy.applyMove(attacker, defender, move)
-      updatedDefender.hp should be(75)
-      message should include("effective")
-    }
+      "handle special cases like type effectiveness" in {
+        // Arrange
+        val strategy = new applyDamageStrategy()
+        val attacker = Setup.pikachu
+        val defender = Setup.testmon2 // Assuming it's a fire type
+        val move = Setup.thunder
 
-    "apply type effectiveness" in {
-      val fireMove = Move("Flame Thrower", 50, "fire")
-      val waterDefender = defender.copy(pokeType = "water")
-      val (_, updatedDefender, message) = damageStrategy.applyMove(attacker, waterDefender, fireMove)
-      updatedDefender.hp should be(75)
-      message should include("not effective")
-    }
+        // Act
+        val (updatedAttacker, updatedDefender, message) = strategy.applyMove(attacker, defender, move)
 
-    "apply super effectiveness" in {
-      val waterMove = Move("Water Gun", 50, "water")
-      val fireDefender = defender.copy(pokeType = "fire")
-      val (_, updatedDefender, message) = damageStrategy.applyMove(attacker, fireDefender, waterMove)
-      updatedDefender.hp should be(25)
-      message should include("effective")
-    }
-  }
-
-  "An applyStatusChangeStrategy" should {
-    val attacker = Pokemon(1, "Attacker", 100, List(Move("Burn Attack", 50, "fire", "burn")), 30, "normal")
-    val defender = Pokemon(2, "Defender", 100, List(Move("Tackle", 50, "normal")), 30, "normal")
-    val burnMove = Move("Burn Attack", 50, "fire", "burn")
-    val statusChangeStrategy = new applyStatusChangeStrategy
-
-    "apply a burn status effect" in {
-      val (_, updatedDefender, message) = statusChangeStrategy.applyMove(attacker, defender, burnMove)
-      updatedDefender.status.getStatusName() should be("Burned")
-      message should include("burned")
-    }
-
-    "handle unknown status effect" in {
-      val unknownMove = Move("Unknown Attack", 50, "normal", "unknown")
-      val (_, updatedDefender, message) = statusChangeStrategy.applyMove(attacker, defender, unknownMove)
-      updatedDefender.status.getStatusName() should be("Healthy")
-      message should include("had no Effect")
+        // Assert
+        updatedAttacker shouldBe attacker
+        updatedDefender.hp should be < defender.hp
+        message should startWith("-pikachus attack thunder was effective")
+      }
     }
   }
 
-  "An AttackStrategyContext" should {
-    val attacker = Pokemon(1, "Attacker", 100, List(Move("Tackle", 50, "normal")), 30, "normal")
-    val defender = Pokemon(2, "Defender", 100, List(Move("Tackle", 50, "normal")), 30, "fight")
-    val damageMove = Move("Tackle", 50, "normal")
-    val burnMove = Move("Burn Attack", 50, "fire", "burn")
-    var context = AttackStrategyContext()
+  "An applyStatusChangeStrategy" when {
+    "applied to a move" should {
+      "correctly apply status changes based on the move" in {
+        // Arrange
+        val strategy = new applyStatusChangeStrategy()
+        val attacker = Setup.ratmon
+        val defender = Setup.testmon1 // Assuming it's a water type
+        val move = Setup.burn
 
-    "apply the default damage strategy" in {
-      val (_, updatedDefender, message) = context.applyAttackStrategy(attacker, defender, damageMove)
-      updatedDefender.hp should be(75)
-      message should include("effective")
+        // Act
+        val (updatedAttacker, updatedDefender, message) = strategy.applyMove(attacker, defender, move)
+
+        // Assert
+        updatedAttacker shouldBe attacker
+        updatedDefender.status should not be "Healthy"
+        message should startWith("-waterPks attack hadno Effect")
+      }
+    }
+  }
+
+  "An AttackStrategyContext" when {
+    "using applyAttackStrategy" should {
+      "correctly apply the selected attack strategy" in {
+        // Arrange
+        val context = AttackStrategyContext()
+        val attacker = Setup.firefox
+        val defender = Setup.testmon2 // Assuming it's a fire type
+        val move = Setup.fireBreath
+
+        // Act
+        val (updatedAttacker, updatedDefender, message) = context.applyAttackStrategy(attacker, defender, move)
+
+        // Assert
+        updatedAttacker shouldBe attacker
+        updatedDefender.hp should be < defender.hp
+        message should startWith("-firefoxs attack firebreath was ")
+      }
     }
 
-    "switch to status change strategy based on move" in {
-      context = context.setContext(burnMove)
-      val (_, updatedDefender, message) = context.applyAttackStrategy(attacker, defender, burnMove)
-      updatedDefender.status.getStatusName() should be("Burned")
-      message should include("burned")
+    "using setContext" should {
+      "correctly switch the attack strategy based on move type" in {
+        // Arrange
+        val context = AttackStrategyContext()
+        val moveWithStatus = Setup.burn
+
+        // Act
+        val newContext = context.setContext(moveWithStatus)
+
+        // Assert
+        newContext.attackStrategy shouldBe a[applyStatusChangeStrategy]
+      }
     }
   }
 }
