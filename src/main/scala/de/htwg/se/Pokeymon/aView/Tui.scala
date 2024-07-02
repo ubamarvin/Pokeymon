@@ -1,9 +1,9 @@
 package de.htwg.se.Pokeymon.aView
 
 import de.htwg.se.Pokeymon.Util.Observer
-import de.htwg.se.Pokeymon.Controller.ControllerComponent.ControllerInterface
+import de.htwg.se.Pokeymon.Controller.Controller
 
-class Tui(controller: ControllerInterface) extends Observer {
+class Tui(controller: Controller) extends Observer {
 
   controller.add(this)
 
@@ -14,14 +14,10 @@ class Tui(controller: ControllerInterface) extends Observer {
         println("Game quitted")
       case "z" => controller.undo
       case "y" => controller.redo
+      case "save" => controller.save
+      case "load" => controller.load
       case _   => controller.handleInput(input)
     }
   }
-  override def update: Unit = println(controller.printDisplay)
+  override def update: Unit = println(controller.printDisplay())
 }
-
-
-
-
-  // update must also communicate game state
-  // das die vom observable gerufende update function
