@@ -13,7 +13,7 @@ lazy val root = project
     libraryDependencies += "com.google.inject" % "guice" % "7.0.0",
     libraryDependencies += "net.codingwell" %% "scala-guice" % "7.0.0",
     libraryDependencies += "org.scala-lang.modules" %% "scala-xml" % "2.3.0",
-    // libraryDependencies += "com.typesafe.play" %% "play-json" % "3.0.4",
+    libraryDependencies += "com.typesafe.play" %% "play-json" % "2.10.0-RC5",
     libraryDependencies ++= {
       // Determine OS version of JavaFX binaries
       lazy val osName = System.getProperty("os.name") match {

@@ -8,7 +8,6 @@ class Tui(controller: ControllerInterface) extends Observer {
   controller.add(this)
 
   def processInput(input: String): Unit = {
-
     input match {
       case "q" =>
         println("Game quitted")
@@ -19,7 +18,5 @@ class Tui(controller: ControllerInterface) extends Observer {
       case _      => controller.handleInput(input)
     }
   }
-  // update must also communicate game state
-  // das die vom observable gerufende update function
   override def update: Unit = println(controller.printDisplay)
 }

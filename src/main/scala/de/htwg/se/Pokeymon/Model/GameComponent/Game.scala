@@ -23,8 +23,8 @@ trait GameState {
 
 // Context classssss
 case class Game @Inject() (
+    // BEFORE: val state: GameState = new PickPokemonState(Trainer(Vector()), Setup.pokedex, picks = 0, Setup.opponent),
     val state: GameState,
-    // val state: GameState = new PickPokemonState(Trainer(Vector()), Setup.pokedex, picks = 0, Setup.opponent),
     val undoStack: Vector[GameState] = Vector.empty,
     val redoStack: Vector[GameState] = Vector.empty
 ) extends GameInterface {
@@ -40,7 +40,7 @@ case class Game @Inject() (
   // Undo operation
   // Undo operation
   def gameUndo(): Game = {
-    printf("undo in game\n")
+    // printf("undo in game\n")
     if (undoStack.isEmpty) {
       this
     } else {

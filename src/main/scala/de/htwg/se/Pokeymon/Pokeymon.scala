@@ -16,16 +16,15 @@ object pokeymon {
   val controller = injector.getInstance(classOf[ControllerInterface])
 
   val tui = new Tui(controller)
-  val PokeGui = new PokeGui(controller) // Init Gui and give it power!
+  val PokeGui = new PokeGui(controller)
 
-  controller.notifyObservers // Warum, for the first render!!!
+  controller.notifyObservers
 
   @main
   def startGame(): Unit =
 
     import ExecutionContext.Implicits.global
 
-    // Start the GUI in a Concurrent Thread
     val guiFuture: Future[Unit] = Future {
       PokeGui.main(Array.empty)
     }
@@ -36,6 +35,5 @@ object pokeymon {
       input = scala.io.StdIn.readLine()
       tui.processInput(input)
     }
-    // guiFuture.onComplete(_ => println("GUI terminated"))
 
 }

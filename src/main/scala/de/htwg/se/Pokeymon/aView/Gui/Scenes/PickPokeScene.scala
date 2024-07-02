@@ -86,10 +86,35 @@ case class PickPokeScene(controller: ControllerInterface) extends BaseScene {
     alignment = Pos.Center
   }
   StackPane.setAlignment(buttonDone, Pos.BottomCenter) // Align button to the bottom center of the StackPane
+  val saveButton = new Button("save") {
+    minWidth = 150 // Increased by 50%
+    prefWidth = 225 // Increased by 50%
+    maxWidth = 300 // Increased by 50%
+    style = "-fx-font-size: 18px;" // Increased font size by 50%
+    onAction = () => {
+      controller.save
+    }
+  }
 
+  val loadButton = new Button("load") {
+    minWidth = 150 // Increased by 50%
+    prefWidth = 225 // Increased by 50%
+    maxWidth = 300 // Increased by 50%
+    style = "-fx-font-size: 18px;" // Increased font size by 50%
+    onAction = () => {
+      controller.load
+    }
+  }
+  val dataBar = new HBox {
+    children = Seq(saveButton, loadButton)
+    prefHeight = 100 // Set preferred height for the bottom bar
+    maxHeight = 50
+    padding = scalafx.geometry.Insets(10)
+  }
   // Create the root StackPane and add background image and the Pokémon grid
   root = new StackPane {
-    children = List(backgroundImage, pokemonGrid, buttonDone)
+    children = List(backgroundImage, pokemonGrid, buttonDone, dataBar)
   }
+  dataBar.alignmentInParent_=(scalafx.geometry.Pos.TopLeft)
 
 }

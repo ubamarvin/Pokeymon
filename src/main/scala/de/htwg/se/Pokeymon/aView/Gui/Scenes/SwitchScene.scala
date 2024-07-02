@@ -74,10 +74,36 @@ case class SwitchScene(controller: ControllerInterface) extends BaseScene {
     // Add the HBox containing image and button to the GridPane at specific row and column
     pokemonGrid.add(vbox, index % 3, index / 3) // Adjust column count as needed
   }
+  val saveButton = new Button("save") {
+    minWidth = 150 // Increased by 50%
+    prefWidth = 225 // Increased by 50%
+    maxWidth = 300 // Increased by 50%
+    style = "-fx-font-size: 18px;" // Increased font size by 50%
+    onAction = () => {
+      controller.save
+    }
+  }
+
+  val loadButton = new Button("load") {
+    minWidth = 150 // Increased by 50%
+    prefWidth = 225 // Increased by 50%
+    maxWidth = 300 // Increased by 50%
+    style = "-fx-font-size: 18px;" // Increased font size by 50%
+    onAction = () => {
+      controller.load
+    }
+  }
+  val dataBar = new HBox {
+    children = Seq(saveButton, loadButton)
+    prefHeight = 100 // Set preferred height for the bottom bar
+    maxHeight = 50
+    padding = scalafx.geometry.Insets(10)
+  }
 
   // Create the root StackPane and add background image and the Pokémon grid
   root = new StackPane {
-    children = List(backgroundImage, pokemonGrid, backButton)
+    children = List(backgroundImage, pokemonGrid, backButton, dataBar)
   }
+  dataBar.alignmentInParent_=(scalafx.geometry.Pos.TopLeft)
 
 }

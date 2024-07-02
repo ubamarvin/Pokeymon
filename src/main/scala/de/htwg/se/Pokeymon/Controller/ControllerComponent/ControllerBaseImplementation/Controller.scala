@@ -41,10 +41,12 @@ class Controller @Inject() (var game: GameInterface) extends Observable with Con
   def save: Unit =
     fileIo.save(game)
     println("SaveGame \n")
+    notifyObservers
 
   def load: Unit =
     game = fileIo.load
     println("loadgame \n")
+    notifyObservers
 
   def printDisplay: String =
     game.gameToString()

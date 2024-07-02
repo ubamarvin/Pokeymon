@@ -222,8 +222,34 @@ case class MainScene(controller: ControllerInterface) extends BaseScene {
     padding = scalafx.geometry.Insets(10) // Add padding for the border
 
   }
+  val saveButton = new Button("save") {
+    minWidth = 150 // Increased by 50%
+    prefWidth = 225 // Increased by 50%
+    maxWidth = 300 // Increased by 50%
+    style = "-fx-font-size: 18px;" // Increased font size by 50%
+    onAction = () => {
+      controller.save
+    }
+  }
 
-  root = new StackPane { children = List(backgroundImage, bar, middleBar, upperBar) }
+  val loadButton = new Button("load") {
+    minWidth = 150 // Increased by 50%
+    prefWidth = 225 // Increased by 50%
+    maxWidth = 300 // Increased by 50%
+    style = "-fx-font-size: 18px;" // Increased font size by 50%
+    onAction = () => {
+      controller.load
+    }
+  }
+  val dataBar = new HBox {
+    children = Seq(saveButton, loadButton)
+    prefHeight = 100 // Set preferred height for the bottom bar
+    maxHeight = 50
+    padding = scalafx.geometry.Insets(10)
+  }
+
+  root = new StackPane { children = List(backgroundImage, bar, middleBar, upperBar, dataBar) }
+  dataBar.alignmentInParent_=(scalafx.geometry.Pos.TopLeft)
   upperBar.alignmentInParent_=(scalafx.geometry.Pos.TopCenter)
   middleBar.alignmentInParent_=(scalafx.geometry.Pos.CenterLeft)
   bar.alignmentInParent_=(scalafx.geometry.Pos.BottomCenter)

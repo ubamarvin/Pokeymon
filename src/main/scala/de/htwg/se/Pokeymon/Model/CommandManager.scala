@@ -12,7 +12,7 @@ class CommandManager {
     command.executeStep // as its writtn
   }
   def undoStep = {
-    println("undo in manager")
+    // println("undo in manager")
     undoStack match {
       case Nil =>
       case head :: stack => {
@@ -23,7 +23,7 @@ class CommandManager {
     }
   }
   def redoStep = {
-    println("redo in manager")
+    // println("redo in manager")
     redoStack match {
       case Nil =>
       case head :: stack => {

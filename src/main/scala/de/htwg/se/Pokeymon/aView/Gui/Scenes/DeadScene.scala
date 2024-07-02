@@ -58,10 +58,36 @@ case class DeadScene(controller: ControllerInterface) extends BaseScene {
     alignment = Pos.Center // Align content to the center vertically
     children = List(text, buttonBox) // Add text and buttonBox to VBox
   }
+  val saveButton = new Button("save") {
+    minWidth = 150 // Increased by 50%
+    prefWidth = 225 // Increased by 50%
+    maxWidth = 300 // Increased by 50%
+    style = "-fx-font-size: 18px;" // Increased font size by 50%
+    onAction = () => {
+      controller.save
+    }
+  }
+
+  val loadButton = new Button("load") {
+    minWidth = 150 // Increased by 50%
+    prefWidth = 225 // Increased by 50%
+    maxWidth = 300 // Increased by 50%
+    style = "-fx-font-size: 18px;" // Increased font size by 50%
+    onAction = () => {
+      controller.load
+    }
+  }
+  val dataBar = new HBox {
+    children = Seq(saveButton, loadButton)
+    prefHeight = 100 // Set preferred height for the bottom bar
+    maxHeight = 50
+    padding = scalafx.geometry.Insets(10)
+  }
 
   // Create the root StackPane and add background image and the VBox
   root = new StackPane {
-    children = List(backgroundImage, vbox)
+    children = List(backgroundImage, vbox, dataBar)
   }
+  dataBar.alignmentInParent_=(scalafx.geometry.Pos.TopLeft)
 
 }

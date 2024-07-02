@@ -36,10 +36,36 @@ case class ItemScene(controller: ControllerInterface) extends BaseScene {
       controller.handleInput("back")
     }
   }
+  val saveButton = new Button("save") {
+    minWidth = 150 // Increased by 50%
+    prefWidth = 225 // Increased by 50%
+    maxWidth = 300 // Increased by 50%
+    style = "-fx-font-size: 18px;" // Increased font size by 50%
+    onAction = () => {
+      controller.save
+    }
+  }
+
+  val loadButton = new Button("load") {
+    minWidth = 150 // Increased by 50%
+    prefWidth = 225 // Increased by 50%
+    maxWidth = 300 // Increased by 50%
+    style = "-fx-font-size: 18px;" // Increased font size by 50%
+    onAction = () => {
+      controller.load
+    }
+  }
+  val dataBar = new HBox {
+    children = Seq(saveButton, loadButton)
+    prefHeight = 100 // Set preferred height for the bottom bar
+    maxHeight = 50
+    padding = scalafx.geometry.Insets(10)
+  }
   StackPane.setAlignment(backButton, Pos.BottomCenter) // Align button to the bottom center of the StackPane
 
   root = new StackPane {
-    children = List(backgroundImage, backButton)
+    children = List(backgroundImage, backButton, dataBar)
   }
+  dataBar.alignmentInParent_=(scalafx.geometry.Pos.TopLeft)
 
 }
