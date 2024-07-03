@@ -22,4 +22,8 @@ status------<<>>pokemon<<>>-------Move
 
 attackStrategy-------<<>>choiceHandler------<<>>>game<>-----setup
                               choice-------<>game
+
+
+SaveLoadXml.scala
+    add statushandler
     
