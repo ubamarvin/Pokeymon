@@ -42,6 +42,9 @@ sbt compile
 ```sh
 sbt run
 ```
+## Continuous Integration
+
+We use GitHub Actions for continuous integration. The workflow is defined in the .GitHub/workflows/scala.yml file.
 
 ## Project Structure
 
