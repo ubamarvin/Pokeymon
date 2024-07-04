@@ -1,26 +1,16 @@
-import org.scalatest.matchers.should.Matchers
-import org.scalatest.wordspec.AnyWordSpec
-import scalafx.application.Platform
-import scalafx.scene.Scene
+import org.scalatest._
+import de.htwg.se.Pokeymon.Controller.ControllerComponent.ControllerInterface
+import de.htwg.se.Pokeymon.aView.Gui.PokeGui
+import org.scalatest.flatspec.AnyFlatSpec
+import de.htwg.se.Pokeymon.Util.Observer
+import org.scalatest.matchers.should.Matchers.convertToStringShouldWrapperForVerb
 
-class PokeGuiSpec extends AnyWordSpec with Matchers {
+class PokeGuiSpec extends AnyFlatSpec {
 
-  "PokeGui" should {
-    "set the correct scene based on controller state" in {
+  // Dummy ControllerInterface for testing
 
-      // Start-Methode aufrufen, um die GUI zu initialisieren
-
-      // Beispiel: Zustand "main"
-
-      // Update-Methode aufrufen, um die GUI zu aktualisieren (normalerweise von Observables aufgerufen)
-
-      // Überprüfen, ob die richtige Szene gesetzt wurde
-
-      // Weitere Tests für andere Zustände ("pick", "attack", "battle", "switch", "item", "dead") können analog durchgeführt werden
+  "PokeGui" should "start without errors" in {
+    assertThrows[Exception] {
     }
-
-    // Weitere Tests können hier hinzugefügt werden, z.B. für Randfälle oder Fehlerszenarien
   }
-
-  // TestController als einfache Implementierung des ControllerInterface für den Tes
 }

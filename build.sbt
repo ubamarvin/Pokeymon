@@ -18,13 +18,18 @@ lazy val root = project
       // Determine OS version of JavaFX binaries
       lazy val osName = System.getProperty("os.name") match {
         case n if n.startsWith("Linux")   => "linux"
-        case n if n.startsWith("Mac")     => "mac"
+        case n if n.startsWith("Mac")     => "mac-aarch64"
         case n if n.startsWith("Windows") => "win"
         case _                            => throw new Exception("Unknown platform!")
       }
       Seq("base", "controls", "fxml", "graphics", "media", "swing", "web")
-        .map(m => "org.openjfx" % s"javafx-$m" % "16" classifier osName)
+        .map(m => "org.openjfx" % s"javafx-$m" % "22.0.1" classifier osName)
     },
+    //fork := true,
+    javaOptions ++= Seq(
+      s"--module-path", "/Users/kadirhasanovic/javafx-sdk-22.0.1/lib",
+      "--add-modules", "javafx.controls,javafx.fxml,javafx.web",
+      "--add-exports", "javafx.graphics/com.sun.javafx.application=ALL-UNNAMED"
+    ),
     coverageEnabled := true
   )
-//fork := true
