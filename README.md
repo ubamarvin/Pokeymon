@@ -108,6 +108,24 @@ sbt run
 <img width="541" alt="Bildschirm­foto 2024-07-04 um 05 16 15" src="https://github.com/ubamarvin/Pokeymon/assets/164490881/80a93752-d737-4729-a00a-1d10a38cb2f5">
 <img width="583" alt="Bildschirm­foto 2024-07-04 um 05 16 40" src="https://github.com/ubamarvin/Pokeymon/assets/164490881/86448f45-4f4d-4365-950a-8cfd548396a8">
 
+## Rules 
+
+General Rules:
+- Two trainers battle against each other.
+- Each trainer has a team of up to six Pokémon.
+- Goal: Make all of the opponent's Pokémon faint (K.O.).
+Choosing Pokemon:
+- At the start of the battle, each trainer selects a Pokémon from their team to start the fight.
+- During the battle, trainers can switch their active Pokémon.
+Turn-Based Combat:
+- Each trainer chooses one action per turn: attack, use an item, or switch Pokémon.
+- Actions are executed in the order of the Pokémon's speed.
+Victory Conditions:
+- A Pokémon faints when its HP drops to 0.
+- A trainer loses if all their Pokémon are fainted.
+- A trainer wins if all of the opponent's Pokémon are fainted.
+
+
 ## Contributions
 
 We welcome contributions to enhance the game. Feel free to fork the repository and submit pull requests with improvements or bug fixes.
