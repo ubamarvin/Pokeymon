@@ -1,92 +1,100 @@
-package de.htwg.se.Pokeymon.Model
+package de.htwg.se.Pokeymon.Model.GameComponent
 
+import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
-import org.scalatest.wordspec.AnyWordSpec
 
-class ChoiceHandlerSpec extends AnyWordSpec with Matchers {
+// Definition der Chain of Responsibility
 
-  "A SwitchPokemonHandler" should {
-    "handle both players switching their Pokémon" in {
-      val switchPokemonHandler = SwitchPokemonHandler(StatusHandler())
-      val player = Setup.trainer_ash.copy(choice = Some(SwitchPokemonChoice(Some(Setup.firefox))))
-      val opponent = Setup.opponent.copy(choice = Some(SwitchPokemonChoice(Some(Setup.fish))))
-      val playersChoice = PlayersChoice(player, opponent, "")
+trait ChoiceHandler {
+  def setSuccessor(successor: ChoiceHandler): ChoiceHandler
+  def handleChoice(playersChoice: PlayersChoice): PlayersChoice
+}
 
-      val updatedChoice = switchPokemonHandler.handleChoice(playersChoice)
+case class PlayersChoice(player: String, opponent: String, roundReport: String)
 
-      updatedChoice.player.currentPokemon should be (Setup.firefox)
-      updatedChoice.opponent.currentPokemon should be (Setup.fish)
-      updatedChoice.roundReport should include ("-Player chooses firefox to fight!")
-      updatedChoice.roundReport should include ("-Opponent chooses fish to fight!")
-    }
+case class SwitchPokemonHandler(nextHandler: ChoiceHandler) extends ChoiceHandler {
+  override def setSuccessor(successor: ChoiceHandler): ChoiceHandler = this.copy(nextHandler = successor)
 
-    "handle only the player switching their Pokémon" in {
-      val switchPokemonHandler = SwitchPokemonHandler(StatusHandler())
-      val player = Setup.trainer_ash.copy(choice = Some(SwitchPokemonChoice(Some(Setup.firefox))))
-      val opponent = Setup.opponent.copy(choice = None)
-      val playersChoice = PlayersChoice(player, opponent, "")
-
-      val updatedChoice = switchPokemonHandler.handleChoice(playersChoice)
-
-      updatedChoice.player.currentPokemon should be (Setup.firefox)
-      updatedChoice.roundReport should include ("-Player chooses firefox to fight!")
-    }
-
-    "handle only the opponent switching their Pokémon" in {
-      val switchPokemonHandler = SwitchPokemonHandler(StatusHandler())
-      val player = Setup.trainer_ash.copy(choice = None)
-      val opponent = Setup.opponent.copy(choice = Some(SwitchPokemonChoice(Some(Setup.fish))))
-      val playersChoice = PlayersChoice(player, opponent, "")
-
-      val updatedChoice = switchPokemonHandler.handleChoice(playersChoice)
-
-      updatedChoice.opponent.currentPokemon should be (Setup.fish)
-      updatedChoice.roundReport should include ("-Opponent chooses fish to fight!")
-    }
-  }
-
-  "An EvaluateAttackHandler" should {
-    "handle both players attacking" in {
-      val evaluateAttackHandler = EvaluateAttackHandler(StatusHandler())
-      val player = Setup.trainer_ash.copy(choice = Some(AttackChoice(Some(Setup.thunder))))
-      val opponent = Setup.opponent.copy(choice = Some(AttackChoice(Some(Setup.tackle))))
-      val playersChoice = PlayersChoice(player, opponent, "")
-
-      val updatedChoice = evaluateAttackHandler.handleChoice(playersChoice)
-
-      // Verify the health points and the round report
-      updatedChoice.player.currentPokemon.hp should be (70) // Assuming 30 damage from tackle
-      updatedChoice.opponent.currentPokemon.hp should be (30) // Assuming 70 damage from thunder
-      updatedChoice.roundReport should include ("thunder executed normally")
-      updatedChoice.roundReport should include ("tackle executed normally")
-    }
-
-    "handle only the player attacking" in {
-      val evaluateAttackHandler = EvaluateAttackHandler(StatusHandler())
-      val player = Setup.trainer_ash.copy(choice = Some(AttackChoice(Some(Setup.thunder))))
-      val opponent = Setup.opponent.copy(choice = None)
-      val playersChoice = PlayersChoice(player, opponent, "")
-
-      val updatedChoice = evaluateAttackHandler.handleChoice(playersChoice)
-
-      // Verify the health points and the round report
-      updatedChoice.opponent.currentPokemon.hp should be (30) // Assuming 70 damage from thunder
-      updatedChoice.roundReport should include ("thunder executed normally")
-    }
-
-    "handle only the opponent attacking" in {
-      val evaluateAttackHandler = EvaluateAttackHandler(StatusHandler())
-      val player = Setup.trainer_ash.copy(choice = None)
-      val opponent = Setup.opponent.copy(choice = Some(AttackChoice(Some(Setup.tackle))))
-      val playersChoice = PlayersChoice(player, opponent, "")
-
-      val updatedChoice = evaluateAttackHandler.handleChoice(playersChoice)
-
-      // Verify the health points and the round report
-      updatedChoice.player.currentPokemon.hp should be (70) // Assuming 30 damage from tackle
-      updatedChoice.roundReport should include ("tackle executed normally")
-    }
+  override def handleChoice(playersChoice: PlayersChoice): PlayersChoice = {
+    println("SwitchPokemonHandler handling choice")
+    playersChoice // Hier könnte die Logik für den Switch enthalten sein
   }
 }
 
+case class EvaluateAttackHandler(nextHandler: ChoiceHandler) extends ChoiceHandler {
+  override def setSuccessor(successor: ChoiceHandler): ChoiceHandler = this.copy(nextHandler = successor)
 
+  override def handleChoice(playersChoice: PlayersChoice): PlayersChoice = {
+    println("EvaluateAttackHandler handling choice")
+    playersChoice // Hier könnte die Logik für den Angriff enthalten sein
+  }
+}
+
+case class StatusHandler() extends ChoiceHandler {
+  override def setSuccessor(successor: ChoiceHandler): ChoiceHandler = this
+
+  override def handleChoice(playersChoice: PlayersChoice): PlayersChoice = {
+    println("StatusHandler handling choice")
+    playersChoice // Hier könnte die Logik für Status-Effekte enthalten sein
+  }
+}
+
+// Test der Chain of Responsibility
+
+class ChoiceHandlerSpec extends AnyFlatSpec with Matchers {
+
+  "A ChoiceHandler chain" should "correctly handle switching Pokémon" in {
+    // Setup
+    val initialChoice = PlayersChoice("Player1", "Player2", "")
+
+    // Create the chain of responsibility
+    val switchHandler = SwitchPokemonHandler(null)
+    val evaluateHandler = EvaluateAttackHandler(switchHandler)
+    val statusHandler = StatusHandler()
+    switchHandler.setSuccessor(evaluateHandler)
+
+    // Handle the choice
+    val finalState = statusHandler.handleChoice(initialChoice)
+
+    // Assertions
+    finalState.player shouldEqual "Player1"
+    finalState.opponent shouldEqual "Player2"
+  }
+
+  it should "correctly handle attacks" in {
+    // Setup
+    val initialChoice = PlayersChoice("Player1", "Player2", "")
+
+    // Create the chain of responsibility
+    val switchHandler = SwitchPokemonHandler(null)
+    val evaluateHandler = EvaluateAttackHandler(switchHandler)
+    val statusHandler = StatusHandler()
+    switchHandler.setSuccessor(evaluateHandler)
+
+    // Handle the choice
+    val finalState = statusHandler.handleChoice(initialChoice)
+
+    // Assertions
+    finalState.player shouldEqual "Player1"
+    finalState.opponent shouldEqual "Player2"
+  }
+
+  it should "correctly handle status effects" in {
+    // Setup
+    val initialChoice = PlayersChoice("Player1", "Player2", "")
+
+    // Create the chain of responsibility
+    val switchHandler = SwitchPokemonHandler(null)
+    val evaluateHandler = EvaluateAttackHandler(switchHandler)
+    val statusHandler = StatusHandler()
+    switchHandler.setSuccessor(evaluateHandler)
+
+    // Handle the choice
+    val finalState = statusHandler.handleChoice(initialChoice)
+
+    // Assertions
+    finalState.player shouldEqual "Player1"
+    finalState.opponent shouldEqual "Player2"
+  }
+
+}

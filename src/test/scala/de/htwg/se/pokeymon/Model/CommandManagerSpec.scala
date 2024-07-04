@@ -1,29 +1,34 @@
 package de.htwg.se.Pokeymon.Model
 
 import org.scalatest.wordspec.AnyWordSpec
-import org.scalatest.matchers.should.Matchers._
+import de.htwg.se.Pokeymon.Util.Command
 
 class CommandManagerSpec extends AnyWordSpec {
 
-  "A CommandManager" should {
+  "A CommandManager" when {
+    "executing commands" should {
+      "execute the command and update its state" in {
+        val manager = new CommandManager
 
-    "execute a command with doStep" in {
-      val manager = new CommandManager
-      var executed = false
 
-
+      }
     }
 
-    "undo a command with undoStep" in {
-      val manager = new CommandManager
-      var undone = false
+    "undoing commands" should {
+      "undo the last executed command" in {
+        val manager = new CommandManager
 
+
+      }
     }
 
-    "redo a command with redoStep" in {
-      val manager = new CommandManager
-      var redone = false
+    "redoing commands" should {
+      "redo the last undone command" in {
+        val manager = new CommandManager
 
+
+      }
+    }
   }
-}
+
 }

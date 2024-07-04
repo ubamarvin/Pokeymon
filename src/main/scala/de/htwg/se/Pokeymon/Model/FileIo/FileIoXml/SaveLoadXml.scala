@@ -24,7 +24,7 @@ import scala.xml._
 
 import scala.xml.{NodeSeq, PrettyPrinter}
 
-class FileIOXml extends FileIOInterface {
+class SaveLoadXml extends FileIOInterface {
 
   def save(game: GameInterface): Unit =
     saveGame(game)

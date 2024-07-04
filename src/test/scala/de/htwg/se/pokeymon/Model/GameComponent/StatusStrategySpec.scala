@@ -1,128 +1,88 @@
-package de.htwg.se.Pokeymon.Model
+package de.htwg.se.Pokeymon.Model.GameComponent
 
-import org.scalatest.wordspec.AnyWordSpec
+import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
+import de.htwg.se.Pokeymon.Model.GameData._
+import de.htwg.se.Pokeymon.Model.GameComponent._
 
-class StatusStrategySpec extends AnyWordSpec with Matchers {
-  "A BurnedState" when {
-    "applied to a Pokemon" should {
-      "correctly decrease HP and reduce duration" in {
-        // Arrange
-        val burnedState = BurnedState(3)
-        val pokemon = Setup.pikachu
+class StatusStrategySpec extends AnyFlatSpec with Matchers {
 
-        // Act
-        val (updatedPokemon, message) = burnedState.applyEffect(pokemon)
+  "BurnedState" should "apply burn effect correctly" in {
+    val pokemon = Pokemon(1, "TestPokemon", 100, List(Move("Fire move", 50, "fire")), 50, "fire")
+    val burnedState = BurnedState(3, 5)
 
-        // Assert
-        updatedPokemon.hp should be < pokemon.hp
-        message should startWith("-pikachu is hurt by burn")
-        burnedState.duration shouldBe 2
-      }
+    val (updatedPokemon, message) = burnedState.applyEffect(pokemon)
 
-      "correctly clear the effect when duration is 0" in {
-        // Arrange
-        val burnedState = BurnedState(1)
-        val pokemon = Setup.pikachu
-
-        // Act
-        val (updatedPokemon, _) = burnedState.applyEffect(pokemon)
-        val clearedPokemon = burnedState.clearEffect(updatedPokemon)
-
-        // Assert
-        clearedPokemon.status.strategy shouldBe a[NormalState]
-      }
-    }
+    updatedPokemon.hp shouldEqual 95 // decreased by intensity of burn
+    message shouldEqual "-TestPokemon is hurt by burn, lost 5 HP\n"
+    updatedPokemon.getStatus() shouldEqual "burned"
   }
 
-  "A PoisonedState" when {
-    "applied to a Pokemon" should {
-      "correctly decrease HP and reduce duration" in {
-        // Arrange
-        val poisonedState = PoisonedState(3)
-        val pokemon = Setup.pikachu
+  it should "clear burn effect correctly" in {
+    val pokemon = Pokemon(1, "TestPokemon", 100, List(Move("Fire move", 50, "fire")), 50, "fire")
+    val burnedState = BurnedState(1, 5)
 
-        // Act
-        val (updatedPokemon, message) = poisonedState.applyEffect(pokemon)
+    val updatedPokemon = burnedState.clearEffect(pokemon)
 
-        // Assert
-        updatedPokemon.hp should be < pokemon.hp
-        message should startWith("-pikachu is hurt by poison")
-        poisonedState.duration shouldBe 2
-      }
-
-      "correctly clear the effect when duration is 0" in {
-        // Arrange
-        val poisonedState = PoisonedState(1)
-        val pokemon = Setup.pikachu
-
-        // Act
-        val (updatedPokemon, _) = poisonedState.applyEffect(pokemon)
-        val clearedPokemon = poisonedState.clearEffect(updatedPokemon)
-
-        // Assert
-        clearedPokemon.status.strategy shouldBe a[NormalState]
-      }
-    }
+    updatedPokemon.getStatus() shouldEqual ""
   }
 
-  "A SleepState" when {
-    "applied to a Pokemon" should {
-      "correctly reduce duration" in {
-        // Arrange
-        val sleepState = SleepState(3)
-        val pokemon = Setup.pikachu
+  "PoisonedState" should "apply poison effect correctly" in {
+    val pokemon = Pokemon(1, "TestPokemon", 100, List(Move("Water move", 50, "water")), 50, "water")
+    val poisonedState = PoisonedState(3, 5)
 
-        // Act
-        val (updatedPokemon, message) = sleepState.applyEffect(pokemon)
+    val (updatedPokemon, message) = poisonedState.applyEffect(pokemon)
 
-        // Assert
-        message should startWith("-pikachu is sleeping")
-        sleepState.duration shouldBe 2
-      }
-
-      "correctly clear the effect when duration is 0" in {
-        // Arrange
-        val sleepState = SleepState(1)
-        val pokemon = Setup.pikachu
-
-        // Act
-        val (updatedPokemon, _) = sleepState.applyEffect(pokemon)
-        val clearedPokemon = sleepState.clearEffect(updatedPokemon)
-
-        // Assert
-        clearedPokemon.status.strategy shouldBe a[NormalState]
-      }
-    }
+    updatedPokemon.hp shouldEqual 95 // decreased by intensity of poison
+    message shouldEqual "-TestPokemon is hurt by poison, lost 5 HP\n"
+    updatedPokemon.getStatus() shouldEqual "poisoned"
   }
 
-  "A ParalyzedState" when {
-    "applied to a Pokemon" should {
-      "correctly reduce duration" in {
-        // Arrange
-        val paralyzedState = ParalyzedState(3)
-        val pokemon = Setup.pikachu
+  it should "clear poison effect correctly" in {
+    val pokemon = Pokemon(1, "TestPokemon", 100, List(Move("Water move", 50, "water")), 50, "water")
+    val poisonedState = PoisonedState(1, 5)
 
-        // Act
-        val (updatedPokemon, message) = paralyzedState.applyEffect(pokemon)
+    val updatedPokemon = poisonedState.clearEffect(pokemon)
 
-        // Assert
-        message should startWith("-pikachu is paralyzed")
-        paralyzedState.duration shouldBe 2
-      }
-
-      "correctly clear the effect when duration is 0" in {
-        // Arrange
-        val paralyzedState = ParalyzedState(1)
-        val pokemon = Setup.pikachu
-
-        // Act
-        val (updatedPokemon, _) = paralyzedState.applyEffect(pokemon)
-        val clearedPokemon = paralyzedState.clearEffect(updatedPokemon)
-
-        // Assert
-        clearedPokemon.status.strategy shouldBe a[NormalState]
-      }
-    }
+    updatedPokemon.getStatus() shouldEqual ""
   }
+
+  "SleepState" should "apply sleep effect correctly" in {
+    val pokemon = Pokemon(1, "TestPokemon", 100, List(Move("Normal move", 50, "normal")), 50, "normal")
+    val sleepState = SleepState(2)
+
+    val (updatedPokemon, message) = sleepState.applyEffect(pokemon)
+
+    message shouldEqual "-TestPokemon is sleeping\n"
+    updatedPokemon.getStatus() shouldEqual "sleep"
+  }
+
+  it should "clear sleep effect correctly" in {
+    val pokemon = Pokemon(1, "TestPokemon", 100, List(Move("Normal move", 50, "normal")), 50, "normal")
+    val sleepState = SleepState(1)
+
+    val updatedPokemon = sleepState.clearEffect(pokemon)
+
+    updatedPokemon.getStatus() shouldEqual ""
+  }
+
+  "ParalyzedState" should "apply paralysis effect correctly" in {
+    val pokemon = Pokemon(1, "TestPokemon", 100, List(Move("Electric move", 50, "elektro")), 50, "elektro")
+    val paralyzedState = ParalyzedState(2)
+
+    val (updatedPokemon, message) = paralyzedState.applyEffect(pokemon)
+
+    message shouldEqual "-TestPokemon is paralyzed\n"
+    updatedPokemon.getStatus() shouldEqual "paralyzed"
+  }
+
+  it should "clear paralysis effect correctly" in {
+    val pokemon = Pokemon(1, "TestPokemon", 100, List(Move("Electric move", 50, "elektro")), 50, "elektro")
+    val paralyzedState = ParalyzedState(1)
+
+    val updatedPokemon = paralyzedState.clearEffect(pokemon)
+
+    updatedPokemon.getStatus() shouldEqual ""
+  }
+
 }

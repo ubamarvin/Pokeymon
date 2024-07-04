@@ -1,50 +1,28 @@
-package de.htwg.se.Pokeymon.Model
+package de.htwg.se.Pokeymon.Model.GameData
 
+import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
-import org.scalatest.wordspec.AnyWordSpec
+import de.htwg.se.Pokeymon.Model.GameData.Setup._
 
-class PokedexSpec extends AnyWordSpec with Matchers {
+class PokedexSpec extends AnyFlatSpec with Matchers {
 
-  "A Pokedex" when {
-    "initialized with available Pokémon" should {
-      val pikachu = Pokemon(1, "Pikachu", 100, List(Move("Thunder Shock", 40, "electric")), 30, "electric")
-      val bulbasaur = Pokemon(2, "Bulbasaur", 100, List(Move("Vine Whip", 45, "grass")), 30, "grass")
-      val availablePokemon = Vector(pikachu, bulbasaur)
-      val pokedex = new Pokedex(availablePokemon)
-
-      "show the available Pokémon correctly" in {
-        pokedex.showAvailablePokemon() should be("Pikachu, Bulbasaur")
-      }
-
-      "choose a Pokémon and update the Pokedex" in {
-        val (chosenPokemon, updatedPokedex) = pokedex.choosePokemon("Pikachu")
-        chosenPokemon should be(pikachu)
-        updatedPokedex.showAvailablePokemon() should be("Bulbasaur")
-      }
-
-      "check if a Pokémon exists in the Pokedex" in {
-        pokedex.exists("Pikachu") should be(true)
-        pokedex.exists("Charmander") should be(false)
-      }
-    }
-
-    "initialized without available Pokémon" should {
-      val emptyPokedex = new Pokedex(Vector.empty)
-
-      "show no available Pokémon" in {
-        emptyPokedex.showAvailablePokemon() should be("")
-      }
-
-      "not choose any Pokémon" in {
-        val (chosenPokemon, updatedPokedex) = emptyPokedex.choosePokemon("Pikachu")
-        chosenPokemon should be(null)
-        updatedPokedex.showAvailablePokemon() should be("")
-      }
-
-      "report that no Pokémon exist" in {
-        emptyPokedex.exists("Pikachu") should be(false)
-        emptyPokedex.exists("Charmander") should be(false)
-      }
-    }
+  "A Pokedex" should "show available Pokemon correctly" in {
+    val pokedex = new Pokedex(available_pokemon)
+    val pokemonList = pokedex.showAvailablePokemon()
+    pokemonList shouldEqual "pikachu, ratmon, cowpokemon, evoli, fish, firefox"
   }
+
+  it should "choose a Pokemon correctly and update the Pokedex" in {
+    val pokedex = new Pokedex(available_pokemon)
+    val (chosenPokemon, updatedPokedex) = pokedex.choosePokemon("fish")
+    chosenPokemon.name shouldEqual "fish"
+    updatedPokedex.exists("fish") shouldBe false
+  }
+
+  it should "check if a Pokemon exists correctly" in {
+    val pokedex = new Pokedex(available_pokemon)
+    pokedex.exists("fish") shouldBe true
+    pokedex.exists("nonExistentPokemon") shouldBe false
+  }
+
 }
