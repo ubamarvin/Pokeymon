@@ -10,7 +10,7 @@ import de.htwg.se.Pokeymon.aView.Tui
 import de.htwg.se.Pokeymon.Model.GameComponent.Game
 import de.htwg.se.Pokeymon.aView.Gui.PokeGui
 
-object pokeymon {
+object Pokeymon {
 
   val injector = Guice.createInjector(new PokeymonModule)
   val controller = injector.getInstance(classOf[ControllerInterface])
@@ -20,8 +20,8 @@ object pokeymon {
 
   controller.notifyObservers
 
-  @main
-  def startGame(): Unit =
+  
+  def main(args: Array[String]): Unit =
 
     import ExecutionContext.Implicits.global
 
