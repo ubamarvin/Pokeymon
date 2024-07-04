@@ -143,6 +143,7 @@ Victory Conditions:
 
 ## Contributions
 
+If you want to contribute to this project, you can fork this repository and create a pull request. We are happy about every contribution. For other changes, please open an issue.
 We welcome contributions to enhance the game. Feel free to fork the repository and submit pull requests with improvements or bug fixes.
 
 ## License
