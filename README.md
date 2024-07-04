@@ -42,6 +42,18 @@ sbt compile
 ```sh
 sbt run
 ```
+## Test
+
+## Test commands 
+
+```sh
+sbt clean coverage test
+```
+
+```sh
+sbt coverageReport
+```
+
 ## Continuous Integration
 
 We use GitHub Actions for continuous integration. The workflow is defined in the .GitHub/workflows/scala.yml file.
