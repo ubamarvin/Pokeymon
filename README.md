@@ -1,5 +1,7 @@
 # Pokémon Battle Mode
 
+[![Coverage Status](https://coveralls.io/repos/github/ubamarvin/Pokeymon/badge.svg)](https://coveralls.io/github/ubamarvin/Pokeymon)
+
 ## Overview
 
 Welcome to Pokémon Battle Mode, a Scala-based game developed for the Software Engineering classes at HTWG Konstanz. The game simulates Pokémon battles, allowing players to engage in strategic combat using various Pokémon and their unique moves.
