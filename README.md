@@ -60,51 +60,6 @@ sbt coverageReport
 
 We use GitHub Actions for continuous integration. The workflow is defined in the .GitHub/workflows/scala.yml file.
 
-## Project Structure
-
-```plaintext
-├── src
-│   ├── main
-│   │   ├── scala
-│   │   │   ├── de
-│   │   │   │   ├── htwg
-│   │   │   │   │   ├── se
-│   │   │   │   │   │   ├── Pokeymon
-│   │   │   │   │   │   │   ├── Controller
-│   │   │   │   │   │   │   │   ├── ControllerComponent
-│   │   │   │   │   │   │   │   │   ├── ControllerBaseImplementation
-│   │   │   │   │   │   │   │   │   └── ControllerInterface.scala
-│   │   │   │   │   │   │   │   ├── GameComponent
-│   │   │   │   │   │   │   │   │   ├── Game.scala
-│   │   │   │   │   │   │   │   │   ├── GameData
-│   │   │   │   │   │   │   │   ├── Util
-│   │   │   │   │   │   │   │   ├── aView
-│   │   │   │   │   │   │   │   │   ├── Gui
-│   │   │   │   │   │   │   │   │   │   ├── Gui.scala
-│   │   │   │   │   │   │   │   │   │   ├── Scenes
-│   │   │   │   │   │   │   │   │   ├── Tui
-│   │   │   │   │   │   │   │   │   │   └── Tui.scala
-│   ├── test
-│   │   ├── scala
-│   │   │   ├── de
-│   │   │   │   ├── htwg
-│   │   │   │   │   ├── se
-│   │   │   │   │   │   ├── Pokeymon
-│   │   │   │   │   │   │   ├── Controller
-│   │   │   │   │   │   │   │   ├── ControllerComponent
-│   │   │   │   │   │   │   │   │   └── ControllerBaseImplementationSpec.scala
-│   │   │   │   │   │   │   │   ├── GameComponent
-│   │   │   │   │   │   │   │   │   └── GameSpec.scala
-│   │   │   │   │   │   │   │   ├── Util
-│   │   │   │   │   │   │   │   ├── aView
-│   │   │   │   │   │   │   │   │   ├── Gui
-│   │   │   │   │   │   │   │   │   │   ├── GuiSpec.scala
-│   │   │   │   │   │   │   │   │   │   ├── Scenes
-│   │   │   │   │   │   │   │   │   │   │   ├── AttackSceneSpec.scala
-│   │   │   │   │   │   │   │   │   ├── Tui
-│   │   │   │   │   │   │   │   │   │   └── TuiSpec.scala
-```
-
 ## How to Play
 
 1. **Main Menu:** Start the game from the main menu. You can choose to start a new game or load an existing one.
