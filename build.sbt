@@ -1,4 +1,4 @@
-val scala3Version = "3.3.3"
+val scala3Version = "3.4.1"
 
 
 
@@ -39,11 +39,17 @@ lazy val root = project
     libraryDependencies += "org.scalactic" %% "scalactic" % "3.2.18",
     libraryDependencies += "org.scalatest" %% "scalatest" % "3.2.18" % "test",
     libraryDependencies += "org.scalafx" %% "scalafx" % "19.0.0-R30",
-    libraryDependencies += "com.google.inject" % "guice" % "7.0.0",
-    libraryDependencies += "net.codingwell" %% "scala-guice" % "7.0.0",
+    libraryDependencies += "com.google.inject" % "guice" % "6.0.0",
+    libraryDependencies += "net.codingwell" %% "scala-guice" % "6.0.0",
     libraryDependencies += "org.scala-lang.modules" %% "scala-xml" % "2.3.0",
     libraryDependencies += "com.typesafe.play" %% "play-json" % "2.10.0-RC5",
     libraryDependencies ++= (Seq() ++ setJavaFXVersion.value),
+    
+  libraryDependencies +="com.fasterxml.jackson.core" % "jackson-databind" % "2.14.0",
+  libraryDependencies +="com.fasterxml.jackson.core" % "jackson-core" % "2.14.0",
+  libraryDependencies +="com.fasterxml.jackson.core" % "jackson-annotations" % "2.14.0",
+  libraryDependencies +="com.fasterxml.jackson.module" %% "jackson-module-scala" % "2.14.3",
+
 
 
     assembly / mainClass := Some("de.htwg.se.Pokeymon.Pokeymon"),
@@ -52,7 +58,8 @@ lazy val root = project
       case PathList("META-INF", _*) => MergeStrategy.discard
       case _                        => MergeStrategy.first
     },
-    
+
+  
     libraryDependencies ++= {
       // Determine OS version of JavaFX binaries
       lazy val osName = System.getProperty("os.name") match {
