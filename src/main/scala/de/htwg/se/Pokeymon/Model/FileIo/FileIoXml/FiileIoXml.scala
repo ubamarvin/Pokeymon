@@ -21,12 +21,19 @@ import de.htwg.se.Pokeymon.Model.GameComponent.{
 import de.htwg.se.Pokeymon.Model.GameComponent.{ItemChoice, AttackChoice, SwitchPokemonChoice, Choice}
 import de.htwg.se.Pokeymon.Model.GameComponent.{ParalyzedState, SleepState, PoisonedState, BurnedState, NormalState}
 import de.htwg.se.Pokeymon.Model.GameData.{Trainer, Pokemon, Move, Pokedex, Item}
+import play.api.libs.json._
 
 import scala.xml._
 
 import scala.xml.{NodeSeq, PrettyPrinter}
 
 class FileIOXml extends FileIOInterface {
+
+  def loadJson: JsValue = {
+    
+    val json: JsValue = Json.obj("message" -> "hello")
+    json
+  }
 
   def save(game: GameInterface): Unit =
     saveGame(game)

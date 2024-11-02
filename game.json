@@ -2,10 +2,9 @@
   "state" : {
     "type" : "MainState",
     "player" : {
-      "pokemons" : [ ],
-      "currentPokemon" : {
-        "id" : 2,
-        "name" : "ratmon",
+      "pokemons" : [ {
+        "id" : 4,
+        "name" : "evoli",
         "hp" : 100,
         "moves" : [ {
           "name" : "bodyslam",
@@ -18,8 +17,313 @@
           "moveType" : "normal",
           "statusEffect" : "none"
         } ],
-        "speed" : 40,
-        "pokeType" : "normal",
+        "speed" : 35,
+        "pokeType" : "fight",
+        "currentMove" : {
+          "name" : "empty",
+          "power" : 0,
+          "moveType" : "normal",
+          "statusEffect" : "none"
+        },
+        "status" : {
+          "stateType" : "NormalState"
+        }
+      } ],
+      "currentPokemon" : {
+        "id" : 11,
+        "name" : "fish",
+        "hp" : 50,
+        "moves" : [ {
+          "name" : "waterjet",
+          "power" : 50,
+          "moveType" : "water",
+          "statusEffect" : "none"
+        }, {
+          "name" : "vegankick",
+          "power" : 50,
+          "moveType" : "plant",
+          "statusEffect" : "none"
+        } ],
+        "speed" : 75,
+        "pokeType" : "water",
+        "currentMove" : {
+          "name" : "waterjet",
+          "power" : 50,
+          "moveType" : "water",
+          "statusEffect" : "none"
+        },
+        "status" : {
+          "stateType" : "NormalState"
+        }
+      },
+      "choice" : {
+        "attackChoice" : {
+          "name" : "waterjet",
+          "power" : 50,
+          "moveType" : "water",
+          "statusEffect" : "none"
+        }
+      }
+    },
+    "opponent" : {
+      "pokemons" : [ ],
+      "currentPokemon" : {
+        "id" : 5,
+        "name" : "waterPk",
+        "hp" : 50,
+        "moves" : [ {
+          "name" : "tackle",
+          "power" : 50,
+          "moveType" : "normal",
+          "statusEffect" : "none"
+        } ],
+        "speed" : 50,
+        "pokeType" : "water",
+        "currentMove" : {
+          "name" : "tackle",
+          "power" : 50,
+          "moveType" : "normal",
+          "statusEffect" : "none"
+        },
+        "status" : {
+          "stateType" : "NormalState"
+        }
+      },
+      "choice" : {
+        "attackChoice" : {
+          "name" : "tackle",
+          "power" : 50,
+          "moveType" : "normal",
+          "statusEffect" : "none"
+        }
+      }
+    },
+    "roundReport" : "-fishs attack waterjet was executed normally\n-waterPks attack tackle was executed normally\n"
+  },
+  "undoStack" : [ {
+    "type" : "BattleEvalState",
+    "player" : {
+      "pokemons" : [ {
+        "id" : 4,
+        "name" : "evoli",
+        "hp" : 100,
+        "moves" : [ {
+          "name" : "bodyslam",
+          "power" : 30,
+          "moveType" : "normal",
+          "statusEffect" : "none"
+        }, {
+          "name" : "kick",
+          "power" : 75,
+          "moveType" : "normal",
+          "statusEffect" : "none"
+        } ],
+        "speed" : 35,
+        "pokeType" : "fight",
+        "currentMove" : {
+          "name" : "empty",
+          "power" : 0,
+          "moveType" : "normal",
+          "statusEffect" : "none"
+        },
+        "status" : {
+          "stateType" : "NormalState"
+        }
+      } ],
+      "currentPokemon" : {
+        "id" : 11,
+        "name" : "fish",
+        "hp" : 100,
+        "moves" : [ {
+          "name" : "waterjet",
+          "power" : 50,
+          "moveType" : "water",
+          "statusEffect" : "none"
+        }, {
+          "name" : "vegankick",
+          "power" : 50,
+          "moveType" : "plant",
+          "statusEffect" : "none"
+        } ],
+        "speed" : 75,
+        "pokeType" : "water",
+        "currentMove" : {
+          "name" : "waterjet",
+          "power" : 50,
+          "moveType" : "water",
+          "statusEffect" : "none"
+        },
+        "status" : {
+          "stateType" : "NormalState"
+        }
+      },
+      "choice" : {
+        "attackChoice" : {
+          "name" : "waterjet",
+          "power" : 50,
+          "moveType" : "water",
+          "statusEffect" : "none"
+        }
+      }
+    },
+    "opponent" : {
+      "pokemons" : [ ],
+      "currentPokemon" : {
+        "id" : 5,
+        "name" : "waterPk",
+        "hp" : 100,
+        "moves" : [ {
+          "name" : "tackle",
+          "power" : 50,
+          "moveType" : "normal",
+          "statusEffect" : "none"
+        } ],
+        "speed" : 50,
+        "pokeType" : "water",
+        "currentMove" : {
+          "name" : "empty",
+          "power" : 0,
+          "moveType" : "normal",
+          "statusEffect" : "none"
+        },
+        "status" : {
+          "stateType" : "NormalState"
+        }
+      },
+      "choice" : { }
+    }
+  }, {
+    "type" : "ChooseAttackState",
+    "player" : {
+      "pokemons" : [ {
+        "id" : 4,
+        "name" : "evoli",
+        "hp" : 100,
+        "moves" : [ {
+          "name" : "bodyslam",
+          "power" : 30,
+          "moveType" : "normal",
+          "statusEffect" : "none"
+        }, {
+          "name" : "kick",
+          "power" : 75,
+          "moveType" : "normal",
+          "statusEffect" : "none"
+        } ],
+        "speed" : 35,
+        "pokeType" : "fight",
+        "currentMove" : {
+          "name" : "empty",
+          "power" : 0,
+          "moveType" : "normal",
+          "statusEffect" : "none"
+        },
+        "status" : {
+          "stateType" : "NormalState"
+        }
+      } ],
+      "currentPokemon" : {
+        "id" : 11,
+        "name" : "fish",
+        "hp" : 100,
+        "moves" : [ {
+          "name" : "waterjet",
+          "power" : 50,
+          "moveType" : "water",
+          "statusEffect" : "none"
+        }, {
+          "name" : "vegankick",
+          "power" : 50,
+          "moveType" : "plant",
+          "statusEffect" : "none"
+        } ],
+        "speed" : 75,
+        "pokeType" : "water",
+        "currentMove" : {
+          "name" : "empty",
+          "power" : 0,
+          "moveType" : "normal",
+          "statusEffect" : "none"
+        },
+        "status" : {
+          "stateType" : "NormalState"
+        }
+      },
+      "choice" : { }
+    },
+    "opponent" : {
+      "pokemons" : [ ],
+      "currentPokemon" : {
+        "id" : 5,
+        "name" : "waterPk",
+        "hp" : 100,
+        "moves" : [ {
+          "name" : "tackle",
+          "power" : 50,
+          "moveType" : "normal",
+          "statusEffect" : "none"
+        } ],
+        "speed" : 50,
+        "pokeType" : "water",
+        "currentMove" : {
+          "name" : "empty",
+          "power" : 0,
+          "moveType" : "normal",
+          "statusEffect" : "none"
+        },
+        "status" : {
+          "stateType" : "NormalState"
+        }
+      },
+      "choice" : { }
+    }
+  }, {
+    "type" : "MainState",
+    "player" : {
+      "pokemons" : [ {
+        "id" : 4,
+        "name" : "evoli",
+        "hp" : 100,
+        "moves" : [ {
+          "name" : "bodyslam",
+          "power" : 30,
+          "moveType" : "normal",
+          "statusEffect" : "none"
+        }, {
+          "name" : "kick",
+          "power" : 75,
+          "moveType" : "normal",
+          "statusEffect" : "none"
+        } ],
+        "speed" : 35,
+        "pokeType" : "fight",
+        "currentMove" : {
+          "name" : "empty",
+          "power" : 0,
+          "moveType" : "normal",
+          "statusEffect" : "none"
+        },
+        "status" : {
+          "stateType" : "NormalState"
+        }
+      } ],
+      "currentPokemon" : {
+        "id" : 11,
+        "name" : "fish",
+        "hp" : 100,
+        "moves" : [ {
+          "name" : "waterjet",
+          "power" : 50,
+          "moveType" : "water",
+          "statusEffect" : "none"
+        }, {
+          "name" : "vegankick",
+          "power" : 50,
+          "moveType" : "plant",
+          "statusEffect" : "none"
+        } ],
+        "speed" : 75,
+        "pokeType" : "water",
         "currentMove" : {
           "name" : "empty",
           "power" : 0,
@@ -59,13 +363,38 @@
       "choice" : { }
     },
     "roundReport" : ""
-  },
-  "undoStack" : [ {
+  }, {
     "type" : "PickPokemonState",
     "player" : {
       "pokemons" : [ {
-        "id" : 2,
-        "name" : "ratmon",
+        "id" : 11,
+        "name" : "fish",
+        "hp" : 100,
+        "moves" : [ {
+          "name" : "waterjet",
+          "power" : 50,
+          "moveType" : "water",
+          "statusEffect" : "none"
+        }, {
+          "name" : "vegankick",
+          "power" : 50,
+          "moveType" : "plant",
+          "statusEffect" : "none"
+        } ],
+        "speed" : 75,
+        "pokeType" : "water",
+        "currentMove" : {
+          "name" : "empty",
+          "power" : 0,
+          "moveType" : "normal",
+          "statusEffect" : "none"
+        },
+        "status" : {
+          "stateType" : "NormalState"
+        }
+      }, {
+        "id" : 4,
+        "name" : "evoli",
         "hp" : 100,
         "moves" : [ {
           "name" : "bodyslam",
@@ -78,8 +407,8 @@
           "moveType" : "normal",
           "statusEffect" : "none"
         } ],
-        "speed" : 40,
-        "pokeType" : "normal",
+        "speed" : 35,
+        "pokeType" : "fight",
         "currentMove" : {
           "name" : "empty",
           "power" : 0,
@@ -148,6 +477,253 @@
             "stateType" : "NormalState"
           }
         }, {
+          "id" : 2,
+          "name" : "ratmon",
+          "hp" : 100,
+          "moves" : [ {
+            "name" : "bodyslam",
+            "power" : 30,
+            "moveType" : "normal",
+            "statusEffect" : "none"
+          }, {
+            "name" : "kick",
+            "power" : 75,
+            "moveType" : "normal",
+            "statusEffect" : "none"
+          } ],
+          "speed" : 40,
+          "pokeType" : "normal",
+          "currentMove" : {
+            "name" : "empty",
+            "power" : 0,
+            "moveType" : "normal",
+            "statusEffect" : "none"
+          },
+          "status" : {
+            "stateType" : "NormalState"
+          }
+        }, {
+          "id" : 3,
+          "name" : "cowpokemon",
+          "hp" : 100,
+          "moves" : [ {
+            "name" : "tackle",
+            "power" : 50,
+            "moveType" : "normal",
+            "statusEffect" : "none"
+          }, {
+            "name" : "thunder",
+            "power" : 70,
+            "moveType" : "elektro",
+            "statusEffect" : "none"
+          } ],
+          "speed" : 35,
+          "pokeType" : "normal",
+          "currentMove" : {
+            "name" : "empty",
+            "power" : 0,
+            "moveType" : "normal",
+            "statusEffect" : "none"
+          },
+          "status" : {
+            "stateType" : "NormalState"
+          }
+        }, {
+          "id" : 12,
+          "name" : "firefox",
+          "hp" : 100,
+          "moves" : [ {
+            "name" : "firebreath",
+            "power" : 50,
+            "moveType" : "fire",
+            "statusEffect" : "none"
+          }, {
+            "name" : "burn",
+            "power" : 0,
+            "moveType" : "fire",
+            "statusEffect" : "burn"
+          } ],
+          "speed" : 100,
+          "pokeType" : "fire",
+          "currentMove" : {
+            "name" : "empty",
+            "power" : 0,
+            "moveType" : "normal",
+            "statusEffect" : "none"
+          },
+          "status" : {
+            "stateType" : "NormalState"
+          }
+        } ]
+      }
+    },
+    "picks" : 2,
+    "opponent" : {
+      "pokemons" : [ {
+        "id" : 5,
+        "name" : "waterPk",
+        "hp" : 100,
+        "moves" : [ {
+          "name" : "tackle",
+          "power" : 50,
+          "moveType" : "normal",
+          "statusEffect" : "none"
+        } ],
+        "speed" : 50,
+        "pokeType" : "water",
+        "currentMove" : {
+          "name" : "empty",
+          "power" : 0,
+          "moveType" : "normal",
+          "statusEffect" : "none"
+        },
+        "status" : {
+          "stateType" : "NormalState"
+        }
+      } ],
+      "currentPokemon" : {
+        "id" : 4,
+        "name" : "evoli",
+        "hp" : 100,
+        "moves" : [ {
+          "name" : "bodyslam",
+          "power" : 30,
+          "moveType" : "normal",
+          "statusEffect" : "none"
+        }, {
+          "name" : "kick",
+          "power" : 75,
+          "moveType" : "normal",
+          "statusEffect" : "none"
+        } ],
+        "speed" : 35,
+        "pokeType" : "fight",
+        "currentMove" : {
+          "name" : "empty",
+          "power" : 0,
+          "moveType" : "normal",
+          "statusEffect" : "none"
+        },
+        "status" : {
+          "stateType" : "NormalState"
+        }
+      },
+      "choice" : { }
+    }
+  }, {
+    "type" : "PickPokemonState",
+    "player" : {
+      "pokemons" : [ {
+        "id" : 11,
+        "name" : "fish",
+        "hp" : 100,
+        "moves" : [ {
+          "name" : "waterjet",
+          "power" : 50,
+          "moveType" : "water",
+          "statusEffect" : "none"
+        }, {
+          "name" : "vegankick",
+          "power" : 50,
+          "moveType" : "plant",
+          "statusEffect" : "none"
+        } ],
+        "speed" : 75,
+        "pokeType" : "water",
+        "currentMove" : {
+          "name" : "empty",
+          "power" : 0,
+          "moveType" : "normal",
+          "statusEffect" : "none"
+        },
+        "status" : {
+          "stateType" : "NormalState"
+        }
+      } ],
+      "currentPokemon" : {
+        "id" : 4,
+        "name" : "evoli",
+        "hp" : 100,
+        "moves" : [ {
+          "name" : "bodyslam",
+          "power" : 30,
+          "moveType" : "normal",
+          "statusEffect" : "none"
+        }, {
+          "name" : "kick",
+          "power" : 75,
+          "moveType" : "normal",
+          "statusEffect" : "none"
+        } ],
+        "speed" : 35,
+        "pokeType" : "fight",
+        "currentMove" : {
+          "name" : "empty",
+          "power" : 0,
+          "moveType" : "normal",
+          "statusEffect" : "none"
+        },
+        "status" : {
+          "stateType" : "NormalState"
+        }
+      },
+      "choice" : { }
+    },
+    "pokedex" : {
+      "pokedex" : {
+        "available_pokemon" : [ {
+          "id" : 1,
+          "name" : "pikachu",
+          "hp" : 100,
+          "moves" : [ {
+            "name" : "tackle",
+            "power" : 50,
+            "moveType" : "normal",
+            "statusEffect" : "none"
+          }, {
+            "name" : "thunder",
+            "power" : 70,
+            "moveType" : "elektro",
+            "statusEffect" : "none"
+          } ],
+          "speed" : 30,
+          "pokeType" : "elektro",
+          "currentMove" : {
+            "name" : "empty",
+            "power" : 0,
+            "moveType" : "normal",
+            "statusEffect" : "none"
+          },
+          "status" : {
+            "stateType" : "NormalState"
+          }
+        }, {
+          "id" : 2,
+          "name" : "ratmon",
+          "hp" : 100,
+          "moves" : [ {
+            "name" : "bodyslam",
+            "power" : 30,
+            "moveType" : "normal",
+            "statusEffect" : "none"
+          }, {
+            "name" : "kick",
+            "power" : 75,
+            "moveType" : "normal",
+            "statusEffect" : "none"
+          } ],
+          "speed" : 40,
+          "pokeType" : "normal",
+          "currentMove" : {
+            "name" : "empty",
+            "power" : 0,
+            "moveType" : "normal",
+            "statusEffect" : "none"
+          },
+          "status" : {
+            "stateType" : "NormalState"
+          }
+        }, {
           "id" : 3,
           "name" : "cowpokemon",
           "hp" : 100,
@@ -190,32 +766,6 @@
           } ],
           "speed" : 35,
           "pokeType" : "fight",
-          "currentMove" : {
-            "name" : "empty",
-            "power" : 0,
-            "moveType" : "normal",
-            "statusEffect" : "none"
-          },
-          "status" : {
-            "stateType" : "NormalState"
-          }
-        }, {
-          "id" : 11,
-          "name" : "fish",
-          "hp" : 100,
-          "moves" : [ {
-            "name" : "waterjet",
-            "power" : 50,
-            "moveType" : "water",
-            "statusEffect" : "none"
-          }, {
-            "name" : "vegankick",
-            "power" : 50,
-            "moveType" : "plant",
-            "statusEffect" : "none"
-          } ],
-          "speed" : 75,
-          "pokeType" : "water",
           "currentMove" : {
             "name" : "empty",
             "power" : 0,

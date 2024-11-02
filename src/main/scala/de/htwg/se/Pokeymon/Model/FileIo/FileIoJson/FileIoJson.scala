@@ -36,11 +36,11 @@ class FileIoJson extends FileIOInterface {
 
   private def saveGame(game: GameInterface): Unit = {
     import java.io._
-    val pw = new PrintWriter(new File("game.json"))
+    val pw = new PrintWriter(new File("../pokeweb/SavedGame/game.json"))
     val jsonString = Json.prettyPrint(gameToJson(game))
     pw.write(jsonString)
     pw.close()
-    println(jsonString)
+    println("File Saved at ../pokeweb/SavedGame/game.json")
   }
 
   // _______________
@@ -248,9 +248,9 @@ class FileIoJson extends FileIOInterface {
 
   def gameToJson(game: GameInterface): JsValue = {
     Json.obj(
-      "state" -> gameStateToJson(game.state),
-      "undoStack" -> Json.toJson(game.undoStack.map(gameStateToJson)),
-      "redoStack" -> Json.toJson(game.redoStack.map(gameStateToJson))
+      "state" -> gameStateToJson(game.state)
+      //"undoStack" -> Json.toJson(game.undoStack.map(gameStateToJson)),
+      //"redoStack" -> Json.toJson(game.redoStack.map(gameStateToJson))
     )
   }
 
@@ -278,11 +278,19 @@ class FileIoJson extends FileIOInterface {
 
   def load: GameInterface = {
     var game: GameInterface = null
-    val fileContent = Source.fromFile("game.json").getLines.mkString
+    val fileContent = Source.fromFile("../pokeweb/SavedGame/game.json").getLines.mkString
     val json = Json.parse(fileContent)
     game = jsonToGame(json)
+    println("game loaded from .. ")
     game
   }
+
+  def loadJson: JsValue = {
+    val fileContent = Source.fromFile("../pokeweb/SavedGame/game.json").getLines.mkString
+    println("file loaded from ../pokeweb/SavedGame/game.json")
+    val json: JsValue = Json.parse(fileContent)
+    json
+  } 
   def jsonToMove(json: JsValue): Move = {
     Move(
       (json \ "name").as[String],
@@ -471,8 +479,12 @@ class FileIoJson extends FileIOInterface {
   def jsonToGame(json: JsValue): GameInterface = {
 
     val state = jsonToGameState((json \ "state").as[JsValue])
-    val undoStack = (json \ "undoStack").as[Vector[JsValue]].map(jsonToGameState)
-    val redoStack = (json \ "redoStack").as[Vector[JsValue]].map(jsonToGameState)
+    //val undoStack = (json \ "undoStack").as[Vector[JsValue]].map(jsonToGameState)
+    //val redoStack = (json \ "redoStack").as[Vector[JsValue]].map(jsonToGameState) 
+    val undoStack: Vector[GameState] = Vector.empty;
+
+    val redoStack: Vector[GameState] = Vector.empty;
+
 
     new Game(state, undoStack, redoStack)
 

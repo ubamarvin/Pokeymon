@@ -11,6 +11,7 @@ import com.google.inject.{Inject, Guice}
 import net.codingwell.scalaguice.InjectorExtensions.ScalaInjector
 import com.google.inject.name.Named
 import de.htwg.se.Pokeymon.Model.FileIo.FileIOInterface
+import play.api.libs.json.JsValue
 
 class Controller @Inject() (var game: GameInterface) extends Observable with ControllerInterface {
   private val commandManager = new CommandManager
@@ -54,4 +55,9 @@ class Controller @Inject() (var game: GameInterface) extends Observable with Con
   def getSceneContent: Content =
     game.getContent()
 
+  def getGameJson: JsValue =
+    fileIo.save(game);
+    val json = fileIo.loadJson;
+    println(json)
+    json
 }
