@@ -387,7 +387,7 @@ class FileIoJson extends FileIOInterface {
 
 // Converting JSON to Trainer
   def jsonToTrainer(json: JsValue): Trainer = {
-    Trainer(
+    Trainer(1,
       (json \ "pokemons").as[Vector[JsValue]].map(jsonToPokemon),
       jsonToPokemon((json \ "currentPokemon").as[JsValue]),
       jsonToChoice((json \ "choice").as[JsValue])

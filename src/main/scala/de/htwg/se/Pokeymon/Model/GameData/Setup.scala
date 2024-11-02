@@ -70,7 +70,7 @@ object Setup {
 
   
 
-  val trainer_ash = Trainer(Vector())
+  val trainer_ash = Trainer(1,Vector())
 
 //**********Build Dummy opponent
   val std_moves: List[Move] = List(tackle)
@@ -78,7 +78,7 @@ object Setup {
   
   // val std_mons = Vector(testmon1, testmon2, testmon3, testmon4, testmon5, testmon6)
   val std_mons = Vector(lugia)
-  val opponent = Trainer(std_mons)
+  val opponent = Trainer(2,std_mons)
 
   val available_pokemon = Vector(bulbasaur,squirtle,raichu ,oddish,zubat,psyduck ,primeape ,gloom,
   golduck,venusaur,pikachu, meowth, arbok, evoli, wartortle, charizard)

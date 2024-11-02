@@ -17,7 +17,7 @@ class PokeymonModule extends AbstractModule with ScalaModule {
   override def configure() = {
     bind[GameInterface].to[Game]
     bind[ControllerInterface].to[ControllerBaseImplementation.Controller]
-    bind[GameState].toInstance(new PickPokemonState(Trainer(Vector()), Setup.pokedex, picks = 0, Setup.opponent))
+    bind[GameState].toInstance(new PickPokemonState(Trainer(1,Vector()), Setup.pokedex, picks = 0, Setup.opponent))
     bind[Vector[GameState]].toInstance(Vector.empty[GameState])
     bind[Vector[GameState]].toInstance(Vector.empty[GameState])
 

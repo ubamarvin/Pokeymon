@@ -14,8 +14,10 @@ import de.htwg.se.Pokeymon.Model.GameComponent._
     _ == pokemonToRemove: This is a shorthand notation for a function literal that compares each element of the _pokemon list with pokemonToRemove. Here, _ represents each individual element of the list, and pokemonToRemove is the element we want to remove.
     The expression _ == pokemonToRemove returns true if the current element (_) is equal to pokemonToRemove, and false otherwise.
  */
-case class Trainer(pokemons: Vector[Pokemon], currentPokemon: Pokemon = evoli, choice: Option[Choice] = None): // Extend with Items
+case class Trainer(id: Int ,pokemons: Vector[Pokemon], currentPokemon: Pokemon = evoli, choice: Option[Choice] = None): // Extend with Items
   val max_pokemon = 6
+
+  def getId(): Int = id;
 
   def getPokemons(): Vector[Pokemon] =
     pokemons

@@ -5,7 +5,6 @@ import de.htwg.se.Pokeymon.Model.GameComponent._
 trait GameInterface {
   def handleInput(input: String): Game
   def gameToString(): String
-  def getContent(): Content
   def gameUndo(): Game
   def gameRedo(): Game
   def state: GameState

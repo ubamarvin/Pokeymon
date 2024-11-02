@@ -412,7 +412,7 @@ class FileIOXml extends FileIOInterface {
       val currentPokemon = PokemonLoader.loadPokemon((trainerXml \\ "currentPokemon" \ "pokemon").head)
       val choice = (trainerXml \\ "choice").headOption.map(choiceFromXml)
 
-      Trainer(pokemons, currentPokemon, choice)
+      Trainer(1,pokemons, currentPokemon, choice)
     }
 
     private def choiceFromXml(xml: NodeSeq): Choice = {

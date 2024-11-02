@@ -3,7 +3,6 @@ import de.htwg.se.Pokeymon.Controller.ControllerComponent.ControllerInterface
 import de.htwg.se.Pokeymon.Util.Observable
 import de.htwg.se.Pokeymon.Model.GameComponent.GameInterface
 import de.htwg.se.Pokeymon.Model.CommandManager
-import de.htwg.se.Pokeymon.Model.GameComponent.Content
 import de.htwg.se.Pokeymon.PokeymonModule
 import de.htwg.se.Pokeymon.Model.GameComponent.Game._
 
@@ -52,8 +51,6 @@ class Controller @Inject() (var game: GameInterface) extends Observable with Con
   def printDisplay: String =
     game.gameToString()
 
-  def getSceneContent: Content =
-    game.getContent()
 
   def getGameJson: JsValue =
     fileIo.save(game);
