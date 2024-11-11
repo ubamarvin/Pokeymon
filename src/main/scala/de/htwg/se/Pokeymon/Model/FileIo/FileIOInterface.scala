@@ -9,7 +9,9 @@ trait FileIOInterface {
   def load: GameInterface
   def save(game: GameInterface): Unit
 
-  def loadJson: JsValue
+  def getJson: JsValue
+
+  def setGameFromJson(gameJs: JsValue): GameInterface
 
 
 }

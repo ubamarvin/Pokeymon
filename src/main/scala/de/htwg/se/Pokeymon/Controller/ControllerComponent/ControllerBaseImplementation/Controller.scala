@@ -57,7 +57,12 @@ class Controller @Inject() (var game: GameInterface) extends Observable with Con
 
   def getGameJson: JsValue =
     fileIo.save(game);
-    val json = fileIo.loadJson;
+    val json = fileIo.getJson;
     println(json)
     json
+
+  //Is to receive a JsonObject...called in PlayFrameWorkController
+  def setGameJson(gameJs: JsValue): Unit =
+    game = fileIo.setGameFromJson(gameJs);
+    println("Pokeymon.Controller.setGameJson");
 }

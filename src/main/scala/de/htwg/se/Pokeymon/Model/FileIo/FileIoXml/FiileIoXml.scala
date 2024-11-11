@@ -29,10 +29,18 @@ import scala.xml.{NodeSeq, PrettyPrinter}
 
 class FileIOXml extends FileIOInterface {
 
-  def loadJson: JsValue = {
+  def getJson: JsValue = {
     
     val json: JsValue = Json.obj("message" -> "hello")
     json
+  }
+
+  def setGameFromJson(gameJs: JsValue): GameInterface = {
+    
+    var game: GameInterface = null
+    val file = scala.xml.XML.loadFile("game.xml")
+    game = GameLoader.gameFromXml(file)
+    game
   }
 
   def save(game: GameInterface): Unit =

@@ -285,7 +285,15 @@ class FileIoJson extends FileIOInterface {
     game
   }
 
-  def loadJson: JsValue = {
+  def setGameFromJson(gameJs: JsValue): GameInterface = {
+    var game: GameInterface = jsonToGame(gameJs);
+    println("FileIoJson.SetJson");
+    game
+
+
+  } 
+
+  def getJson: JsValue = {
     val fileContent = Source.fromFile("../pokeweb/SavedGame/game.json").getLines.mkString
     println("file loaded from ../pokeweb/SavedGame/game.json")
     val json: JsValue = Json.parse(fileContent)
