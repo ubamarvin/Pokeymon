@@ -6,10 +6,15 @@ import de.htwg.se.Pokeymon.Model.GameComponent._
 
 trait Choice {
   def choiceType: String
+  override def toString: String
 }
 
 case class AttackChoice(move: Option[Move]) extends Choice {
   override def choiceType: String = "attack"
+   override def toString: String = move match {
+    case Some(m) => s"AttackChoice(move: $m)"
+    case None    => "AttackChoice(move: None)"
+  }
 }
 
 case class ItemChoice(item: Item, targetPokemon: Pokemon) extends Choice {
@@ -18,4 +23,8 @@ case class ItemChoice(item: Item, targetPokemon: Pokemon) extends Choice {
 
 case class SwitchPokemonChoice(pokemon: Option[Pokemon]) extends Choice {
   override def choiceType: String = "switch"
+  override def toString: String = pokemon match {
+    case Some(p) => s"SwitchPokemonChoice(pokemon: $p)"
+    case None    => "SwitchPokemonChoice(pokemon: None)"
+  }
 }

@@ -300,7 +300,9 @@ class FileIoJson extends FileIOInterface {
     json
   } 
   def jsonToMove(json: JsValue): Move = {
-    Move(
+      println(s"jsonToMove received JSON: ${Json.prettyPrint(json)}") // Pretty prints the JSON
+
+      Move(
       (json \ "name").as[String],
       (json \ "power").as[Int],
       (json \ "moveType").as[String],
@@ -366,9 +368,9 @@ class FileIoJson extends FileIOInterface {
 
 // Converting JSON to AttackChoice
   def jsonToAttackChoice(json: JsValue): AttackChoice = {
-    AttackChoice(
-      (json \ "attackChoice").asOpt[JsValue].map(jsonToMove)
-    )
+    println(s"jsonToAttackChoice received JSON: ${Json.prettyPrint(json)}")
+    val move = jsonToMove(json);
+    AttackChoice(Some(move))
   }
 
 // Converting JSON to ItemChoice
@@ -381,13 +383,13 @@ class FileIoJson extends FileIOInterface {
 
 // Converting JSON to SwitchPokemonChoice
   def jsonToSwitchPokemonChoice(json: JsValue): SwitchPokemonChoice = {
-    SwitchPokemonChoice(
-      (json \ "switchPokemonChoice").asOpt[JsValue].map(jsonToPokemon)
-    )
+    val pokemon = jsonToPokemon(json)
+    SwitchPokemonChoice(Some(pokemon));
   }
 
 // Converting JSON to Choice
   private def jsonToChoice(json: JsValue): Option[Choice] = {
+    println(s"jsonToChoice received JSON: ${Json.prettyPrint(json)}")
     (json \ "attackChoice").asOpt[JsValue].map(jsonToAttackChoice) orElse
       (json \ "itemChoice").asOpt[JsValue].map(jsonToItemChoice) orElse
       (json \ "switchPokemonChoice").asOpt[JsValue].map(jsonToSwitchPokemonChoice)
@@ -395,6 +397,7 @@ class FileIoJson extends FileIOInterface {
 
 // Converting JSON to Trainer
   def jsonToTrainer(json: JsValue): Trainer = {
+    println(s"jsonToTrainer received JSON: ${Json.prettyPrint(json)}")
     Trainer(
       (json \ "pokemons").as[Vector[JsValue]].map(jsonToPokemon),
       jsonToPokemon((json \ "currentPokemon").as[JsValue]),

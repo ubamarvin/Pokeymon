@@ -49,7 +49,7 @@ lazy val root = project
   libraryDependencies +="com.fasterxml.jackson.core" % "jackson-core" % "2.14.0",
   libraryDependencies +="com.fasterxml.jackson.core" % "jackson-annotations" % "2.14.0",
   libraryDependencies +="com.fasterxml.jackson.module" %% "jackson-module-scala" % "2.14.3",
-
+  libraryDependencies += "org.scala-lang.modules" %% "scala-swing" % "3.0.0",
 
 
     assembly / mainClass := Some("de.htwg.se.Pokeymon.Pokeymon"),

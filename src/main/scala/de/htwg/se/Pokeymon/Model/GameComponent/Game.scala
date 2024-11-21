@@ -228,11 +228,13 @@ case class BattleEvalState(player: Trainer, opponent: Trainer) extends GameState
 
   override def getContent(): Content =
     new Content("battle", player, opponent)
-  override def gameToString(): String = "are you sure? "
+  override def gameToString(): String = 
+    "are you sure? "
   // classic GameScreen
   override def processInput(input: String): GameState =
-    // call handler
-    // add upd_playerchoice to "memento"
+
+    println("player.Choice: "+ player.choice.toString);
+
     val upd_playersChoice = switchPokemonHandler.handleChoice(playersChoice)
     val roundReport = upd_playersChoice.roundReport
     val upd_player = upd_playersChoice.player

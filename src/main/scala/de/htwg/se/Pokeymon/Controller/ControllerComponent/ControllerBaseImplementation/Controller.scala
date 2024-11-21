@@ -13,7 +13,15 @@ import com.google.inject.name.Named
 import de.htwg.se.Pokeymon.Model.FileIo.FileIOInterface
 import play.api.libs.json.JsValue
 
-class Controller @Inject() (var game: GameInterface) extends Observable with ControllerInterface {
+import scala.swing.Publisher
+import scala.swing.event.Event
+
+case class StateChanged() extends Event
+
+class Controller @Inject() (var game: GameInterface) 
+extends Observable 
+with ControllerInterface 
+with Publisher {
   private val commandManager = new CommandManager
   val injector = Guice.createInjector(new PokeymonModule)
   val fileIo = injector.instance[FileIOInterface]
@@ -23,7 +31,7 @@ class Controller @Inject() (var game: GameInterface) extends Observable with Con
     // cmd.exe forwards input into model.game and model.game
     // pushes playersChoice on cmdManager stack
     commandManager.doStep(new HandleInputCommand(input, this))
-    // game = game.handleInput(input)
+    publish(StateChanged())
     notifyObservers
 
   def undo: Unit =
