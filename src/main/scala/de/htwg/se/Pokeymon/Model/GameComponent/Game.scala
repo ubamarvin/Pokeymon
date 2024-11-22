@@ -213,11 +213,12 @@ case class MainState(player: Trainer, opponent: Trainer, roundReport: String = "
 
 case class BattleEvalState(player: Trainer, opponent: Trainer) extends GameState {
   // set OpponentsMove Choice
+  /*
   val opMove: Option[Move] = Some(tackle)
   val upd_opponent = opponent.setChoice(new AttackChoice(opMove))
   val oppMonMoveSet = upd_opponent.currentPokemon.setCurrentMove("tackle")
   val readyOpp = upd_opponent.updateCurrentPokemon(oppMonMoveSet)
-
+*/
   val playersChoice = new PlayersChoice(player, readyOpp, "")
 
   // Setting up the handlers
