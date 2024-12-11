@@ -15,6 +15,7 @@ class Tui(controller: ControllerInterface) extends Observer {
       case "y" => controller.redo
       case "save" => controller.save
       case "load" => controller.load
+      case "newGame" => controller.newGame
       case _   => controller.handleInput(input)
     }
   }

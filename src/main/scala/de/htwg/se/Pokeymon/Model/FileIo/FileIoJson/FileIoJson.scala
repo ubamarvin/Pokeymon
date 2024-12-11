@@ -36,7 +36,7 @@ class FileIoJson extends FileIOInterface {
 
   private def saveGame(game: GameInterface): Unit = {
     import java.io._
-    val pw = new PrintWriter(new File("../pokeweb/SavedGame/game.json"))
+    val pw = new PrintWriter(new File("/app/SavedGame/game.json"))
     val jsonString = Json.prettyPrint(gameToJson(game))
     pw.write(jsonString)
     pw.close()
@@ -278,7 +278,7 @@ class FileIoJson extends FileIOInterface {
 
   def load: GameInterface = {
     var game: GameInterface = null
-    val fileContent = Source.fromFile("../pokeweb/SavedGame/game.json").getLines.mkString
+    val fileContent = Source.fromFile("/app/SavedGame/game.json").getLines.mkString
     val json = Json.parse(fileContent)
     game = jsonToGame(json)
     println("game loaded from .. ")
@@ -294,8 +294,8 @@ class FileIoJson extends FileIOInterface {
   } 
 
   def getJson: JsValue = {
-    val fileContent = Source.fromFile("../pokeweb/SavedGame/game.json").getLines.mkString
-    println("file loaded from ../pokeweb/SavedGame/game.json")
+    val fileContent = Source.fromFile("/app/SavedGame/game.json").getLines.mkString
+    println("file loaded from /app/SavedGame/game.json")
     val json: JsValue = Json.parse(fileContent)
     json
   } 

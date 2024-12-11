@@ -34,6 +34,9 @@ with Publisher {
     publish(StateChanged())
     notifyObservers
 
+  def newGame: Unit =
+    game = game.newGame;
+
   def undo: Unit =
     // cmd manager "injects" game with top stacks playersChoice
     // puts current one on the fuckin redo stack

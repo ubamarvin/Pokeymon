@@ -8,7 +8,6 @@ import de.htwg.se.Pokeymon.Controller.ControllerComponent.ControllerInterface
 import de.htwg.se.Pokeymon.Controller.ControllerComponent.ControllerBaseImplementation.Controller
 import de.htwg.se.Pokeymon.aView.Tui
 import de.htwg.se.Pokeymon.Model.GameComponent.Game
-import de.htwg.se.Pokeymon.aView.Gui.PokeGui
 
 object Pokeymon {
 
@@ -16,18 +15,12 @@ object Pokeymon {
   val controller = injector.getInstance(classOf[ControllerInterface])
 
   val tui = new Tui(controller)
-  val PokeGui = new PokeGui(controller)
+  
 
   controller.notifyObservers
 
   
   def main(args: Array[String]): Unit =
-
-    import ExecutionContext.Implicits.global
-
-    val guiFuture: Future[Unit] = Future {
-      PokeGui.main(Array.empty)
-    }
 
     var input: String = ""
 

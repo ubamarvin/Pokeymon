@@ -16,5 +16,6 @@ trait ControllerInterface extends Observable {
   def getSceneContent: Content
   def getGameJson: JsValue
   def setGameJson(gameJs : JsValue): Unit
+  def newGame: Unit
 
 }

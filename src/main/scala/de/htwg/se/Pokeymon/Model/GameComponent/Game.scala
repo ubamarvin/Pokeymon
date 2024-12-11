@@ -29,6 +29,10 @@ case class Game @Inject() (
     val redoStack: Vector[GameState] = Vector.empty
 ) extends GameInterface {
 
+  def newGame: Game =
+    val state: GameState = new PickPokemonState(Trainer(Vector()), Setup.pokedex, picks = 0, Setup.opponent);
+    this.copy(state, undoStack);
+
   // Handles, input, changesState and updates the StateStack
   def handleInput(input: String): Game =
     val NextState = state.processInput(input)
@@ -219,7 +223,7 @@ case class BattleEvalState(player: Trainer, opponent: Trainer) extends GameState
   val oppMonMoveSet = upd_opponent.currentPokemon.setCurrentMove("tackle")
   val readyOpp = upd_opponent.updateCurrentPokemon(oppMonMoveSet)
 */
-  val playersChoice = new PlayersChoice(player, readyOpp, "")
+  val playersChoice = new PlayersChoice(player, opponent, "")
 
   // Setting up the handlers
   val statusHandler = new StatusHandler()
@@ -235,6 +239,8 @@ case class BattleEvalState(player: Trainer, opponent: Trainer) extends GameState
   override def processInput(input: String): GameState =
 
     println("player.Choice: "+ player.choice.toString);
+    println("opponent.Choice: "+ opponent.choice.toString);
+
 
     val upd_playersChoice = switchPokemonHandler.handleChoice(playersChoice)
     val roundReport = upd_playersChoice.roundReport
