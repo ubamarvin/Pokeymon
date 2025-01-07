@@ -29,6 +29,8 @@ import de.htwg.se.Pokeymon.Model.GameData.{Trainer, Pokemon, Move, Pokedex, Item
 import de.htwg.se.Pokeymon.Model.GameComponent.{ParalyzedState, SleepState, PoisonedState, BurnedState, NormalState}
 
 class FileIoJson extends FileIOInterface {
+  val path = "game.json"
+  //val path ="/app/SavedGame/game.json"
 
   def save(game: GameInterface): Unit =
     saveGame(game)
@@ -36,11 +38,11 @@ class FileIoJson extends FileIOInterface {
 
   private def saveGame(game: GameInterface): Unit = {
     import java.io._
-    val pw = new PrintWriter(new File("/app/SavedGame/game.json"))
+    val pw = new PrintWriter(new File(path))
     val jsonString = Json.prettyPrint(gameToJson(game))
     pw.write(jsonString)
     pw.close()
-    println("File Saved at ../pokeweb/SavedGame/game.json")
+    println("File Saved at " + path);
   }
 
   // _______________
@@ -278,7 +280,7 @@ class FileIoJson extends FileIOInterface {
 
   def load: GameInterface = {
     var game: GameInterface = null
-    val fileContent = Source.fromFile("/app/SavedGame/game.json").getLines.mkString
+    val fileContent = Source.fromFile(path).getLines.mkString
     val json = Json.parse(fileContent)
     game = jsonToGame(json)
     println("game loaded from .. ")
@@ -294,8 +296,8 @@ class FileIoJson extends FileIOInterface {
   } 
 
   def getJson: JsValue = {
-    val fileContent = Source.fromFile("/app/SavedGame/game.json").getLines.mkString
-    println("file loaded from /app/SavedGame/game.json")
+    val fileContent = Source.fromFile(path).getLines.mkString
+    println("file loaded from " + path)
     val json: JsValue = Json.parse(fileContent)
     json
   } 
