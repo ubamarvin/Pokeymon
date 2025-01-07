@@ -29,7 +29,7 @@ import de.htwg.se.Pokeymon.Model.GameData.{Trainer, Pokemon, Move, Pokedex, Item
 import de.htwg.se.Pokeymon.Model.GameComponent.{ParalyzedState, SleepState, PoisonedState, BurnedState, NormalState}
 
 class FileIoJson extends FileIOInterface {
-  val path = "game.json"
+  val path = "../game.json"
   //val path ="/app/SavedGame/game.json"
 
   def save(game: GameInterface): Unit =
